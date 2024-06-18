@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ListaDeContatos</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="name">Name</string>
+    <string name="phone">Telefone</string>
+    <string name="cleanList">Limpar Contatos</string>
+    <string name="contactList">Lista de Contatos</string>
+    <string name="saveContact">Salvar contato</string>
+    <string name="phoneAlt">Um ícone pequeno de um telefone.</string>
+    <string name="returnHome">Retornar</string>
+</resources>
