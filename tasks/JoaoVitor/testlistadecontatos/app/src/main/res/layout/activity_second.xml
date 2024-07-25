@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SecondActivity">
+
+    <Button
+        android:id="@+id/buttonRetornar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Retornar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barra3"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barra1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="?attr/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/barra2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/imagemB1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/barra1"
+            app:layout_constraintStart_toStartOf="@id/barra1"
+            app:layout_constraintTop_toTopOf="@id/barra1"
+            app:srcCompat="@android:drawable/ic_menu_call"
+            tools:layout_editor_absoluteX="26dp"
+            tools:layout_editor_absoluteY="238dp" />
+
+        <TextView
+            android:id="@+id/nomeDoCtt1"
+            android:layout_width="44dp"
+            android:layout_height="19dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/barra1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/barra1"
+            tools:text="Contact" />
+
+        <TextView
+            android:id="@+id/phone1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/barra1"
+            app:layout_constraintEnd_toEndOf="@id/barra1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nomeDoCtt1"
+            tools:text="number" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barra2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imagemB2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/barra2"
+            app:layout_constraintStart_toStartOf="@id/barra2"
+            app:layout_constraintTop_toTopOf="@id/barra2"
+            app:srcCompat="@android:drawable/ic_menu_call" />
+
+        <TextView
+            android:id="@+id/nomeDoCtt2"
+            android:layout_width="44dp"
+            android:layout_height="19dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/barra2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/barra2"
+            tools:text="Contact" />
+
+        <TextView
+            android:id="@+id/phone2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/barra2"
+            app:layout_constraintEnd_toEndOf="@id/barra2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nomeDoCtt2"
+            tools:text="number" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/barra3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/barra2">
+
+        <ImageView
+            android:id="@+id/imagemB3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/barra3"
+            app:layout_constraintStart_toStartOf="@id/barra3"
+            app:layout_constraintTop_toTopOf="@id/barra3"
+            app:srcCompat="@android:drawable/ic_menu_call" />
+
+        <TextView
+            android:id="@+id/nomeDoCtt3"
+            android:layout_width="44dp"
+            android:layout_height="19dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/barra3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/barra3"
+            tools:text="Contact" />
+
+        <TextView
+            android:id="@+id/phone3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/barra3"
+            app:layout_constraintEnd_toEndOf="@id/barra3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nomeDoCtt3"
+            tools:text="number" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
