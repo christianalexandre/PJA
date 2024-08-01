@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.contactdefinitive.MainActivity"
+    >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_first_activity"
+        android:textSize="25dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/spin1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/para"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="@string/text_first_activity_para"
+        android:textSize="18dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/edit_text3"
+        app:layout_constraintEnd_toStartOf="@+id/spin2"
+        app:layout_constraintStart_toEndOf="@+id/spin1"
+        />
+
+    <Spinner
+        android:id="@+id/spin1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:entries="@array/coins_array1"
+        android:backgroundTint="@color/black"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toTopOf="@id/edit_text3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/para"
+        app:layout_constraintEnd_toStartOf="@id/para"
+        />
+
+    <Spinner
+        android:id="@+id/spin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="@color/black"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toTopOf="@id/edit_text3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/para"
+        app:layout_constraintStart_toEndOf="@id/para"
+        android:entries="@array/coins_array2"
+        />
+
+    <EditText
+        android:id="@+id/edit_text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_field_value"
+        android:inputType="numberDecimal"
+        android:backgroundTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <Button
+        android:id="@+id/buttonCalcular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:backgroundTint="@color/black"
+        android:text="@string/button_calculation_text"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text3"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
