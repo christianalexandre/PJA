@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_currencies">
+        <item>Selecionar uma moeda</item>
+        <item>Dólar Americano (USD)</item>
+        <item>Libra Esterlina (GBP)</item>
+        <item>Franco Suíço (CHF)</item>
+        <item>Real (BRL)</item>
+        <item>Euro (EUR)</item>
+    </string-array>
+</resources>
