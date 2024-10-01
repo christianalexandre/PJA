@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Conversao de Moedas</string>
+    <string name="select_currency">Seleciona uma moeda</string>
+    <string name="convert_value">Insira o valor</string>
+    <string name="calculate_button">Calcular</string>
+    <string name="return_button">Retornar</string>
+    <string name="result">Resultado</string>
+    <string name="equals">=</string>
+    <string name="title_activity_main">Conversor de Moeda</string>
+    <string name="title_activity_conversion_page">ConversionPage</string>
+    <string name="currency_converter">Conversor de Moedas</string>
+    <string name="missing_convert_value">Digite um valor a ser convertido.</string>
+    <string name="missing_selected_currencies">Selecione alguma moeda para os dois campos.</string>
+    <string name="identical_currencies">Selecione duas moedas diferentes.</string>
+    <string name="flag">Bandeira.</string>
+</resources>
