@@ -8,10 +8,10 @@
         <item>CHF</item>
         <item>EUR</item>
         <item>CNY</item>
-        <item>BHD</item>
-        <item>OMR</item>
-        <item>JOD</item>
-        <item>KYD</item>
+        <item>AUD</item>
+        <item>SEK</item>
+        <item>NOK</item>
+        <item>MXN</item>
     </string-array>
 
     <string-array name="coins_array2">
@@ -21,10 +21,10 @@
         <item>CHF</item>
         <item>EUR</item>
         <item>CNY</item>
-        <item>BHD</item>
-        <item>OMR</item>
-        <item>JOD</item>
-        <item>KYD</item>
+        <item>AUD</item>
+        <item>SEK</item>
+        <item>NOK</item>
+        <item>MXN</item>
     </string-array>
 
     <!-- Strings used for fragments for navigation -->
@@ -40,7 +40,7 @@
     <string name="button_return">RETORNAR</string>
     <string name="sinal_equals">=</string>
     <string name="anything"> </string>
-    <string name="required_value_toast">Favor colocar um valor e moedas distintas!</string>
+    <string name="required_value_toast">Favor, insira um valor juntamente com moedas distintas!</string>
     <string name="selected_value_toast">foi selecionado</string>
     <string name="anything_selected_toast">Nada foi selecionado</string>
     <string name="first_toast">Selecione as moedas e o digite o valor</string>

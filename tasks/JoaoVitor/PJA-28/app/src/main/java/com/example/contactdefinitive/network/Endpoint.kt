@@ -7,9 +7,9 @@ import retrofit2.http.Path
 
 interface Endpoint {
 
-    @GET("last/{curriences}")
+    @GET("last/{currencies}")
     fun getCurrencyRate(
-        @Path("curriences") coinType1 : String
+        @Path("currencies") coinType1 : String
     ): Single<ResultModel>
 
     //    @GET("/gh/fawazahmed0/currency-api@1/latest/currencies.json")
