@@ -40,11 +40,12 @@
     <string name="button_return">RETORNAR</string>
     <string name="sinal_equals">=</string>
     <string name="anything"> </string>
-    <string name="required_value_toast">Favor, insira um valor juntamente com moedas distintas!</string>
+    <string name="required_value_toast">Insira um valor</string>
+    <string name="required_distint_currecy_toast">Insira moedas distintas</string>
     <string name="selected_value_toast">foi selecionado</string>
     <string name="anything_selected_toast">Nada foi selecionado</string>
-    <string name="first_toast">Selecione as moedas e o digite o valor</string>
-    <string name="selected_close_toast">Selecione as moedas corretamente</string>
+    <string name="selected_currency_correct_toast">Selecione as moedas corretamente</string>
+    <string name="selected_coin">Selecione uma moeda</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -82,5 +83,6 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
 
 </resources>

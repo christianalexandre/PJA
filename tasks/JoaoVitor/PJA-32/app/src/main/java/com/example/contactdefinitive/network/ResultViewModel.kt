@@ -1,9 +1,9 @@
-package com.example.contactdefinitive
+package com.example.contactdefinitive.network
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.contactdefinitive.network.NetworkClientHelper
+import com.example.contactdefinitive.ResultModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers

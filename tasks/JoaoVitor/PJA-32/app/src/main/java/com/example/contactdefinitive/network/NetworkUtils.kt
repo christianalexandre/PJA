@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 
@@ -25,6 +26,14 @@ object NetworkUtils {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
+            .build()
+    }
+
+    fun getRetrofitInstance(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://economia.awesomeapi.com.br/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
     }
 }

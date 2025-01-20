@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.contactdefinitive.databinding.ActivitySecondBinding
+import com.example.contactdefinitive.network.ResultViewModel
 
 class ResultActivity : AppCompatActivity() {
 

@@ -70,6 +70,11 @@ dependencies {
     implementation (libs.moshi.kotlin)
     implementation (libs.converter.moshi)
 
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    // Retrofit e Rx
+
     implementation (libs.kotlinx.coroutines.android)
 
     implementation (libs.androidx.lifecycle.extensions)
@@ -86,6 +91,9 @@ dependencies {
     implementation(libs.support.annotations)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.androidx.baselibrary)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.material)
+    implementation(libs.androidx.runner)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

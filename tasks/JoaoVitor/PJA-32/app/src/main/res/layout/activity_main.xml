@@ -19,8 +19,7 @@
         app:layout_constraintBottom_toBottomOf="@id/textView"
         app:layout_constraintEnd_toEndOf="@id/textView"
         app:layout_constraintStart_toStartOf="@id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        />
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <Toolbar
         android:layout_width="0dp"
@@ -31,8 +30,7 @@
         app:layout_constraintBottom_toBottomOf="@id/textView"
         app:layout_constraintEnd_toEndOf="@id/textView"
         app:layout_constraintStart_toStartOf="@id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        />
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <TextView
         android:id="@+id/textView"
@@ -60,14 +58,16 @@
         app:layout_constraintStart_toStartOf="@id/spin1"
         app:layout_constraintTop_toTopOf="@+id/spin1" />
 
-    <Spinner
+    <Button
         android:id="@+id/spin1"
         android:background="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="30dp"
-        android:entries="@array/coins_array1"
+        android:text="@string/selected_coin"
+        android:textSize="10sp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/edit_text3"
         app:layout_constraintEnd_toStartOf="@id/spin2"
         app:layout_constraintStart_toStartOf="parent" />
@@ -85,14 +85,16 @@
         app:layout_constraintStart_toStartOf="@id/spin2"
         app:layout_constraintTop_toTopOf="@+id/spin2" />
 
-    <Spinner
+    <Button
         android:id="@+id/spin2"
         android:background="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="30dp"
-        android:entries="@array/coins_array2"
+        android:text="@string/selected_coin"
+        android:textSize="10sp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@id/edit_text3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/spin1" />
@@ -130,6 +132,7 @@
         android:layout_marginTop="75dp"
         android:backgroundTint="@color/white"
         android:hint="@string/hint_field_value"
+        android:padding="5dp"
         android:inputType="numberDecimal"
         android:textAlignment="center"
         android:textColorHint="@color/gray"
