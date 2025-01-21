@@ -8,6 +8,9 @@ import com.example.todo.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
+    private var homeFragment: Fragment? = null
+    private var archivedFragment: Fragment? = null
+    private var addFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -15,7 +18,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        replaceFragment(HomeFragment())
+        homeFragment = HomeFragment()
+        archivedFragment = ArchivedFragment()
+        addFragment = AddFragment()
+
+        replaceFragment(archivedFragment)
+        replaceFragment(addFragment)
+        replaceFragment(homeFragment)
 
         setupListeners()
 
@@ -34,15 +43,15 @@ class MainActivity : AppCompatActivity() {
             when(item.itemId) {
 
                 R.id.home -> {
-                    replaceFragment(HomeFragment())
+                    showFragment(homeFragment)
                 }
 
                 R.id.archived -> {
-                    replaceFragment(ArchivedFragment())
+                    showFragment(archivedFragment)
                 }
 
                 R.id.add -> {
-                    replaceFragment(AddFragment())
+                    showFragment(addFragment)
                 }
 
             }
@@ -53,7 +62,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment?) {
+
+        if(fragment == null)
+            return
 
         supportFragmentManager
             .beginTransaction()
@@ -61,4 +73,30 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
     }
+
+    private fun showFragment(fragment: Fragment?) {
+
+        if(fragment == null)
+            return
+
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) ?: return
+        val newFragment = supportFragmentManager.findFragmentByTag(fragment.javaClass.toString())
+
+        if(newFragment == null) {
+            replaceFragment(fragment)
+            return
+        }
+
+        supportFragmentManager
+            .beginTransaction()
+            .hide(currentFragment)
+            .commit()
+
+        supportFragmentManager
+            .beginTransaction()
+            .show(fragment)
+            .commit()
+
+    }
+
 }
