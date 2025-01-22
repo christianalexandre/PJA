@@ -37,8 +37,8 @@ class AddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAddBinding.inflate(layoutInflater)
-        binding?.inputLayoutAddTitle?.layoutInput?.hint = getString(R.string.title)
-        binding?.inputLayoutAddContent?.layoutInput?.hint = getString(R.string.content)
+        binding?.inputLayoutAddTitle?.hint = getString(R.string.title)
+        binding?.inputLayoutAddContent?.hint = getString(R.string.content)
         binding?.inputLayoutAddContent?.editText?.minHeight = 300
         return binding?.root
     }
