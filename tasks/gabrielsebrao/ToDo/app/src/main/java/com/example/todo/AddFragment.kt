@@ -21,7 +21,6 @@ class AddFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var binding: FragmentAddBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +35,8 @@ class AddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAddBinding.inflate(layoutInflater)
-        binding?.inputLayoutAddTitle?.hint = getString(R.string.title)
-        binding?.inputLayoutAddContent?.hint = getString(R.string.content)
-        binding?.inputLayoutAddContent?.editText?.minHeight = 300
-        return binding?.root
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
     companion object {

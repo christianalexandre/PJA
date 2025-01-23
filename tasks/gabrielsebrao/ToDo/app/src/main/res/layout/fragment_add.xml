@@ -58,7 +58,8 @@
                 android:id="@+id/input_layout_add_title"
                 style="@style/inputlayoutstyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:hint="@string/title" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -71,11 +72,13 @@
                 style="@style/inputlayoutstyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="15dp"
+                android:hint="@string/content" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:minHeight="160dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
