@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.todo.databinding.ActivityMainBinding
 
-private const val DEFAULT = "default"
+private const val HOME_FRAGMENT = "home_fragment"
+private const val ARCHIVED_FRAGMENT = "archived_fragment"
+private const val ADD_FRAGMENT = "add_fragment"
+
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
@@ -13,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     private var archivedFragment: Fragment? = null
     private var addFragment: Fragment? = null
     private var fragmentMap: Map<String, String>? = null
-    private var currentFragmentTag: String = DEFAULT
+    private var currentFragmentTag: String = HOME_FRAGMENT
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -26,14 +29,14 @@ class MainActivity : AppCompatActivity() {
         addFragment = AddFragment()
 
         fragmentMap = mapOf(
-            Pair(addFragment?.javaClass.toString(), "add_fragment"),
-            Pair(archivedFragment?.javaClass.toString(), "archived_fragment"),
-            Pair(homeFragment?.javaClass.toString(), "home_fragment")
+            Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
+            Pair(archivedFragment?.javaClass.toString(), ARCHIVED_FRAGMENT),
+            Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
         )
 
-        addFragment(addFragment, fragmentMap?.get(addFragment?.javaClass.toString()) ?: DEFAULT)
-        addFragment(archivedFragment, fragmentMap?.get(archivedFragment?.javaClass.toString()) ?: DEFAULT)
-        addFragment(homeFragment, fragmentMap?.get(homeFragment?.javaClass.toString()) ?: DEFAULT)
+        addFragment(addFragment, ADD_FRAGMENT)
+        addFragment(archivedFragment, ARCHIVED_FRAGMENT)
+        addFragment(homeFragment, HOME_FRAGMENT)
 
         hideFragment(addFragment)
         hideFragment(archivedFragment)
@@ -50,25 +53,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationViewListeners() {
 
+        var fragment: Fragment?
+
         binding?.bottomNavigationView?.setOnItemSelectedListener { item ->
 
             hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
 
-            when(item.itemId) {
+            fragment = when(item.itemId) {
 
-                R.id.home -> {
-                    showFragment(homeFragment)
-                }
+                R.id.home -> homeFragment
 
-                R.id.archived -> {
-                    showFragment(archivedFragment)
-                }
+                R.id.archived -> archivedFragment
 
-                R.id.add -> {
-                    showFragment(addFragment)
-                }
+                R.id.add -> addFragment
 
+                else -> null
             }
+
+            showFragment(fragment)
+            currentFragmentTag = fragmentMap?.get(fragment?.javaClass.toString()) ?: currentFragmentTag
 
             true
 
@@ -86,8 +89,6 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.frame_layout, fragment, fragmentTag)
             .commit()
 
-        currentFragmentTag = fragmentMap?.get(fragment.javaClass.toString()).toString()
-
     }
 
     private fun showFragment(fragment: Fragment?) {
@@ -99,8 +100,6 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .show(fragment)
             .commit()
-
-        currentFragmentTag = fragmentMap?.get(fragment.javaClass.toString()).toString()
 
     }
 
