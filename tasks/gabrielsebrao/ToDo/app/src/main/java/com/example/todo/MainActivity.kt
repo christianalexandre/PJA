@@ -1,0 +1,118 @@
+package com.example.todo
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.example.todo.databinding.ActivityMainBinding
+
+private const val HOME_FRAGMENT = "home_fragment"
+private const val ARCHIVED_FRAGMENT = "archived_fragment"
+private const val ADD_FRAGMENT = "add_fragment"
+
+class MainActivity : AppCompatActivity() {
+
+    private var binding: ActivityMainBinding? = null
+    private var homeFragment: Fragment? = null
+    private var archivedFragment: Fragment? = null
+    private var addFragment: Fragment? = null
+    private var fragmentMap: Map<String, String>? = null
+    private var currentFragmentTag: String = HOME_FRAGMENT
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+
+        homeFragment = HomeFragment()
+        archivedFragment = ArchivedFragment()
+        addFragment = AddFragment()
+
+        fragmentMap = mapOf(
+            Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
+            Pair(archivedFragment?.javaClass.toString(), ARCHIVED_FRAGMENT),
+            Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
+        )
+
+        addFragment(addFragment, ADD_FRAGMENT)
+        addFragment(archivedFragment, ARCHIVED_FRAGMENT)
+        addFragment(homeFragment, HOME_FRAGMENT)
+
+        hideFragment(addFragment)
+        hideFragment(archivedFragment)
+
+        setupListeners()
+
+    }
+
+    private fun setupListeners() {
+
+        setupBottomNavigationViewListeners()
+
+    }
+
+    private fun setupBottomNavigationViewListeners() {
+
+        var fragment: Fragment?
+
+        binding?.bottomNavigationView?.setOnItemSelectedListener { item ->
+
+            hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
+
+            fragment = when(item.itemId) {
+
+                R.id.home -> homeFragment
+
+                R.id.archived -> archivedFragment
+
+                R.id.add -> addFragment
+
+                else -> null
+            }
+
+            showFragment(fragment)
+            currentFragmentTag = fragmentMap?.get(fragment?.javaClass.toString()) ?: currentFragmentTag
+
+            true
+
+        }
+
+    }
+
+    private fun addFragment(fragment: Fragment?, fragmentTag: String) {
+
+        if(fragment == null)
+            return
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.frame_layout, fragment, fragmentTag)
+            .commit()
+
+    }
+
+    private fun showFragment(fragment: Fragment?) {
+
+        if(fragment == null)
+            return
+
+        supportFragmentManager
+            .beginTransaction()
+            .show(fragment)
+            .commit()
+
+    }
+
+    private fun hideFragment(fragment: Fragment?) {
+
+        if(fragment == null)
+            return
+
+        supportFragmentManager
+            .beginTransaction()
+            .hide(fragment)
+            .commit()
+
+    }
+
+}
