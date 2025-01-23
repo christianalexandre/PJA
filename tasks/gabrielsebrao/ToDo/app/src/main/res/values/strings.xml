@@ -4,7 +4,7 @@
     <string name="archived">Arquivados</string>
     <string name="add">Adicionar</string>
     <string name="title_activity_main" translatable="false">MainActivity</string>
-    <string name="add_task">Adicão de Card</string>
+    <string name="add_task">Adição de Card</string>
     <string name="save">Salvar</string>
     <string name="title">Título</string>
     <string name="content">Anotação</string>
