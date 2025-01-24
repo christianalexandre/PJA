@@ -12,6 +12,9 @@ activityCompose = "1.9.3"
 composeBom = "2023.08.00"
 roomCompiler = "2.6.1"
 kpsVersion = "2.0.21-1.0.27"
+rxjava = "3.1.6"
+rxandroid = "3.0.0"
+rxadapter = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +34,9 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", name = "runtime", version.ref = "roomCompiler" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", name = "compiler", version.ref = "roomCompiler" }
+rxjava = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava" }
+rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
+rxadapter = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version.ref = "rxadapter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -3,7 +3,9 @@ package com.example.todo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.todo.add.AddFragment
 import com.example.todo.databinding.ActivityMainBinding
+import com.example.todo.room.DataBase
 
 private const val HOME_FRAGMENT = "home_fragment"
 private const val ARCHIVED_FRAGMENT = "archived_fragment"
@@ -12,6 +14,7 @@ private const val ADD_FRAGMENT = "add_fragment"
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
+    private var db: DataBase? = null
     private var homeFragment: Fragment? = null
     private var archivedFragment: Fragment? = null
     private var addFragment: Fragment? = null
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+        db = DataBase.getInstance(this)
 
         homeFragment = HomeFragment()
         archivedFragment = ArchivedFragment()

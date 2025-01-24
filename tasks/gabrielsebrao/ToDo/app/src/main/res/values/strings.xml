@@ -8,4 +8,6 @@
     <string name="save">Salvar</string>
     <string name="title">Título</string>
     <string name="content">Anotação</string>
+    <string name="default_error_title">Não era para você ter lido isso.</string>
+    <string name="default_error_content">Caso esteja lendo isso, é porque de alguma forma errei.</string>
 </resources>
