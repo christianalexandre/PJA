@@ -3,4 +3,9 @@
     <string name="title_home">Home</string>
     <string name="title_archived">Arquivadas</string>
     <string name="title_add">Adicionar</string>
+    <string name="title_add_card">Adição de card</string>
+    <string name="button_save_text">Salvar</string>
+    <string name="hint_title">Titulo</string>
+    <string name="anotation_title">Anotação</string>
+    <string name="delete_anotation">Apagar anotação</string>
 </resources>

@@ -12,7 +12,6 @@ import com.example.todolist.databinding.FragmentAddBinding
 class AddFragment : Fragment() {
 
     private var _binding: FragmentAddBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -22,14 +21,14 @@ class AddFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
+        val addViewModel =
             ViewModelProvider(this).get(AddViewModel::class.java)
 
         _binding = FragmentAddBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textAdd
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.center
+        addViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

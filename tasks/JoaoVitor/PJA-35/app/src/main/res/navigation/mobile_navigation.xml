@@ -54,8 +54,9 @@
     <fragment
         android:id="@+id/navigation_add"
         android:name="com.example.todolist.ui.add.AddFragment"
-        android:label="@string/title_add"
+        android:label="@string/title_add_card"
         tools:layout="@layout/fragment_add">
+
         <action
             android:id="@+id/action_add_to_archived"
             app:destination="@id/navigation_archived"

@@ -9,8 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#ffa500</color>
     <color name="orange_5522">#ff5522</color>
-    <color name="orange_42">#FFAE42</color>
+    <color name="orange_01">#f79000</color>
     <color name="orange_00">#FF5C00</color>
-    <color name="gray">#808080</color>
+    <color name="gray">#1b1b1b</color>
+    <color name="off_white">#cdcdcb</color>
+    <color name="gray_hard">#505050</color>
+    <color name="red_error">#F70000</color>
 
 </resources>

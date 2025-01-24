@@ -22,14 +22,14 @@ class ArchivedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
+        val archivedViewModel =
             ViewModelProvider(this).get(ArchivedViewModel::class.java)
 
         _binding = FragmentArchivedBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textArchived
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
+        archivedViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
