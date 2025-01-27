@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import io.reactivex.rxjava3.core.Completable
 
 @Dao
 interface TaskDao {
@@ -17,8 +18,15 @@ interface TaskDao {
     fun findByTitle(title: String): Task
 
     @Insert
-    fun insertAll(vararg tasks: Task)
+    fun insertAll(vararg tasks: Task): Completable
 
     @Delete
-    fun delete(task: Task)
+    fun delete(task: Task): Completable
+
+    @Query("UPDATE task SET title = :title WHERE id = :id")
+    fun changeTitleById(title: String, id: Int): Completable
+
+    @Query("UPDATE task SET content = :content WHERE id = :id")
+    fun changeContentById(content: String, id: Int): Completable
+
 }

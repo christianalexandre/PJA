@@ -1,7 +1,6 @@
 package com.example.todo.add
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.DataBase
-import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
 
 class AddFragment : Fragment() {
@@ -23,11 +21,10 @@ class AddFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        addViewModel = ViewModelProvider(this)[AddViewModel::class.java]
         db = DataBase.getInstance(context)
         taskDao = db?.taskDao()
-
-        Log.e("teste", "passou por aqui muito antes")
+        addViewModel = ViewModelProvider(this)[AddViewModel::class.java]
+            .taskDao(taskDao)
 
     }
 
@@ -55,8 +52,7 @@ class AddFragment : Fragment() {
 
         binding?.buttonSave?.setOnClickListener { addViewModel?.addTask(
             title = title.toString(),
-            content = content.toString(),
-            taskDao = taskDao ?: return@setOnClickListener
+            content = content.toString()
         )}
 
     }

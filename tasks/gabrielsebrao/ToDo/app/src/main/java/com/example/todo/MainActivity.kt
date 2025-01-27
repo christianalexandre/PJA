@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.todo.add.AddFragment
+import com.example.todo.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
+import com.example.todo.home.HomeFragment
 import com.example.todo.room.DataBase
 
 private const val HOME_FRAGMENT = "home_fragment"
