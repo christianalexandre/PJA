@@ -12,6 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/off_black</item>
         <item name="android:navigationBarColor">@color/dark_gray</item>
+
+        <item name="colorOnError">@color/error_light_red</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>

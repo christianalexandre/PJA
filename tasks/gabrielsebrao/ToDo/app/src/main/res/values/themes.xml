@@ -12,6 +12,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="colorError">@color/error_red</item>
+        <item name="colorOnError">@color/error_red</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>

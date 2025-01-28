@@ -13,7 +13,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class HomeViewModel: ViewModel() {
 
     private var taskDao: TaskDao? = null
-    var listTask: MutableLiveData<List<Task>> = MutableLiveData(emptyList())
+    var isSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+    var taskList: List<Task>? = null
 
     fun taskDao(taskDao: TaskDao?) = apply {
         this.taskDao = taskDao
@@ -27,7 +28,8 @@ class HomeViewModel: ViewModel() {
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                listTask.postValue(it)
+                isSuccess.postValue(true)
+                taskList = it
                 Log.d("RX_DEBUG", "GET ALL TASK: OK")
             }, { error ->
                 Log.e("RX_DEBUG", "GET ALL TASKS: ${error.message}")

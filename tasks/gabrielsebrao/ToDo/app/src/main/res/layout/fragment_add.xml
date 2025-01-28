@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".add.AddFragment">
 
     <LinearLayout
@@ -60,6 +60,8 @@
                 style="@style/inputlayoutstyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
                 android:hint="@string/title" >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -74,12 +76,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="@string/content" >
+                android:hint="@string/content"
+                app:counterEnabled="true"
+                app:counterMaxLength="300">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="160dp" />
+                    android:minHeight="160dp"
+                    android:gravity="top"/>
 
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>

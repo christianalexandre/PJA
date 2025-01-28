@@ -1,6 +1,7 @@
 package com.example.todo
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.todo.add.AddFragment
@@ -11,7 +12,7 @@ import com.example.todo.room.DataBase
 
 private const val HOME_FRAGMENT = "home_fragment"
 private const val ARCHIVED_FRAGMENT = "archived_fragment"
-private const val ADD_FRAGMENT = "add_fragment"
+private var ADD_FRAGMENT = "add_fragment"
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
         db = DataBase.getInstance(this)
 
-        homeFragment = HomeFragment()
-        archivedFragment = ArchivedFragment()
-        addFragment = AddFragment()
+        homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment()
+        archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment()
+        addFragment = supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) ?: AddFragment()
 
         fragmentMap = mapOf(
             Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
@@ -40,14 +41,29 @@ class MainActivity : AppCompatActivity() {
             Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
         )
 
-        addFragment(addFragment, ADD_FRAGMENT)
-        addFragment(archivedFragment, ARCHIVED_FRAGMENT)
-        addFragment(homeFragment, HOME_FRAGMENT)
+        if(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) == null) {
+            addFragment(addFragment, ADD_FRAGMENT)
+            hideFragment(addFragment)
+        }
 
-        hideFragment(addFragment)
-        hideFragment(archivedFragment)
+        if(supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) == null) {
+            addFragment(archivedFragment, ARCHIVED_FRAGMENT)
+            hideFragment(archivedFragment)
+        }
+
+        if(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) == null)
+            addFragment(homeFragment, HOME_FRAGMENT)
 
         setupListeners()
+
+    }
+
+    override fun onResume() {
+
+        super.onResume()
+
+        val activeFragment = supportFragmentManager.fragments.find { !it.isHidden }
+        currentFragmentTag = activeFragment?.tag ?: HOME_FRAGMENT
 
     }
 

@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.example.todo.R
-import com.example.todo.add.AddViewModel
+import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.TaskDao
 
 class HomeFragment : Fragment() {
 
+    private var binding: FragmentHomeBinding? = null
     private var homeViewModel: HomeViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
@@ -26,11 +26,17 @@ class HomeFragment : Fragment() {
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
             .taskDao(taskDao)
 
-        homeViewModel?.getAllTasks()
+        homeViewModel?.isSuccess?.observe(this) { isSuccess ->
 
-        homeViewModel?.listTask?.observe(this) { listTask ->
-            Log.d("teste", "lista de tasks: $listTask")
+            if(!isSuccess)
+                return@observe
+
+            Log.d("ROOM_DEBUG", "taskList: ${homeViewModel?.taskList}")
+            homeViewModel?.isSuccess?.value = false
+
         }
+
+        homeViewModel?.getAllTasks()
 
     }
 
@@ -38,7 +44,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(layoutInflater)
+        return binding?.root
     }
 
 }
