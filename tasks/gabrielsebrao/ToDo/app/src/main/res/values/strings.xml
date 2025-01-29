@@ -10,6 +10,9 @@
     <string name="content">Anotação</string>
     <string name="default_error_title">Não era para você ter lido isso.</string>
     <string name="default_error_content">Caso esteja lendo isso, é porque de alguma forma errei.</string>
-    <string name="task_created">Tarefa criada.</string>
+    <string name="task_created">Tarefa criada</string>
     <string name="error_add_title">Adicione um título.</string>
+    <string name="default_title">Título</string>
+    <string name="default_content">That\'s the content!</string>
+    <string name="default_title_home">Tarefas</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="inputlayoutstyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="input_layout_style" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorOutline">@color/green</item>
         <item name="colorPrimary">@color/green</item>
     </style>

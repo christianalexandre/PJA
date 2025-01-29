@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.todo.adapter.TaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.TaskDao
@@ -26,15 +28,7 @@ class HomeFragment : Fragment() {
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
             .taskDao(taskDao)
 
-        homeViewModel?.isSuccess?.observe(this) { isSuccess ->
-
-            if(!isSuccess)
-                return@observe
-
-            Log.d("ROOM_DEBUG", "taskList: ${homeViewModel?.taskList}")
-            homeViewModel?.isSuccess?.value = false
-
-        }
+        setupObservers()
 
         homeViewModel?.getAllTasks()
 
@@ -49,5 +43,25 @@ class HomeFragment : Fragment() {
         return binding?.root
 
     }
+
+    private fun setupObservers() {
+
+        homeViewModel?.isSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            Log.d("ROOM_DEBUG", "taskList: ${homeViewModel?.taskList}")
+
+            binding?.recyclerViewTasks?.adapter = TaskAdapter(homeViewModel?.taskList ?: emptyList())
+            binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
+
+            homeViewModel?.isSuccess?.value = false
+
+        }
+
+    }
+
+    fun getAllTasks() = homeViewModel?.getAllTasks()
 
 }

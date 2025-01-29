@@ -128,6 +128,9 @@ class MainActivity : AppCompatActivity() {
             .show(fragment)
             .commit()
 
+        if(fragment is HomeFragment)
+            fragment.getAllTasks()
+
     }
 
     private fun hideFragment(fragment: Fragment?) {

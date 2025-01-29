@@ -5,16 +5,15 @@
         <item name="colorPrimary">@color/green</item>
         <item name="colorPrimaryVariant">@color/light_green</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
+
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+        <item name="colorOnSecondary">@color/off_black</item>
+
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
 
         <item name="colorError">@color/error_red</item>
         <item name="colorOnError">@color/error_red</item>
-        <!-- Customize your theme here. -->
     </style>
 </resources>
