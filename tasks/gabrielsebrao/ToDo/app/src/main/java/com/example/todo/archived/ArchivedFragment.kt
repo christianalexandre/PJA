@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
+import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.TaskDao
 
 class ArchivedFragment : Fragment() {
 
+    private var binding: FragmentArchivedBinding? = null
     private var archivedViewModel: ArchivedViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
@@ -31,7 +33,10 @@ class ArchivedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_archived, container, false)
+
+        binding = FragmentArchivedBinding.inflate(layoutInflater)
+        return binding?.root
+
     }
 
 }

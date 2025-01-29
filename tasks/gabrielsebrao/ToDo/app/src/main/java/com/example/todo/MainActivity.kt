@@ -31,15 +31,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
         db = DataBase.getInstance(this)
 
+        setupFragments()
+        setupListeners()
+
+    }
+
+    override fun onResume() {
+
+        super.onResume()
+
+        val activeFragment = supportFragmentManager.fragments.find { !it.isHidden }
+        currentFragmentTag = activeFragment?.tag ?: HOME_FRAGMENT
+
+    }
+
+    private fun setupFragments() {
+
         homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment()
         archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment()
         addFragment = supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) ?: AddFragment()
-
-        fragmentMap = mapOf(
-            Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
-            Pair(archivedFragment?.javaClass.toString(), ARCHIVED_FRAGMENT),
-            Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
-        )
 
         if(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) == null) {
             addFragment(addFragment, ADD_FRAGMENT)
@@ -54,16 +64,11 @@ class MainActivity : AppCompatActivity() {
         if(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) == null)
             addFragment(homeFragment, HOME_FRAGMENT)
 
-        setupListeners()
-
-    }
-
-    override fun onResume() {
-
-        super.onResume()
-
-        val activeFragment = supportFragmentManager.fragments.find { !it.isHidden }
-        currentFragmentTag = activeFragment?.tag ?: HOME_FRAGMENT
+        fragmentMap = mapOf(
+            Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
+            Pair(archivedFragment?.javaClass.toString(), ARCHIVED_FRAGMENT),
+            Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
+        )
 
     }
 
