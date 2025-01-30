@@ -51,14 +51,33 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            Log.d("ROOM_DEBUG", "taskList: ${homeViewModel?.taskList}")
+            Log.e("ROOM_DEBUG", "${homeViewModel?.taskList}")
 
-            binding?.recyclerViewTasks?.adapter = TaskAdapter(homeViewModel?.taskList ?: emptyList())
+            if(homeViewModel?.taskList?.isEmpty() == true) {
+                binding?.defaultHomeEmptyTaskList?.visibility = View.VISIBLE
+                binding?.recyclerViewTasks?.visibility = View.GONE
+                binding?.errorNullTaskList?.visibility = View.GONE
+                return@observe
+            }
+
+            binding?.defaultHomeEmptyTaskList?.visibility = View.GONE
+            binding?.errorNullTaskList?.visibility = View.GONE
+            binding?.recyclerViewTasks?.visibility = View.VISIBLE
+
+            binding?.recyclerViewTasks?.adapter = TaskAdapter(homeViewModel?.taskList ?: return@observe treatNullableTaskList())
             binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
 
             homeViewModel?.isSuccess?.value = false
 
         }
+
+    }
+
+    private fun treatNullableTaskList() {
+
+        binding?.errorNullTaskList?.visibility = View.VISIBLE
+        binding?.defaultHomeEmptyTaskList?.visibility = View.GONE
+        binding?.recyclerViewTasks?.visibility = View.GONE
 
     }
 

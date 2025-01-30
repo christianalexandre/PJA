@@ -15,4 +15,8 @@
     <string name="default_title">Título</string>
     <string name="default_content">That\'s the content!</string>
     <string name="default_title_home">Tarefas</string>
+    <string name="alt_icon_add">Ícone do símbolo de adição.</string>
+    <string name="default_add_message">Crie uma tarefa na aba Adicionar!</string>
+    <string name="default_add_error_message">Algum imprevisto aconteceu! Tente novamente.</string>
+    <string name="alt_icon_check">Ícone para confirmar a tarefa.</string>
 </resources>

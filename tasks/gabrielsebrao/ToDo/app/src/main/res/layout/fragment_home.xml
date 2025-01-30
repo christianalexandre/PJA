@@ -36,6 +36,56 @@
         android:layout_below="@id/line_task"
         android:layout_marginVertical="20dp"
         android:layout_marginHorizontal="10dp"
+        android:visibility="gone"
         tools:listitem="@layout/item_card_task" />
+
+    <LinearLayout
+        android:id="@+id/default_home_empty_task_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tool_bar_home"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/alt_icon_add"
+            android:src="@drawable/icon_add" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="120dp"
+            android:gravity="center"
+            android:textColor="#D1D2D5"
+            android:text="@string/default_add_message" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/error_null_task_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tool_bar_home"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/alt_icon_add"
+            android:src="@drawable/icon_error" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="200dp"
+            android:gravity="center"
+            android:textColor="#D1D2D5"
+            android:text="@string/default_add_error_message" />
+
+    </LinearLayout>
 
 </RelativeLayout>

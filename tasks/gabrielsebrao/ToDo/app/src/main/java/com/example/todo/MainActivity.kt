@@ -84,8 +84,6 @@ class MainActivity : AppCompatActivity() {
 
         binding?.bottomNavigationView?.setOnItemSelectedListener { item ->
 
-            hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
-
             fragment = when(item.itemId) {
 
                 R.id.home -> homeFragment
@@ -96,6 +94,11 @@ class MainActivity : AppCompatActivity() {
 
                 else -> null
             }
+
+            if(fragment?.tag == currentFragmentTag)
+                return@setOnItemSelectedListener true
+
+            hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
 
             showFragment(fragment)
             currentFragmentTag = fragmentMap?.get(fragment?.javaClass.toString()) ?: currentFragmentTag

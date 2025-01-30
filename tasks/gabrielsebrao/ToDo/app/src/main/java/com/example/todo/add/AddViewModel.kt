@@ -49,34 +49,12 @@ class AddViewModel: ViewModel() {
 
     }
 
-    fun maskTaskTitle(editText: EditText): TextWatcher {
+    fun filterMaxLength(editText: EditText?, maxLength: Int) {
 
-        return object : TextWatcher {
+        if(editText == null)
+            return
 
-            private var taskTitleMaxCharsPattern = "^(.{51,})$".toRegex()
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                editText.filters = arrayOf(InputFilter { source, begin, end, dest, dstart, dend ->
-
-                    val result = dest.subSequence(0, dstart).toString() + source.subSequence(begin, end) + dest.subSequence(dend, dest.length).toString()
-
-                    if(taskTitleMaxCharsPattern.matches(result))
-                        return@InputFilter ""
-
-                    null
-
-                })
-
-                editText.setSelection(editText.text.toString().length)
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-
-        }
+        editText.filters = arrayOf(InputFilter.LengthFilter(maxLength))
 
     }
 
@@ -98,34 +76,12 @@ class AddViewModel: ViewModel() {
 
     }
 
-    fun maskTaskContent(editText: EditText): TextWatcher {
+    fun filterTaskContent(editText: EditText?) {
 
-        return object : TextWatcher {
+        if(editText == null)
+            return
 
-            private var taskContentMaxCharsPattern = "^(.{301,})$".toRegex()
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                editText.filters = arrayOf(InputFilter { source, begin, end, dest, dstart, dend ->
-
-                    val result = dest.subSequence(0, dstart).toString() + source.subSequence(begin, end) + dest.subSequence(dend, dest.length).toString()
-
-                    if(taskContentMaxCharsPattern.matches(result))
-                        return@InputFilter ""
-
-                    null
-
-                })
-
-                editText.setSelection(editText.text.toString().length)
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-
-        }
+        editText.filters = arrayOf(InputFilter.LengthFilter(300))
 
     }
 

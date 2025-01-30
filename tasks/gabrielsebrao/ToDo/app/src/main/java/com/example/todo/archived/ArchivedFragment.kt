@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todo.R
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.TaskDao
