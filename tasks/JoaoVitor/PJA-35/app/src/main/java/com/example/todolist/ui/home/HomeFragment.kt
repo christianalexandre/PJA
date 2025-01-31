@@ -4,17 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentHomeBinding
+import com.example.todolist.ui.adapter.TaskAdapter
+import com.example.todolist.ui.database.db.AppDatabase
+import com.example.todolist.ui.database.instance.DatabaseInstance
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private lateinit var database: AppDatabase
+    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var taskAdapter: TaskAdapter
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,17 +27,34 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        val root = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        database = DatabaseInstance.getDatabase(requireContext())
+
+        setupHomeViewModel()
+        setupRecyclerView()
+
         return root
+    }
+
+    private fun setupHomeViewModel() {
+        val factory = HomeViewModelFactory(database.taskDao())
+        homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
+
+        // Observar mudanças na lista de tarefas
+        homeViewModel.tasksLiveData.observe(viewLifecycleOwner, Observer { tasks ->
+            taskAdapter.updateTasks(tasks)
+        })
+    }
+
+    private fun setupRecyclerView() {
+        taskAdapter = TaskAdapter(emptyList())
+
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = taskAdapter
+        }
     }
 
     override fun onDestroyView() {

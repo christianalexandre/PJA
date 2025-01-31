@@ -1,13 +1,12 @@
 package com.example.todolist.ui.home
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.todolist.ui.database.model.Task
+import com.example.todolist.ui.database.dao.TaskDao
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(taskDao: TaskDao) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
+    val tasksLiveData: LiveData<List<Task>> = taskDao.getAllTasksLiveData()
+
 }
