@@ -19,4 +19,6 @@
     <string name="default_add_message">Crie uma tarefa na aba Adicionar!</string>
     <string name="default_add_error_message">Algum imprevisto aconteceu! Tente novamente.</string>
     <string name="alt_icon_check">Ícone para confirmar a tarefa.</string>
+    <string name="alt_icon_archived">Ícone de tarefas arquivadas.</string>
+    <string name="default_archived_message">Nenhuma tarefa arquivada.</string>
 </resources>

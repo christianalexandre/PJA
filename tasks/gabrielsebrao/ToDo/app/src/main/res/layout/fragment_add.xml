@@ -1,92 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".add.AddFragment">
+    android:orientation="vertical">
+
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_task"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:background="@drawable/background_alpha_green"
+            android:layout_marginEnd="20dp"
+            android:letterSpacing="0.05"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+
+    </Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/green" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="20dp">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_add_title"
+            style="@style/input_layout_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingVertical="10dp">
+            android:hint="@string/title"
+            app:counterEnabled="true"
+            app:counterMaxLength="50">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp" >
+                android:layout_height="wrap_content" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:text="@string/add_task"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
-                    android:id="@+id/button_save"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
-                    android:text="@string/save"
-                    android:textAllCaps="false"
-                    android:letterSpacing="0.05"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/green" />
-        </LinearLayout>
-
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_add_content"
+            style="@style/input_layout_style"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingHorizontal="30dp"
-            android:paddingTop="20dp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="@string/content"
+            app:counterEnabled="true"
+            app:counterMaxLength="300">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_layout_add_title"
-                style="@style/input_layout_style"
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:counterEnabled="true"
-                app:counterMaxLength="50"
-                android:hint="@string/title" >
+                android:gravity="top"
+                android:minHeight="160dp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_layout_add_content"
-                style="@style/input_layout_style"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:hint="@string/content"
-                app:counterEnabled="true"
-                app:counterMaxLength="300">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="160dp"
-                    android:gravity="top"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-</FrameLayout>
+</LinearLayout>
