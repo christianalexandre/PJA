@@ -3,18 +3,19 @@ package com.example.todo.home
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.todo.TaskSingleton
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.Stack
 
 class HomeViewModel: ViewModel() {
 
     private var taskDao: TaskDao? = null
     var isSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
-    var taskList: List<Task>? = null
 
     fun taskDao(taskDao: TaskDao?) = apply {
         this.taskDao = taskDao
@@ -28,9 +29,12 @@ class HomeViewModel: ViewModel() {
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                isSuccess.postValue(true)
-                taskList = it
+
                 Log.d("RX_DEBUG", "GET ALL TASK: OK")
+
+                TaskSingleton.taskStack = it.toMutableList()
+                isSuccess.postValue(true)
+
             }, { error ->
                 Log.e("RX_DEBUG", "GET ALL TASKS: ${error.message}")
             })

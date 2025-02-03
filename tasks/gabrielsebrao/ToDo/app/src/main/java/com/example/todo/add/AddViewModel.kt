@@ -1,15 +1,15 @@
 package com.example.todo.add
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.todo.R
+import com.example.todo.TaskSingleton
+import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
 import com.google.android.material.textfield.TextInputLayout
@@ -22,6 +22,7 @@ private const val EMPTY_TEXT = ""
 class AddViewModel: ViewModel() {
 
     private var taskDao: TaskDao? = null
+    val isSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun taskDao(taskDao: TaskDao?) = apply {
         this.taskDao = taskDao
@@ -42,7 +43,14 @@ class AddViewModel: ViewModel() {
             ?.subscribeOn(Schedulers.newThread())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({
+
                 Log.d("RX_DEBUG", "ADD TASK: OK")
+
+                TaskSingleton.newTask = task
+                TaskSingleton.taskStack?.add(0, task)
+
+                isSuccess.postValue(true)
+
             }, { error ->
                 Log.e("RX_DEBUG", "ADD TASK: ${error.message}")
             })
@@ -55,6 +63,29 @@ class AddViewModel: ViewModel() {
             return
 
         editText.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+
+    }
+
+    fun enableSaveButtonTaskTitle(binding: FragmentAddBinding?): TextWatcher {
+
+        return object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true) {
+                    binding.buttonSave.isActivated = false
+                    return
+                }
+
+                binding?.buttonSave?.isActivated = true
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+
+        }
 
     }
 

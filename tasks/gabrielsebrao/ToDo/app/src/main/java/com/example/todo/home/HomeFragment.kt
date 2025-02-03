@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.todo.TaskSingleton
 import com.example.todo.adapter.TaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
@@ -19,6 +20,7 @@ class HomeFragment : Fragment() {
     private var homeViewModel: HomeViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
+    private var taskAdapter: TaskAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -44,6 +46,18 @@ class HomeFragment : Fragment() {
 
     }
 
+    fun onShown() {
+
+        if(TaskSingleton.newTask == null)
+            return
+
+        if(TaskSingleton.taskStack == null)
+            return
+
+        taskAdapter?.addNewTask(TaskSingleton.newTask)
+
+    }
+
     private fun setupObservers() {
 
         homeViewModel?.isSuccess?.observe(this) { isSuccess ->
@@ -51,9 +65,9 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            Log.e("ROOM_DEBUG", "${homeViewModel?.taskList}")
+            Log.e("ROOM_DEBUG", "${TaskSingleton.taskStack}")
 
-            if(homeViewModel?.taskList?.isEmpty() == true) {
+            if(TaskSingleton.taskStack?.isEmpty() == true) {
                 binding?.defaultHomeEmptyTaskList?.visibility = View.VISIBLE
                 binding?.recyclerViewTasks?.visibility = View.GONE
                 binding?.errorNullTaskList?.visibility = View.GONE
@@ -64,7 +78,9 @@ class HomeFragment : Fragment() {
             binding?.errorNullTaskList?.visibility = View.GONE
             binding?.recyclerViewTasks?.visibility = View.VISIBLE
 
-            binding?.recyclerViewTasks?.adapter = TaskAdapter(homeViewModel?.taskList ?: return@observe treatNullableTaskList())
+            taskAdapter = TaskAdapter(TaskSingleton.taskStack ?: return@observe treatNullableTaskList())
+
+            binding?.recyclerViewTasks?.adapter = taskAdapter
             binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
 
             homeViewModel?.isSuccess?.value = false

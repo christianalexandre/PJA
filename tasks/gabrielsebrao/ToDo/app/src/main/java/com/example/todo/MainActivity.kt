@@ -1,7 +1,10 @@
 package com.example.todo
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.todo.add.AddFragment
@@ -43,6 +46,17 @@ class MainActivity : AppCompatActivity() {
         val activeFragment = supportFragmentManager.fragments.find { !it.isHidden }
         currentFragmentTag = activeFragment?.tag ?: HOME_FRAGMENT
 
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            currentFocus?.let { view ->
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                view.clearFocus()
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     private fun setupFragments() {
@@ -132,7 +146,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
         if(fragment is HomeFragment)
-            fragment.getAllTasks()
+            fragment.onShown()
 
     }
 
@@ -145,6 +159,15 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .hide(fragment)
             .commit()
+
+    }
+
+    fun switchFromAddFragmentToHomeFragment() {
+
+        hideFragment(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT))
+        showFragment(homeFragment)
+        binding?.bottomNavigationView?.selectedItemId = R.id.home
+        currentFragmentTag = HOME_FRAGMENT
 
     }
 

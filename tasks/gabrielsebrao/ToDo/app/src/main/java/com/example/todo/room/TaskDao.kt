@@ -5,10 +5,11 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import io.reactivex.rxjava3.core.Completable
+import java.util.Stack
 
 @Dao
 interface TaskDao {
-    @Query("SELECT * FROM task")
+    @Query("SELECT * FROM task ORDER BY id DESC")
     fun getAll(): List<Task>
 
     @Query("SELECT * FROM task WHERE id IN (:taskIds)")

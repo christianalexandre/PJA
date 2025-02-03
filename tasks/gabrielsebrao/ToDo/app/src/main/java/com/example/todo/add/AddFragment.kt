@@ -1,5 +1,6 @@
 package com.example.todo.add
 
+import android.graphics.Rect
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.todo.MainActivity
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.DataBase
@@ -29,6 +31,8 @@ class AddFragment : Fragment() {
         taskDao = db?.taskDao()
         addViewModel = ViewModelProvider(this)[AddViewModel::class.java]
             .taskDao(taskDao)
+
+        setupObserver()
 
     }
 
@@ -58,10 +62,24 @@ class AddFragment : Fragment() {
 
     }
 
+    private fun setupObserver() {
+
+        addViewModel?.isSuccess?.observe(this) { isSuccess ->
+
+            if(isSuccess) {
+                (activity as MainActivity).switchFromAddFragmentToHomeFragment()
+                addViewModel?.isSuccess?.value = false
+            }
+
+        }
+
+    }
+
     private fun setupListener() {
 
         setupSaveButtonListener()
         setupInputLayoutsListener()
+        setupRootListener()
 
     }
 
@@ -70,10 +88,17 @@ class AddFragment : Fragment() {
         val title = binding?.inputLayoutAddTitle?.editText?.text ?: getString(R.string.default_error_title)
         val content = binding?.inputLayoutAddContent?.editText?.text ?: getString(R.string.default_error_content)
 
+        if(title.isNotBlank())
+            binding?.buttonSave?.isActivated = true
+
         binding?.buttonSave?.setOnClickListener {
+
+            if(!it.isActivated)
+                return@setOnClickListener
 
             if(title.isBlank()) {
                 binding?.inputLayoutAddTitle?.error = getString(R.string.error_add_title)
+                it.isActivated = false
                 return@setOnClickListener
             }
 
@@ -91,8 +116,30 @@ class AddFragment : Fragment() {
 
         addViewModel?.filterMaxLength(binding?.inputLayoutAddTitle?.editText, 50)
         binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(addViewModel?.disableErrorTaskTitle(binding?.inputLayoutAddTitle, requireContext()))
+        binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(addViewModel?.enableSaveButtonTaskTitle(binding))
 
         addViewModel?.filterMaxLength(binding?.inputLayoutAddContent?.editText, 300)
+
+    }
+
+    private fun setupRootListener() {
+
+        binding?.root?.viewTreeObserver?.addOnGlobalLayoutListener {
+
+            val rect = Rect()
+            binding?.root?.getWindowVisibleDisplayFrame(rect)
+
+            val screenHeight = binding?.root?.rootView?.height
+            val keypadHeight = (screenHeight ?: 0) - rect.bottom
+            val isKeyboardVisible = keypadHeight > ((screenHeight ?: 0) * 0.15)
+
+            if(!isKeyboardVisible) {
+                binding?.inputLayoutAddTitle?.clearFocus()
+                binding?.inputLayoutAddContent?.clearFocus()
+                return@addOnGlobalLayoutListener
+            }
+
+        }
 
     }
 
