@@ -165,7 +165,6 @@ class MainActivity : AppCompatActivity() {
     fun switchFromAddFragmentToHomeFragment() {
 
         hideFragment(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT))
-        showFragment(homeFragment)
         binding?.bottomNavigationView?.selectedItemId = R.id.home
         currentFragmentTag = HOME_FRAGMENT
 

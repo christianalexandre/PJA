@@ -47,7 +47,9 @@ class AddViewModel: ViewModel() {
                 Log.d("RX_DEBUG", "ADD TASK: OK")
 
                 TaskSingleton.newTask = task
-                TaskSingleton.taskStack?.add(0, task)
+                TaskSingleton.taskList?.add(0, task)
+
+                Log.d("RX_DEBUG", "${TaskSingleton.taskList}")
 
                 isSuccess.postValue(true)
 

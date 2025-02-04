@@ -12,6 +12,7 @@ import com.example.todo.TaskSingleton
 import com.example.todo.adapter.TaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
+import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
 
 class HomeFragment : Fragment() {
@@ -48,13 +49,13 @@ class HomeFragment : Fragment() {
 
     fun onShown() {
 
-        if(TaskSingleton.newTask == null)
-            return
-
-        if(TaskSingleton.taskStack == null)
-            return
+        if((TaskSingleton.taskList?.size ?: return) > 0)
+            displayRecyclerViewScreen()
 
         taskAdapter?.addNewTask(TaskSingleton.newTask)
+        TaskSingleton.newTask = null
+
+        binding?.recyclerViewTasks?.scrollToPosition(0)
 
     }
 
@@ -65,27 +66,40 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            Log.e("ROOM_DEBUG", "${TaskSingleton.taskStack}")
-
-            if(TaskSingleton.taskStack?.isEmpty() == true) {
-                binding?.defaultHomeEmptyTaskList?.visibility = View.VISIBLE
-                binding?.recyclerViewTasks?.visibility = View.GONE
-                binding?.errorNullTaskList?.visibility = View.GONE
-                return@observe
+            if(taskAdapter == null) {
+                taskAdapter = TaskAdapter(TaskSingleton.taskList ?: emptyList<Task>().toMutableList())
+                binding?.recyclerViewTasks?.adapter = taskAdapter
+                binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
             }
 
-            binding?.defaultHomeEmptyTaskList?.visibility = View.GONE
-            binding?.errorNullTaskList?.visibility = View.GONE
-            binding?.recyclerViewTasks?.visibility = View.VISIBLE
-
-            taskAdapter = TaskAdapter(TaskSingleton.taskStack ?: return@observe treatNullableTaskList())
-
-            binding?.recyclerViewTasks?.adapter = taskAdapter
-            binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
+            Log.e("ROOM_DEBUG", "${TaskSingleton.taskList}")
 
             homeViewModel?.isSuccess?.value = false
 
+            if(TaskSingleton.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
+
+            displayRecyclerViewScreen()
+
         }
+
+    }
+
+    private fun displayRecyclerViewScreen() {
+
+        binding?.defaultHomeEmptyTaskList?.visibility = View.GONE
+        binding?.errorNullTaskList?.visibility = View.GONE
+        binding?.recyclerViewTasks?.visibility = View.VISIBLE
+
+    }
+
+    private fun displayDefaultScreen() {
+
+        binding?.defaultHomeEmptyTaskList?.visibility = View.VISIBLE
+        binding?.recyclerViewTasks?.visibility = View.GONE
+        binding?.errorNullTaskList?.visibility = View.GONE
 
     }
 

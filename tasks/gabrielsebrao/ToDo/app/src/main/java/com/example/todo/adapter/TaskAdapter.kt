@@ -10,17 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.room.Task
 
-class TaskAdapter(private val taskStack: MutableList<Task>): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(private val taskList: MutableList<Task>): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_card_task, parent, false)
         return TaskViewHolder(view)
     }
 
-    override fun getItemCount(): Int = taskStack.size
+    override fun getItemCount(): Int = taskList.size
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bind(taskStack[position])
+        holder.bind(taskList[position])
     }
 
     fun addNewTask(task: Task?) {
@@ -28,8 +28,7 @@ class TaskAdapter(private val taskStack: MutableList<Task>): RecyclerView.Adapte
         if(task == null)
             return
 
-        taskStack.add(0, task)
-        notifyItemChanged(0)
+        notifyItemInserted(0)
 
     }
 
@@ -39,8 +38,6 @@ class TaskAdapter(private val taskStack: MutableList<Task>): RecyclerView.Adapte
 
             itemView.findViewById<TextView>(R.id.title).text = task.title
             itemView.findViewById<TextView>(R.id.content).text = task.content
-
-            itemView.findViewById<ImageView>(R.id.icon_check).setColorFilter(ContextCompat.getColor(itemView.context, R.color.green))
 
         }
 
