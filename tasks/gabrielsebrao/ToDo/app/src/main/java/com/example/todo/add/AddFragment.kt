@@ -88,7 +88,7 @@ class AddFragment : Fragment() {
         val title = binding?.inputLayoutAddTitle?.editText?.text ?: getString(R.string.default_error_title)
         val content = binding?.inputLayoutAddContent?.editText?.text ?: getString(R.string.default_error_content)
 
-        if(title.isNotBlank())
+        if(title.isNotBlank() && content.isNotBlank())
             binding?.buttonSave?.isActivated = true
 
         binding?.buttonSave?.setOnClickListener {
@@ -119,6 +119,7 @@ class AddFragment : Fragment() {
         binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(addViewModel?.enableSaveButtonTaskTitle(binding))
 
         addViewModel?.filterMaxLength(binding?.inputLayoutAddContent?.editText, 300)
+        binding?.inputLayoutAddContent?.editText?.addTextChangedListener(addViewModel?.enableSaveButtonTaskContent(binding))
 
     }
 

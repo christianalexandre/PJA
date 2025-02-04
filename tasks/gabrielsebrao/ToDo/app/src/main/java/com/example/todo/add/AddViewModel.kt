@@ -76,7 +76,39 @@ class AddViewModel: ViewModel() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
-                if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true) {
+                if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true ) {
+                    binding.buttonSave.isActivated = false
+                    return
+                }
+
+
+
+                if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
+                    binding.buttonSave.isActivated = false
+                    return
+                }
+
+                binding?.buttonSave?.isActivated = true
+
+                binding?.buttonSave?.isActivated = true
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+
+        }
+
+    }
+
+    fun enableSaveButtonTaskContent(binding: FragmentAddBinding?): TextWatcher {
+
+        return object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
                     binding.buttonSave.isActivated = false
                     return
                 }

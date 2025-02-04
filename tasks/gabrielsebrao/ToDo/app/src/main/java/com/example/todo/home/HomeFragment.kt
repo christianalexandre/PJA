@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.todo.TaskSingleton
 import com.example.todo.adapter.TaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
+import java.util.Collections
 
 class HomeFragment : Fragment() {
 
@@ -37,12 +40,35 @@ class HomeFragment : Fragment() {
 
     }
 
+    inner class ItemTouchHelper(dragDirs: Int, swipeDirs: Int) : androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: ViewHolder, target: ViewHolder): Boolean {
+            val from = viewHolder.adapterPosition
+            val to = target.adapterPosition
+
+            Collections.swap(taskAdapter!!.taskList, from, to)
+            taskAdapter?.notifyItemMoved(from, to)
+
+            return true
+        }
+
+        override fun onSwiped(viewHolder: ViewHolder, direction: Int) {}
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentHomeBinding.inflate(layoutInflater)
+
+        val helper = androidx.recyclerview.widget.ItemTouchHelper(ItemTouchHelper(
+            androidx.recyclerview.widget.ItemTouchHelper.UP or
+                    androidx.recyclerview.widget.ItemTouchHelper.DOWN,
+            androidx.recyclerview.widget.ItemTouchHelper.LEFT
+        ))
+
+        helper.attachToRecyclerView(binding?.recyclerViewTasks)
+
         return binding?.root
 
     }
