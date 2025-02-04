@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.example.todolist.databinding.ActivityMainBinding
 import com.example.todolist.ui.adapter.PageAdapter
 import com.example.todolist.ui.add.AddFragment

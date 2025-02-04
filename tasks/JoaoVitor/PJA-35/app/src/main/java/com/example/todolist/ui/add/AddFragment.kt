@@ -1,15 +1,21 @@
 package com.example.todolist.ui.add
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.example.todolist.R
 import com.example.todolist.databinding.FragmentAddBinding
 import com.example.todolist.ui.database.db.AppDatabase
@@ -101,14 +107,51 @@ class AddFragment : Fragment() {
             outlinedButton.setOnClickListener {
                 val title = textFieldTitleText.text.toString()
                 val description = textFieldAnotationText.text.toString()
-
                 val newTask = Task(title = title, description = description)
                 addViewModel.inserirTask(newTask)
                 textFieldTitleText.text?.clear()
                 textFieldAnotationText.text?.clear()
-                Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT).show()
+
+                // Esconder teclado
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val view = requireActivity().currentFocus
+                view?.let {
+                    inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+                    it.clearFocus()
+                }
+
+                val viewPager = requireActivity().findViewById<ViewPager2>(R.id.vp)
+                viewPager.currentItem = 0
+
+                Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val rootLayout: View = view.findViewById(R.id.fragmentXmlAdd)
+
+        rootLayout.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val focusedView = requireActivity().currentFocus
+                if (focusedView is EditText) {
+                    focusedView.clearFocus()
+                    hideKeyboard(focusedView)
+                }
+            }
+            false
+        }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val inputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onDestroyView() {
