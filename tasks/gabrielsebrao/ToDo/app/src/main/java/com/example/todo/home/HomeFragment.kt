@@ -16,6 +16,7 @@ import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
+import com.example.todo.sharedpref.TaskListOrderSharedPref
 import java.util.Collections
 
 class HomeFragment : Fragment() {
@@ -25,6 +26,7 @@ class HomeFragment : Fragment() {
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
     private var taskAdapter: TaskAdapter? = null
+    private var taskListOrderSharedPref: TaskListOrderSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -33,6 +35,7 @@ class HomeFragment : Fragment() {
         taskDao = db?.taskDao()
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
             .taskDao(taskDao)
+        taskListOrderSharedPref = TaskListOrderSharedPref(requireContext())
 
         setupObservers()
 
@@ -45,8 +48,14 @@ class HomeFragment : Fragment() {
             val from = viewHolder.adapterPosition
             val to = target.adapterPosition
 
-            Collections.swap(taskAdapter!!.taskList, from, to)
+            taskAdapter?.taskList?.let { Collections.swap(it, from, to) }
             taskAdapter?.notifyItemMoved(from, to)
+
+            val list: MutableList<Int> = emptyList<Int>().toMutableList()
+            TaskSingleton.taskList?.map { list.add(it.id ?: 0) }
+            taskListOrderSharedPref?.saveList(list)
+
+            Log.d("SHARED_PREF", "TASK ID LIST: ${taskListOrderSharedPref?.list}")
 
             return true
         }
@@ -91,6 +100,10 @@ class HomeFragment : Fragment() {
 
             if(!isSuccess)
                 return@observe
+
+            TaskSingleton.taskList = TaskSingleton.taskList?.sortedBy { task ->
+                taskListOrderSharedPref?.list?.indexOf(task.id)
+            }?.toMutableList()
 
             if(taskAdapter == null) {
                 taskAdapter = TaskAdapter(TaskSingleton.taskList ?: emptyList<Task>().toMutableList())

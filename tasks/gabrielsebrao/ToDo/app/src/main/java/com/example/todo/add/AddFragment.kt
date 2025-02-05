@@ -13,6 +13,8 @@ import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.TaskDao
+import com.example.todo.sharedpref.CurrentTaskIdSharedPref
+import com.example.todo.sharedpref.TaskListOrderSharedPref
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -23,6 +25,8 @@ class AddFragment : Fragment() {
     private var addViewModel: AddViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
+    private var currentTaskIdSharedPref: CurrentTaskIdSharedPref? = null
+    private var taskListOrderSharedPref: TaskListOrderSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,6 +35,8 @@ class AddFragment : Fragment() {
         taskDao = db?.taskDao()
         addViewModel = ViewModelProvider(this)[AddViewModel::class.java]
             .taskDao(taskDao)
+        currentTaskIdSharedPref = CurrentTaskIdSharedPref(requireContext())
+        taskListOrderSharedPref = TaskListOrderSharedPref(requireContext())
 
         setupObserver()
 
@@ -103,8 +109,10 @@ class AddFragment : Fragment() {
             }
 
             addViewModel?.addTask(
-            title = title.toString(),
-            content = content.toString())
+                title.toString(),
+                content.toString(),
+                requireContext()
+            )
 
             Toast.makeText(context, getString(R.string.task_created), Toast.LENGTH_SHORT).show()
 

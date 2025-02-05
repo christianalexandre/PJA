@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity() {
         setupFragments()
         setupListeners()
 
+        getSharedPreferences("ToDoPref", Context.MODE_PRIVATE).edit().apply {
+            putString("oi", "oi")
+        }.apply()
+
     }
 
     override fun onResume() {

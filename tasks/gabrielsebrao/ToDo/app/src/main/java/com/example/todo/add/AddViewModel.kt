@@ -12,6 +12,8 @@ import com.example.todo.TaskSingleton
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
+import com.example.todo.sharedpref.CurrentTaskIdSharedPref
+import com.example.todo.sharedpref.TaskListOrderSharedPref
 import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
@@ -28,16 +30,23 @@ class AddViewModel: ViewModel() {
         this.taskDao = taskDao
     }
 
-    fun addTask(title: String, content: String): Disposable? {
+    fun addTask(title: String, content: String, context: Context): Disposable? {
 
+        val taskIdSharedPref = CurrentTaskIdSharedPref(context)
+        val idList = TaskListOrderSharedPref(context)
         val task: Task?
 
         try {
-            task = Task(null, title, content)
+            task = Task(taskIdSharedPref.nextTaskId, title, content)
         } catch(error: Exception) {
             Log.e("ROOM_DEBUG", "ADD TASK: ${error.message}")
             return null
         }
+
+        if(idList.list == null)
+            idList.saveList(mutableListOf(taskIdSharedPref.nextTaskId))
+        else
+            idList.addId(taskIdSharedPref.nextTaskId)
 
         return taskDao?.insertAll(task)
             ?.subscribeOn(Schedulers.newThread())
@@ -45,7 +54,10 @@ class AddViewModel: ViewModel() {
             ?.subscribe({
 
                 Log.d("RX_DEBUG", "ADD TASK: OK")
+                Log.d("RX_DEBUG", "LIST FROM SHARED PREF: ${idList.list}")
+                Log.d("RX_DEBUG", "CURRENT TASK ID: ${taskIdSharedPref.nextTaskId}")
 
+                taskIdSharedPref.incrementCurrentTaskId()
                 TaskSingleton.newTask = task
                 TaskSingleton.taskList?.add(0, task)
 
