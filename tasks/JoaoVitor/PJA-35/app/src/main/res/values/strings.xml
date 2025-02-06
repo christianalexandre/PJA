@@ -13,4 +13,8 @@
     <string name="insert_anotation">Insira uma anotação</string>
     <string name="save_success">Salvo com sucesso!</string>
     <string name="save_unsuccess">Máximo de caracteres de título !</string>
+    <string name="text_title_dialog">Tarefa concluída</string>
+    <string name="button1_dialog">APAGAR</string>
+    <string name="button2_dialog">ARQUIVAR</string>
+    <string name="atention">ATENÇÃO</string>
 </resources>

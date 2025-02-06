@@ -13,7 +13,7 @@ class AddViewModel(private val taskDao: TaskDao) : ViewModel() {
 
     private val disposables = CompositeDisposable()
 
-    // LiveData para observar as tarefas no banco
+    // LiveData para observar as tarefas no banco nao arquivadas
     val todosLiveData: LiveData<List<Task>> = taskDao.getAllTasksLiveData()
 
     // Inserir uma nova tarefa

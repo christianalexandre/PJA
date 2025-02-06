@@ -27,4 +27,12 @@ interface TaskDao {
     // Obter todas as tarefas como LiveData
     @Query("SELECT * FROM task_table ORDER BY id ASC")
     fun getAllTasksLiveData(): LiveData<List<Task>>
+
+    // Obtém apenas as tarefas ativas (não arquivadas)
+    @Query("SELECT * FROM task_table WHERE isArchived = 0 ORDER BY id ASC")
+    fun getActiveTasksLiveData(): LiveData<List<Task>>
+
+    // Obtém apenas as tarefas arquivadas
+    @Query("SELECT * FROM task_table WHERE isArchived = 1 ORDER BY id ASC")
+    fun getArchivedTasksLiveData(): LiveData<List<Task>>
 }

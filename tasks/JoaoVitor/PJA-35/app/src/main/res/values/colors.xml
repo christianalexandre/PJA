@@ -16,5 +16,6 @@
     <color name="gray_hard">#505050</color>
     <color name="red_error">#F70000</color>
     <color name="green">#53c960</color>
+    <color name="gray_00">#989A91</color>
 
 </resources>

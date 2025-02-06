@@ -40,22 +40,27 @@ class HomeFragment : Fragment() {
 
     private fun setupHomeViewModel() {
         val factory = HomeViewModelFactory(database.taskDao())
-        homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
         // Observar mudanças na lista de tarefas
         homeViewModel.tasksLiveData.observe(viewLifecycleOwner, Observer { tasks ->
-            taskAdapter.updateTasks(tasks)
+            taskAdapter.updateTasks(tasks.toMutableList())
         })
     }
 
     private fun setupRecyclerView() {
-        taskAdapter = TaskAdapter(emptyList())
+        taskAdapter = TaskAdapter(mutableListOf(),
+            onDeleteTask = { task -> homeViewModel.deleteTask(task) },
+            onArchiveTask = { task -> homeViewModel.archiveTask(task) }
+        )
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskAdapter
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
