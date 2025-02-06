@@ -24,9 +24,12 @@ interface TaskDao {
     fun delete(task: Task): Completable
 
     @Query("UPDATE task SET title = :title WHERE id = :id")
-    fun changeTitleById(title: String, id: Int): Completable
+    fun changeTitleById(id: Int, title: String): Completable
 
     @Query("UPDATE task SET content = :content WHERE id = :id")
-    fun changeContentById(content: String, id: Int): Completable
+    fun changeContentById(id: Int, content: String): Completable
+
+    @Query("UPDATE task SET isArchived = :isArchived WHERE id = :id")
+    fun changeIsArchivedById(id: Int, isArchived: Boolean)
 
 }

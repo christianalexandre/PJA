@@ -21,4 +21,8 @@
     <string name="alt_icon_check">Ícone para confirmar a tarefa.</string>
     <string name="alt_icon_archived">Ícone de tarefas arquivadas.</string>
     <string name="default_archived_message">Nenhuma tarefa arquivada.</string>
+    <string name="dialog_title">Você deseja:</string>
+    <string name="alt_icon_delete">Ícone de deletar.</string>
+    <string name="archive_button_text">Marcar como concluída e arquivar</string>
+    <string name="delete_button_text">Marcar como concluída e apagar</string>
 </resources>

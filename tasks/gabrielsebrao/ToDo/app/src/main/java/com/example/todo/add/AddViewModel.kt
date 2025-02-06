@@ -35,7 +35,7 @@ class AddViewModel: ViewModel() {
         val task: Task?
 
         try {
-            task = Task(toDoSharedPref.nextTaskId, title, content)
+            task = Task(toDoSharedPref.nextTaskId, title, content, false)
         } catch(error: Exception) {
             Log.e("ROOM_DEBUG", "ADD TASK: ${error.message}")
             return null
