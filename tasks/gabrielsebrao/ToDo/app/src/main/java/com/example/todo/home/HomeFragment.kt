@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
         val helper = androidx.recyclerview.widget.ItemTouchHelper(ItemTouchHelper(
             androidx.recyclerview.widget.ItemTouchHelper.UP or
                     androidx.recyclerview.widget.ItemTouchHelper.DOWN,
-            androidx.recyclerview.widget.ItemTouchHelper.LEFT
+            0
         ))
 
         helper.attachToRecyclerView(binding?.recyclerViewTasks)
