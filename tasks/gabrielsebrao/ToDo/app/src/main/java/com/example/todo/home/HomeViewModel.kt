@@ -39,30 +39,4 @@ class HomeViewModel: ViewModel() {
 
     }
 
-    fun changeTitleTaskById(title: String, id: Int): Disposable? {
-
-        return taskDao?.changeTitleById(title, id)
-            ?.subscribeOn(Schedulers.newThread())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({
-                Log.d("RX_DEBUG", "CHANGE TITLE TASK BY ID: OK")
-            }, { error ->
-                Log.e("RX_DEBUG", "CHANGE TITLE TASK BY ID: ${error.message}")
-            })
-
-    }
-
-    fun changeContentTaskById(content: String, id: Int): Disposable? {
-
-        return taskDao?.changeContentById(content, id)
-            ?.subscribeOn(Schedulers.newThread())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({
-                Log.e("RX_DEBUG", "CHANGE CONTENT TASK BY ID: OK")
-            }, { error ->
-                Log.e("RX_DEBUG", "CHANGE CONTENT TASK BY ID: ${error.message}")
-            })
-
-    }
-
 }

@@ -6,7 +6,6 @@ import com.example.todo.room.TaskDao
 
 class ArchivedViewModel: ViewModel() {
 
-    private var db: DataBase? = null
     private var taskDao: TaskDao? = null
 
     fun taskDao(taskDao: TaskDao?) = apply {

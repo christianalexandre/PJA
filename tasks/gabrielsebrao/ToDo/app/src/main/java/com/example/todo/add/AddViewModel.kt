@@ -12,8 +12,7 @@ import com.example.todo.TaskSingleton
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
-import com.example.todo.sharedpref.CurrentTaskIdSharedPref
-import com.example.todo.sharedpref.TaskListOrderSharedPref
+import com.example.todo.sharedpref.ToDoSharedPref
 import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
@@ -32,21 +31,20 @@ class AddViewModel: ViewModel() {
 
     fun addTask(title: String, content: String, context: Context): Disposable? {
 
-        val taskIdSharedPref = CurrentTaskIdSharedPref(context)
-        val idList = TaskListOrderSharedPref(context)
+        val toDoSharedPref = ToDoSharedPref.getInstance(context) ?: return null
         val task: Task?
 
         try {
-            task = Task(taskIdSharedPref.nextTaskId, title, content)
+            task = Task(toDoSharedPref.nextTaskId, title, content)
         } catch(error: Exception) {
             Log.e("ROOM_DEBUG", "ADD TASK: ${error.message}")
             return null
         }
 
-        if(idList.list == null)
-            idList.saveList(mutableListOf(taskIdSharedPref.nextTaskId))
+        if(toDoSharedPref.idList == null)
+            toDoSharedPref.saveList(mutableListOf(toDoSharedPref.nextTaskId))
         else
-            idList.addId(taskIdSharedPref.nextTaskId)
+            toDoSharedPref.addIdToList(toDoSharedPref.nextTaskId)
 
         return taskDao?.insertAll(task)
             ?.subscribeOn(Schedulers.newThread())
@@ -54,10 +52,10 @@ class AddViewModel: ViewModel() {
             ?.subscribe({
 
                 Log.d("RX_DEBUG", "ADD TASK: OK")
-                Log.d("RX_DEBUG", "LIST FROM SHARED PREF: ${idList.list}")
-                Log.d("RX_DEBUG", "CURRENT TASK ID: ${taskIdSharedPref.nextTaskId}")
+                Log.d("RX_DEBUG", "LIST FROM SHARED PREF: ${toDoSharedPref.idList}")
+                Log.d("RX_DEBUG", "CURRENT TASK ID: ${toDoSharedPref.nextTaskId}")
 
-                taskIdSharedPref.incrementCurrentTaskId()
+                toDoSharedPref.incrementCurrentTaskId()
                 TaskSingleton.newTask = task
                 TaskSingleton.taskList?.add(0, task)
 
@@ -135,7 +133,7 @@ class AddViewModel: ViewModel() {
 
     }
 
-    fun disableErrorTaskTitle(inputLayout: TextInputLayout?, context: Context): TextWatcher {
+    fun disableErrorTaskTitle(inputLayout: TextInputLayout?): TextWatcher {
 
         return object : TextWatcher {
 
@@ -150,15 +148,6 @@ class AddViewModel: ViewModel() {
             override fun afterTextChanged(s: Editable?) {}
 
         }
-
-    }
-
-    fun filterTaskContent(editText: EditText?) {
-
-        if(editText == null)
-            return
-
-        editText.filters = arrayOf(InputFilter.LengthFilter(300))
 
     }
 

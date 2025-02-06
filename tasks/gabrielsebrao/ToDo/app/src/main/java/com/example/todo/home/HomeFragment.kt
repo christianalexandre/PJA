@@ -16,7 +16,7 @@ import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
-import com.example.todo.sharedpref.TaskListOrderSharedPref
+import com.example.todo.sharedpref.ToDoSharedPref
 import java.util.Collections
 
 class HomeFragment : Fragment() {
@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
     private var taskAdapter: TaskAdapter? = null
-    private var taskListOrderSharedPref: TaskListOrderSharedPref? = null
+    private var toDoSharedPref: ToDoSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
         taskDao = db?.taskDao()
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
             .taskDao(taskDao)
-        taskListOrderSharedPref = TaskListOrderSharedPref(requireContext())
+        toDoSharedPref = ToDoSharedPref.getInstance(context)
 
         setupObservers()
 
@@ -53,9 +53,9 @@ class HomeFragment : Fragment() {
 
             val list: MutableList<Int> = emptyList<Int>().toMutableList()
             TaskSingleton.taskList?.map { list.add(it.id ?: 0) }
-            taskListOrderSharedPref?.saveList(list)
+            toDoSharedPref?.saveList(list)
 
-            Log.d("SHARED_PREF", "TASK ID LIST: ${taskListOrderSharedPref?.list}")
+            Log.d("SHARED_PREF", "TASK ID LIST: ${toDoSharedPref?.idList}")
 
             return true
         }
@@ -102,7 +102,7 @@ class HomeFragment : Fragment() {
                 return@observe
 
             TaskSingleton.taskList = TaskSingleton.taskList?.sortedBy { task ->
-                taskListOrderSharedPref?.list?.indexOf(task.id)
+                toDoSharedPref?.idList?.indexOf(task.id)
             }?.toMutableList()
 
             if(taskAdapter == null) {
@@ -115,7 +115,7 @@ class HomeFragment : Fragment() {
 
             homeViewModel?.isSuccess?.value = false
 
-            if(TaskSingleton.taskList?.isEmpty() == true) {
+            if(taskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
             }
@@ -141,15 +141,5 @@ class HomeFragment : Fragment() {
         binding?.errorNullTaskList?.visibility = View.GONE
 
     }
-
-    private fun treatNullableTaskList() {
-
-        binding?.errorNullTaskList?.visibility = View.VISIBLE
-        binding?.defaultHomeEmptyTaskList?.visibility = View.GONE
-        binding?.recyclerViewTasks?.visibility = View.GONE
-
-    }
-
-    fun getAllTasks() = homeViewModel?.getAllTasks()
 
 }
