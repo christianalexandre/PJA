@@ -15,7 +15,7 @@
         app:cardElevation="4dp"
         app:cardBackgroundColor="@color/gray"
         app:strokeColor="@color/orange_01"
-        app:strokeWidth="1dp"
+        app:strokeWidth="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints">
@@ -34,7 +34,6 @@
                 android:layoutDirection="ltr"
                 android:layout_marginTop="8dp">
 
-
                 <TextView
                     android:id="@+id/titleTextView"
                     android:layout_width="0dp"
@@ -46,12 +45,14 @@
                     android:maxLines="1"
                     android:ellipsize="end" />
 
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/checkBox"
+                <ImageButton
+                    android:id="@+id/checkButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/ic_check_circle"
                     android:layout_marginStart="8dp"
-                    app:buttonTint="@color/orange_01" />
+                    android:backgroundTint="@color/off_white" />
+
             </LinearLayout>
 
             <TextView
@@ -60,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/off_white"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"/>
 
         </LinearLayout>

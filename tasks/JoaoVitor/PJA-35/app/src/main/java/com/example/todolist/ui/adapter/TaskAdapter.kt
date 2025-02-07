@@ -3,13 +3,13 @@ package com.example.todolist.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.home.CustomDialogFragment
-import com.google.android.material.checkbox.MaterialCheckBox
 
 class TaskAdapter(
     private var tasks: MutableList<Task>,
@@ -69,14 +69,13 @@ class TaskAdapter(
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         private val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
-        private val checkBox: MaterialCheckBox? = itemView.findViewById(R.id.checkBox)
+        private val checkButton: ImageButton? = itemView.findViewById(R.id.checkButton)
 
         fun bind(task: Task, position: Int) {
             titleTextView.text = task.title
             descriptionTextView.text = task.description
 
-            checkBox?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
+            checkButton?.setOnClickListener {
                     val activity = itemView.context as? AppCompatActivity
                     activity?.let {
                         CustomDialogFragment(
@@ -84,8 +83,6 @@ class TaskAdapter(
                             onArchive = { archiveTask(position, task) }
                         ).show(it.supportFragmentManager, "CustomDialogFragment")
                     }
-                    checkBox.isChecked = false
-                }
             }
         }
     }
