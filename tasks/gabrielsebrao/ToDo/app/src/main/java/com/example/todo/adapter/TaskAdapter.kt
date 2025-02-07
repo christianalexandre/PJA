@@ -1,9 +1,12 @@
 package com.example.todo.adapter
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.room.Task
@@ -36,6 +39,26 @@ class TaskAdapter(val taskList: MutableList<Task>): RecyclerView.Adapter<TaskAda
 
             itemView.findViewById<TextView>(R.id.title).text = task.title
             itemView.findViewById<TextView>(R.id.content).text = task.content
+
+            setupListener()
+
+        }
+
+        private fun setupListener() {
+
+            setupCheckIconListener()
+
+        }
+
+        private fun setupCheckIconListener() {
+
+            val dialogView = LayoutInflater.from(itemView.context).inflate(R.layout.item_dialog_delete_or_archive_task, itemView.parent as ViewGroup?, false)
+            val dialog = AlertDialog.Builder(itemView.context)
+                .setCustomTitle(itemView.findViewById(R.id.titleDialog))
+                .setView(dialogView)
+                .create()
+
+            itemView.findViewById<ImageView>(R.id.icon_check).setOnClickListener { dialog.show() }
 
         }
 
