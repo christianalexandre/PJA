@@ -17,11 +17,14 @@ interface TaskDao {
     @Query("SELECT * FROM task WHERE title LIKE :title")
     fun findByTitle(title: String): Task
 
+    @Query("DELETE FROM task WHERE id = :id")
+    fun deleteTaskById(id: Int)
+
     @Insert
     fun insertAll(vararg tasks: Task): Completable
 
     @Delete
-    fun delete(task: Task): Completable
+    fun deleteTask(task: Task): Completable
 
     @Query("UPDATE task SET title = :title WHERE id = :id")
     fun changeTitleById(id: Int, title: String): Completable

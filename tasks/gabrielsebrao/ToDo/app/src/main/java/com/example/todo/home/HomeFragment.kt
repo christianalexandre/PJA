@@ -96,7 +96,7 @@ class HomeFragment : Fragment() {
 
     private fun setupObservers() {
 
-        homeViewModel?.isSuccess?.observe(this) { isSuccess ->
+        homeViewModel?.isGetAllTasksSuccess?.observe(this) { isSuccess ->
 
             if(!isSuccess)
                 return@observe
@@ -106,14 +106,14 @@ class HomeFragment : Fragment() {
             }?.toMutableList()
 
             if(taskAdapter == null) {
-                taskAdapter = TaskAdapter(TaskSingleton.taskList ?: emptyList<Task>().toMutableList())
+                taskAdapter = TaskAdapter(TaskSingleton.taskList ?: emptyList<Task>().toMutableList(), homeViewModel)
                 binding?.recyclerViewTasks?.adapter = taskAdapter
                 binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
             }
 
             Log.e("ROOM_DEBUG", "${TaskSingleton.taskList}")
 
-            homeViewModel?.isSuccess?.value = false
+            homeViewModel?.isGetAllTasksSuccess?.value = false
 
             if(taskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
@@ -121,6 +121,23 @@ class HomeFragment : Fragment() {
             }
 
             displayRecyclerViewScreen()
+
+        }
+
+        homeViewModel?.isDeleteTaskSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            TaskSingleton.taskList?.remove(TaskSingleton.taskList?.find { it.id == TaskSingleton.deletedTaskId })
+            taskAdapter?.notifyItemRemoved(toDoSharedPref?.idList?.find { it == TaskSingleton.deletedTaskId } ?: 0)
+
+            homeViewModel?.isDeleteTaskSuccess?.value = false
+
+            if(taskAdapter?.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
 
         }
 

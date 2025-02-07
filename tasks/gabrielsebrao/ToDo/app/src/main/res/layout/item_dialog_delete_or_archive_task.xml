@@ -20,6 +20,7 @@
         android:textSize="18sp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/button_delete_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/gray"
@@ -52,6 +53,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/button_archive_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/gray"
