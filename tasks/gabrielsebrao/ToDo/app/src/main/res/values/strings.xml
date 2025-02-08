@@ -4,4 +4,21 @@
     <string name="archived">Arquivados</string>
     <string name="add">Adicionar</string>
     <string name="title_activity_main" translatable="false">MainActivity</string>
+    <string name="add_task">Adição de Card</string>
+    <string name="save">Salvar</string>
+    <string name="title">Título</string>
+    <string name="content">Anotação</string>
+    <string name="default_error_title">Não era para você ter lido isso.</string>
+    <string name="default_error_content">Caso esteja lendo isso, é porque de alguma forma errei.</string>
+    <string name="task_created">Tarefa criada</string>
+    <string name="error_add_title">Adicione um título.</string>
+    <string name="default_title">Título</string>
+    <string name="default_content">That\'s the content!</string>
+    <string name="default_title_home">Tarefas</string>
+    <string name="alt_icon_add">Ícone do símbolo de adição.</string>
+    <string name="default_add_message">Crie uma tarefa na aba Adicionar!</string>
+    <string name="default_add_error_message">Algum imprevisto aconteceu! Tente novamente.</string>
+    <string name="alt_icon_check">Ícone para confirmar a tarefa.</string>
+    <string name="alt_icon_archived">Ícone de tarefas arquivadas.</string>
+    <string name="default_archived_message">Nenhuma tarefa arquivada.</string>
 </resources>
