@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name" translatable="false">ToDo</string>
+    <string name="home" translatable="false">Home</string>
+    <string name="archived">Arquivados</string>
+    <string name="add">Adicionar</string>
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+</resources>
