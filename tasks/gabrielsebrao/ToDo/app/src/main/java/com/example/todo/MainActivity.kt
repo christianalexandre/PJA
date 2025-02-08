@@ -5,9 +5,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.todo.databinding.ActivityMainBinding
 
+private const val HOME_FRAGMENT = "home_fragment"
+private const val ARCHIVED_FRAGMENT = "archived_fragment"
+private const val ADD_FRAGMENT = "add_fragment"
+
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
+    private var homeFragment: Fragment? = null
+    private var archivedFragment: Fragment? = null
+    private var addFragment: Fragment? = null
+    private var fragmentMap: Map<String, String>? = null
+    private var currentFragmentTag: String = HOME_FRAGMENT
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -15,7 +24,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        replaceFragment(HomeFragment())
+        homeFragment = HomeFragment()
+        archivedFragment = ArchivedFragment()
+        addFragment = AddFragment()
+
+        fragmentMap = mapOf(
+            Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
+            Pair(archivedFragment?.javaClass.toString(), ARCHIVED_FRAGMENT),
+            Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
+        )
+
+        addFragment(addFragment, ADD_FRAGMENT)
+        addFragment(archivedFragment, ARCHIVED_FRAGMENT)
+        addFragment(homeFragment, HOME_FRAGMENT)
+
+        hideFragment(addFragment)
+        hideFragment(archivedFragment)
 
         setupListeners()
 
@@ -29,23 +53,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationViewListeners() {
 
+        var fragment: Fragment?
+
         binding?.bottomNavigationView?.setOnItemSelectedListener { item ->
 
-            when(item.itemId) {
+            hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
 
-                R.id.home -> {
-                    replaceFragment(HomeFragment())
-                }
+            fragment = when(item.itemId) {
 
-                R.id.archived -> {
-                    replaceFragment(ArchivedFragment())
-                }
+                R.id.home -> homeFragment
 
-                R.id.add -> {
-                    replaceFragment(AddFragment())
-                }
+                R.id.archived -> archivedFragment
 
+                R.id.add -> addFragment
+
+                else -> null
             }
+
+            showFragment(fragment)
+            currentFragmentTag = fragmentMap?.get(fragment?.javaClass.toString()) ?: currentFragmentTag
 
             true
 
@@ -53,12 +79,40 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun addFragment(fragment: Fragment?, fragmentTag: String) {
+
+        if(fragment == null)
+            return
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.frame_layout, fragment)
+            .add(R.id.frame_layout, fragment, fragmentTag)
             .commit()
 
     }
+
+    private fun showFragment(fragment: Fragment?) {
+
+        if(fragment == null)
+            return
+
+        supportFragmentManager
+            .beginTransaction()
+            .show(fragment)
+            .commit()
+
+    }
+
+    private fun hideFragment(fragment: Fragment?) {
+
+        if(fragment == null)
+            return
+
+        supportFragmentManager
+            .beginTransaction()
+            .hide(fragment)
+            .commit()
+
+    }
+
 }
