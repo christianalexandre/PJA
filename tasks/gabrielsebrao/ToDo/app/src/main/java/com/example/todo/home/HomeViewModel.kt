@@ -16,6 +16,7 @@ class HomeViewModel: ViewModel() {
     private var taskDao: TaskDao? = null
     var isGetAllTasksSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
     var isDeleteTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isArchiveTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun taskDao(taskDao: TaskDao?) = apply {
         this.taskDao = taskDao
@@ -60,6 +61,25 @@ class HomeViewModel: ViewModel() {
 
             }, { error ->
                 Log.e("RX_DEBUG", "DELETE TASK: ${error.message}")
+            })
+
+    }
+
+    fun archiveTask(task: Task): Disposable {
+
+        return Single.create { emitter ->
+            emitter.onSuccess(taskDao?.changeIsArchivedById(task.id, true) ?: emitter.onError(NullPointerException()))
+        }
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                Log.d("RX_DEBUG", "ARCHIVE TASK: OK")
+                task.isArchived = true
+                isArchiveTaskSuccess.postValue(true)
+
+            }, { error ->
+                Log.e("RX_DEBUG", "ARCHIVE TASK: ${error.message}")
             })
 
     }

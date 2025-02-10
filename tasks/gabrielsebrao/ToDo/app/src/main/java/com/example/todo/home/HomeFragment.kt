@@ -141,6 +141,22 @@ class HomeFragment : Fragment() {
 
         }
 
+        var archivedTask: Task
+        var archivedItemIndex: Int
+
+        homeViewModel?.isArchiveTaskSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            archivedTask = TaskSingleton.openTaskList?.find { it.isArchived } ?: return@observe
+            archivedItemIndex = TaskSingleton.openTaskList?.indexOf(archivedTask) ?: return@observe
+
+            TaskSingleton.openTaskList?.remove(archivedTask)
+            taskAdapter?.notifyItemRemoved(archivedItemIndex)
+
+        }
+
     }
 
     private fun displayRecyclerViewScreen() {

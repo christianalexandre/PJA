@@ -54,6 +54,7 @@ class TaskAdapter(val taskList: MutableList<Task>, val homeViewModel: HomeViewMo
 
             setupCheckIconListener()
             setupDeleteTaskButton()
+            setupArchiveTaskButton()
 
         }
 
@@ -74,7 +75,18 @@ class TaskAdapter(val taskList: MutableList<Task>, val homeViewModel: HomeViewMo
 
             dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
 
-                homeViewModel?.deleteTask(task ?: Task(0, "error", "error", false))
+                homeViewModel?.deleteTask(task ?: return@setOnClickListener)
+                dialog?.hide()
+
+            }
+
+        }
+
+        private fun setupArchiveTaskButton() {
+
+            dialogView?.findViewById<View>(R.id.button_archive_task)?.setOnClickListener {
+
+                homeViewModel?.archiveTask(task ?: return@setOnClickListener)
                 dialog?.hide()
 
             }
