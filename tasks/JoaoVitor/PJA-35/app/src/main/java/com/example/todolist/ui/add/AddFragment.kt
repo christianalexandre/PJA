@@ -136,7 +136,7 @@ class AddFragment : Fragment() {
 
         val rootLayout: View = view.findViewById(R.id.fragmentXmlAdd)
 
-        rootLayout.setOnTouchListener { v, event ->
+        rootLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val focusedView = requireActivity().currentFocus
                 if (focusedView is EditText) {

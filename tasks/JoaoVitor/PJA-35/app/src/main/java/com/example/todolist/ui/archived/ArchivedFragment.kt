@@ -48,7 +48,9 @@ class ArchivedFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        taskAdapter = TaskAdapter(mutableListOf(), {}, {}) // Arquivadas não precisam de ações
+        taskAdapter = TaskAdapter(mutableListOf(),
+            onDeleteTask = { task -> archivedViewModel.deleteTask(task) }, {},
+            onUnarchiveTask = { task -> archivedViewModel.unarchiveTask(task) })
 
         binding.recyclerViewFromArchived.apply {
             layoutManager = LinearLayoutManager(requireContext())

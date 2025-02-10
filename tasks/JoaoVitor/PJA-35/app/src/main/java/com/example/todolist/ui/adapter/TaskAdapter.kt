@@ -1,5 +1,6 @@
 package com.example.todolist.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
+import com.example.todolist.ui.archived.CustomDialogArchivedFragment
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.home.CustomDialogFragment
 
 class TaskAdapter(
     private var tasks: MutableList<Task>,
     private val onDeleteTask: (Task) -> Unit,
-    private val onArchiveTask: (Task) -> Unit
+    private val onArchiveTask: (Task) -> Unit,
+    private val onUnarchiveTask: (Task) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -44,6 +47,7 @@ class TaskAdapter(
 
     override fun getItemCount(): Int = tasks.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateTasks(newTasks: List<Task>) {
         tasks.clear()
         tasks.addAll(newTasks)
@@ -62,27 +66,48 @@ class TaskAdapter(
         if (position in tasks.indices) {
             tasks.removeAt(position)
             notifyItemRemoved(position)
+            task.isArchived = true
             onArchiveTask(task)
+        }
+    }
+
+    private fun unarchiveTask(position: Int, task: Task) {
+        if (position in tasks.indices) {
+            tasks.removeAt(position)
+            notifyItemRemoved(position)
+            task.isArchived = false
+            onUnarchiveTask(task)
         }
     }
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         private val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
-        private val checkButton: ImageButton? = itemView.findViewById(R.id.checkButton)
+        private val checkButtonHome: ImageButton? = itemView.findViewById(R.id.checkButton)
+        private val unCheckButtonArchived: ImageButton? = itemView.findViewById(R.id.buttonFromItemArchived)
 
         fun bind(task: Task, position: Int) {
             titleTextView.text = task.title
             descriptionTextView.text = task.description
 
-            checkButton?.setOnClickListener {
-                    val activity = itemView.context as? AppCompatActivity
-                    activity?.let {
-                        CustomDialogFragment(
-                            onDelete = { removeTask(position, task) },
-                            onArchive = { archiveTask(position, task) }
-                        ).show(it.supportFragmentManager, "CustomDialogFragment")
-                    }
+            checkButtonHome?.setOnClickListener {
+                val activity = itemView.context as? AppCompatActivity
+                activity?.let {
+                    CustomDialogFragment(
+                        onDelete = { removeTask(position, task) },
+                        onArchive = { archiveTask(position, task) }
+                    ).show(it.supportFragmentManager, "CustomDialogFragment")
+                }
+            }
+
+            unCheckButtonArchived?.setOnClickListener {
+                val activity = itemView.context as? AppCompatActivity
+                activity?.let {
+                    CustomDialogArchivedFragment(
+                        onDelete = { removeTask(position, task) },
+                        onUnarchive = { unarchiveTask(position, task) }
+                    ).show(it.supportFragmentManager, "CustomDialogArchivedFragment")
+                }
             }
         }
     }

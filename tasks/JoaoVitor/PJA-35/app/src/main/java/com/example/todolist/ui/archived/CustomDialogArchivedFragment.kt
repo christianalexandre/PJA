@@ -1,4 +1,4 @@
-package com.example.todolist.ui.home
+package com.example.todolist.ui.archived
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -10,19 +10,19 @@ import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.todolist.R
 
-class CustomDialogFragment(
+class CustomDialogArchivedFragment (
     private val onDelete: () -> Unit,
-    private val onArchive: () -> Unit
+    private val onUnarchive: () -> Unit
 ) : DialogFragment() {
     @SuppressLint("UseGetLayoutInflater")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
 
         val inflater = LayoutInflater.from(requireContext())
-        val view = inflater.inflate(R.layout.custom_dialog, null)
+        val view = inflater.inflate(R.layout.custom_dialog_archived, null)
 
         val buttonDelete = view.findViewById<Button>(R.id.buttonDelete)
-        val buttonArchive = view.findViewById<Button>(R.id.buttonArchive)
+        val buttonArchive = view.findViewById<Button>(R.id.buttonUnarchive)
 
         buttonDelete.setOnClickListener {
             onDelete.invoke()
@@ -31,9 +31,9 @@ class CustomDialogFragment(
 
         buttonArchive.setOnClickListener {
             val viewPager = requireActivity().findViewById<ViewPager2>(R.id.vp)
-            viewPager.currentItem = 1
+            viewPager.currentItem = 0
 
-            onArchive.invoke()
+            onUnarchive.invoke()
             dismiss()
         }
 
@@ -41,5 +41,3 @@ class CustomDialogFragment(
         return builder.create()
     }
 }
-
-

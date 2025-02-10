@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         taskAdapter = TaskAdapter(mutableListOf(),
             onDeleteTask = { task -> homeViewModel.deleteTask(task) },
-            onArchiveTask = { task -> homeViewModel.archiveTask(task) }
+            onArchiveTask = { task -> homeViewModel.archiveTask(task) }, {}
         )
 
         binding.recyclerView.apply {
@@ -59,8 +59,6 @@ class HomeFragment : Fragment() {
             adapter = taskAdapter
         }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
