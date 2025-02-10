@@ -1,13 +1,10 @@
 package com.example.todolist.ui.archived
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.todolist.ui.database.dao.TaskDao
+import com.example.todolist.ui.database.model.Task
 
-class ArchivedViewModel : ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is archived Fragment"
-    }
-    val text: LiveData<String> = _text
+class ArchivedViewModel(private val taskDao: TaskDao) : ViewModel() {
+    val archivedTasksLiveData: LiveData<List<Task>> = taskDao.getArchivedTasksLiveData()
 }
