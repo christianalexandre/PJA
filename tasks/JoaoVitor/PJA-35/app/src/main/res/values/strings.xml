@@ -3,4 +3,14 @@
     <string name="title_home">Home</string>
     <string name="title_archived">Arquivadas</string>
     <string name="title_add">Adicionar</string>
+    <string name="title_add_card">Adição de card</string>
+    <string name="button_save_text">Salvar</string>
+    <string name="hint_title">Titulo</string>
+    <string name="anotation_title">Anotação</string>
+    <string name="delete_anotation">Apagar anotação</string>
+    <string name="insert_title_anotation">Insira um título e uma anotação</string>
+    <string name="insert_title">Insira um título</string>
+    <string name="insert_anotation">Insira uma anotação</string>
+    <string name="save_success">Salvo com sucesso!</string>
+    <string name="save_unsuccess">Máximo de caracteres de título !</string>
 </resources>
