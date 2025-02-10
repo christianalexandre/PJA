@@ -57,9 +57,9 @@ class AddViewModel: ViewModel() {
 
                 toDoSharedPref.incrementCurrentTaskId()
                 TaskSingleton.newTask = task
-                TaskSingleton.taskList?.add(0, task)
+                TaskSingleton.openTaskList?.add(0, task)
 
-                Log.d("RX_DEBUG", "${TaskSingleton.taskList}")
+                Log.d("RX_DEBUG", "${TaskSingleton.openTaskList}")
 
                 isSuccess.postValue(true)
 

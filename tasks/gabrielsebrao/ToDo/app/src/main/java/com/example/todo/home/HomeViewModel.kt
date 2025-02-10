@@ -28,11 +28,13 @@ class HomeViewModel: ViewModel() {
         }
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            .subscribe({ taskList ->
 
                 Log.d("RX_DEBUG", "GET ALL TASK: OK")
 
-                TaskSingleton.taskList = it.toMutableList()
+                TaskSingleton.openTaskList = taskList.filter { !it.isArchived }.toMutableList()
+                TaskSingleton.archivedTaskList = taskList.filter { it.isArchived }.toMutableList()
+
                 isGetAllTasksSuccess.postValue(true)
 
             }, { error ->

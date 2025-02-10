@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
             taskAdapter?.notifyItemMoved(from, to)
 
             val list: MutableList<Int> = emptyList<Int>().toMutableList()
-            TaskSingleton.taskList?.map { list.add(it.id ?: 0) }
+            TaskSingleton.openTaskList?.map { list.add(it.id ?: 0) }
             toDoSharedPref?.saveList(list)
 
             Log.d("SHARED_PREF", "TASK ID LIST: ${toDoSharedPref?.idList}")
@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
 
     fun onShown() {
 
-        if((TaskSingleton.taskList?.size ?: return) > 0)
+        if((TaskSingleton.openTaskList?.size ?: return) > 0)
             displayRecyclerViewScreen()
 
         taskAdapter?.addNewTask(TaskSingleton.newTask)
@@ -101,17 +101,17 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            TaskSingleton.taskList = TaskSingleton.taskList?.sortedBy { task ->
+            TaskSingleton.openTaskList = TaskSingleton.openTaskList?.sortedBy { task ->
                 toDoSharedPref?.idList?.indexOf(task.id)
             }?.toMutableList()
 
             if(taskAdapter == null) {
-                taskAdapter = TaskAdapter(TaskSingleton.taskList ?: emptyList<Task>().toMutableList(), homeViewModel)
+                taskAdapter = TaskAdapter(TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(), homeViewModel)
                 binding?.recyclerViewTasks?.adapter = taskAdapter
                 binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
             }
 
-            Log.e("ROOM_DEBUG", "${TaskSingleton.taskList}")
+            Log.e("ROOM_DEBUG", "${TaskSingleton.openTaskList}")
 
             homeViewModel?.isGetAllTasksSuccess?.value = false
 
@@ -129,7 +129,7 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            TaskSingleton.taskList?.remove(TaskSingleton.taskList?.find { it.id == TaskSingleton.deletedTaskId })
+            TaskSingleton.openTaskList?.remove(TaskSingleton.openTaskList?.find { it.id == TaskSingleton.deletedTaskId })
             taskAdapter?.notifyItemRemoved(toDoSharedPref?.idList?.find { it == TaskSingleton.deletedTaskId } ?: 0)
 
             homeViewModel?.isDeleteTaskSuccess?.value = false
