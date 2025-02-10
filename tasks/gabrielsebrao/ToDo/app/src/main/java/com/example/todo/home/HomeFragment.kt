@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
             taskAdapter?.notifyItemMoved(from, to)
 
             val list: MutableList<Int> = emptyList<Int>().toMutableList()
-            TaskSingleton.openTaskList?.map { list.add(it.id ?: 0) }
+            TaskSingleton.openTaskList?.map { list.add(it.id) }
             toDoSharedPref?.saveList(list)
 
             Log.d("SHARED_PREF", "TASK ID LIST: ${toDoSharedPref?.idList}")
@@ -124,13 +124,20 @@ class HomeFragment : Fragment() {
 
         }
 
+        var removedTask: Task
+        var removedItemIndex: Int
+
         homeViewModel?.isDeleteTaskSuccess?.observe(this) { isSuccess ->
 
             if(!isSuccess)
                 return@observe
 
-            TaskSingleton.openTaskList?.remove(TaskSingleton.openTaskList?.find { it.id == TaskSingleton.deletedTaskId })
-            taskAdapter?.notifyItemRemoved(toDoSharedPref?.idList?.find { it == TaskSingleton.deletedTaskId } ?: 0)
+
+            removedTask = TaskSingleton.openTaskList?.find { it.id == TaskSingleton.deletedTaskId } ?: return@observe
+            removedItemIndex = TaskSingleton.openTaskList?.indexOf(removedTask) ?: return@observe
+
+            TaskSingleton.openTaskList?.remove(removedTask)
+            taskAdapter?.notifyItemRemoved(removedItemIndex)
 
             homeViewModel?.isDeleteTaskSuccess?.value = false
 
