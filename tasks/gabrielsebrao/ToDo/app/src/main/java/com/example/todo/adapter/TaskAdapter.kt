@@ -86,7 +86,7 @@ class TaskAdapter(val taskList: MutableList<Task>, val homeViewModel: HomeViewMo
 
             dialogView?.findViewById<View>(R.id.button_archive_task)?.setOnClickListener {
 
-                homeViewModel?.archiveTask(task ?: return@setOnClickListener)
+                homeViewModel?.archiveTask(task ?: return@setOnClickListener, itemView.context)
                 dialog?.hide()
 
             }

@@ -41,10 +41,10 @@ class AddViewModel: ViewModel() {
             return null
         }
 
-        if(toDoSharedPref.idList == null)
-            toDoSharedPref.saveList(mutableListOf(toDoSharedPref.nextTaskId))
+        if(TaskSingleton.openTaskIdList == null)
+            toDoSharedPref.saveOpenTaskIdList(mutableListOf(toDoSharedPref.nextTaskId))
         else
-            toDoSharedPref.addIdToList(toDoSharedPref.nextTaskId)
+            toDoSharedPref.addOpenTaskIdToList(toDoSharedPref.nextTaskId)
 
         return taskDao?.insertAll(task)
             ?.subscribeOn(Schedulers.newThread())
@@ -52,7 +52,7 @@ class AddViewModel: ViewModel() {
             ?.subscribe({
 
                 Log.d("RX_DEBUG", "ADD TASK: OK")
-                Log.d("RX_DEBUG", "LIST FROM SHARED PREF: ${toDoSharedPref.idList}")
+                Log.d("RX_DEBUG", "LIST FROM SHARED PREF: ${TaskSingleton.openTaskIdList}")
                 Log.d("RX_DEBUG", "CURRENT TASK ID: ${toDoSharedPref.nextTaskId}")
 
                 toDoSharedPref.incrementCurrentTaskId()
