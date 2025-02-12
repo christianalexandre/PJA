@@ -1,16 +1,19 @@
-package com.example.todo
+package com.example.todo.main
 
-import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.todo.R
 import com.example.todo.add.AddFragment
 import com.example.todo.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.home.HomeFragment
 import com.example.todo.room.DataBase
+import com.example.todo.room.TaskDao
 
 private const val HOME_FRAGMENT = "home_fragment"
 private const val ARCHIVED_FRAGMENT = "archived_fragment"
@@ -20,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
     private var db: DataBase? = null
+    private var taskDao: TaskDao? = null
+    private var mainViewModel: ViewModel? = null
     private var homeFragment: Fragment? = null
     private var archivedFragment: Fragment? = null
     private var addFragment: Fragment? = null
@@ -32,6 +37,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         db = DataBase.getInstance(this)
+        taskDao = db?.taskDao()
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+            .taskDao(taskDao)
 
         setupFragments()
         setupListeners()
@@ -50,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
             currentFocus?.let { view ->
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
                 view.clearFocus()
             }
@@ -60,8 +68,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFragments() {
 
-        homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment()
-        archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment()
+        homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment(mainViewModel as MainViewModel)
+        archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment(mainViewModel as MainViewModel)
         addFragment = supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) ?: AddFragment()
 
         if(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) == null) {

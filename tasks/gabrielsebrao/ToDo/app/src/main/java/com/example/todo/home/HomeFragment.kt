@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.TaskSingleton
 import com.example.todo.adapter.OpenTaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
+import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
 import com.example.todo.sharedpref.ToDoSharedPref
 import java.util.Collections
 
-class HomeFragment : Fragment() {
+class HomeFragment(private val mainViewModel: MainViewModel?) : Fragment() {
 
     private var binding: FragmentHomeBinding? = null
     private var homeViewModel: HomeViewModel? = null
@@ -39,7 +40,7 @@ class HomeFragment : Fragment() {
 
         setupObservers()
 
-        homeViewModel?.getAllTasks()
+        mainViewModel?.getAllTasks()
 
     }
 
@@ -56,7 +57,7 @@ class HomeFragment : Fragment() {
             0
         ))
 
-        helper.attachToRecyclerView(binding?.recyclerViewTasks)
+        helper.attachToRecyclerView(binding?.recyclerHomeViewTasks)
 
         return binding?.root
 
@@ -95,24 +96,24 @@ class HomeFragment : Fragment() {
         openTaskAdapter?.addNewTask(TaskSingleton.newTask)
         TaskSingleton.newTask = null
 
-        binding?.recyclerViewTasks?.scrollToPosition(0)
+        binding?.recyclerHomeViewTasks?.scrollToPosition(0)
 
     }
 
     private fun setupObservers() {
 
-        homeViewModel?.isGetAllTasksSuccess?.observe(this) { isSuccess ->
+        mainViewModel?.isGetAllTasksSuccess?.observe(this) { isSuccess ->
 
             if(!isSuccess)
                 return@observe
 
             if(openTaskAdapter == null) {
                 openTaskAdapter = OpenTaskAdapter(TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(), homeViewModel)
-                binding?.recyclerViewTasks?.adapter = openTaskAdapter
-                binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
+                binding?.recyclerHomeViewTasks?.adapter = openTaskAdapter
+                binding?.recyclerHomeViewTasks?.layoutManager = LinearLayoutManager(context)
             }
 
-            homeViewModel?.isGetAllTasksSuccess?.value = false
+            mainViewModel.isGetAllTasksSuccess.value = false
 
             if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
@@ -157,16 +158,14 @@ class HomeFragment : Fragment() {
     private fun displayRecyclerViewScreen() {
 
         binding?.defaultHomeEmptyTaskList?.visibility = View.GONE
-        binding?.errorNullTaskList?.visibility = View.GONE
-        binding?.recyclerViewTasks?.visibility = View.VISIBLE
+        binding?.recyclerHomeViewTasks?.visibility = View.VISIBLE
 
     }
 
     private fun displayDefaultScreen() {
 
         binding?.defaultHomeEmptyTaskList?.visibility = View.VISIBLE
-        binding?.recyclerViewTasks?.visibility = View.GONE
-        binding?.errorNullTaskList?.visibility = View.GONE
+        binding?.recyclerHomeViewTasks?.visibility = View.GONE
 
     }
 

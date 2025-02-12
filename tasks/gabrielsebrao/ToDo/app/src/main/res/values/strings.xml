@@ -25,4 +25,9 @@
     <string name="alt_icon_delete">Ícone de deletar.</string>
     <string name="archive_button_text">Marcar como concluída e arquivar</string>
     <string name="delete_button_text">Marcar como concluída e apagar</string>
+    <string name="default_button_second">Texto do segundo botão.</string>
+    <string name="default_delete_text">Texto de deletar task.</string>
+    <string name="archived_delete_button_text">Deletar essa tarefa arquivada</string>
+    <string name="archived_unarchive_button_text">Desarquivar tarefa</string>
+    <string name="alt_icon_unarchived">Ícone de desarquivar tarefas.</string>
 </resources>

@@ -10,13 +10,12 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.home.HomeViewModel
+import com.example.todo.archived.ArchivedViewModel
 import com.example.todo.room.Task
-import org.w3c.dom.Text
 
-class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel: HomeViewModel?): RecyclerView.Adapter<OpenTaskAdapter.TaskViewHolder>() {
+class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val archivedViewModel: ArchivedViewModel?): RecyclerView.Adapter<ArchivedTaskAdapter.TaskViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchivedTaskAdapter.TaskViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_card_task, parent, false)
         return TaskViewHolder(view)
     }
@@ -25,15 +24,6 @@ class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(taskList[position])
-    }
-
-    fun addNewTask(task: Task?) {
-
-        if(task == null)
-            return
-
-        notifyItemInserted(0)
-
     }
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,29 +50,30 @@ class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel
             itemView.findViewById<TextView>(R.id.title).text = task?.title
             itemView.findViewById<TextView>(R.id.content).text = task?.content
 
+            itemView.findViewById<ImageView>(R.id.icon_check)
+                ?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.green))
+
         }
 
         private fun setupDialogView() {
 
             dialogView?.findViewById<TextView>(R.id.button_delete_text)
-                ?.setText(R.string.delete_button_text)
+                ?.setText(R.string.archived_delete_button_text)
 
             dialogView?.findViewById<TextView>(R.id.button_second_text)
-                ?.setText(R.string.archive_button_text)
+                ?.setText(R.string.archived_unarchive_button_text)
 
             dialogView?.findViewById<ImageView>(R.id.icon_second)
-                ?.setImageIcon(Icon.createWithResource(itemView.context, R.drawable.icon_archive))
+                ?.setImageIcon(Icon.createWithResource(itemView.context, R.drawable.icon_unarchive))
 
             dialogView?.findViewById<ImageView>(R.id.icon_second)
-                ?.contentDescription = ContextCompat.getString(itemView.context, R.string.alt_icon_archived)
+                ?.contentDescription = ContextCompat.getString(itemView.context, R.string.alt_icon_unarchived)
 
         }
 
         private fun setupListener() {
 
             setupCheckIconListener()
-            setupDeleteTaskButton()
-            setupArchiveTaskButton()
 
         }
 
@@ -94,28 +85,6 @@ class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel
                 .create()
 
             itemView.findViewById<ImageView>(R.id.icon_check).setOnClickListener { dialog?.show() }
-
-        }
-
-        private fun setupDeleteTaskButton() {
-
-            dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
-
-                homeViewModel?.deleteTask(task ?: return@setOnClickListener, itemView.context)
-                dialog?.hide()
-
-            }
-
-        }
-
-        private fun setupArchiveTaskButton() {
-
-            dialogView?.findViewById<View>(R.id.button_second)?.setOnClickListener {
-
-                homeViewModel?.archiveTask(task ?: return@setOnClickListener, itemView.context)
-                dialog?.hide()
-
-            }
 
         }
 

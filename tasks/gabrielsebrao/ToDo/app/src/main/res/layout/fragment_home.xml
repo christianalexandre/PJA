@@ -29,7 +29,7 @@
         android:background="@color/green" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_tasks"
+        android:id="@+id/recycler_home_view_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/line_task"
@@ -63,7 +63,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/error_null_task_list"
+        android:id="@+id/default_empty_task_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tool_bar_home"

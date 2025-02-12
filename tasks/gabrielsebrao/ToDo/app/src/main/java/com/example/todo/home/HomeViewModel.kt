@@ -23,38 +23,11 @@ class HomeViewModel: ViewModel() {
     var removedItemIndex: Int = 0
     var archivedItemIndex: Int = 0
 
-    var isGetAllTasksSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
     var isDeleteTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
     var isArchiveTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun taskDao(taskDao: TaskDao?) = apply {
         this.taskDao = taskDao
-    }
-
-    fun getAllTasks(): Disposable {
-
-        return Single.create { emitter ->
-            emitter.onSuccess(taskDao?.getAll() ?: emptyList())
-        }
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ taskList ->
-
-                TaskSingleton.openTaskList = taskList.filter { !it.isArchived }.toMutableList()
-                TaskSingleton.archivedTaskList = taskList.filter { it.isArchived }.toMutableList()
-
-                TaskSingleton.openTaskList = TaskSingleton.openTaskList?.sortedBy { task ->
-                    TaskSingleton.openTaskIdList?.indexOf(task.id)
-                }?.toMutableList()
-
-                Log.e("ROOM_DEBUG", "${TaskSingleton.openTaskList}")
-                Log.d("RX_DEBUG", "GET ALL TASK: OK")
-                isGetAllTasksSuccess.postValue(true)
-
-            }, { error ->
-                Log.e("RX_DEBUG", "GET ALL TASKS: ${error.message}")
-            })
-
     }
 
     fun deleteTask(task: Task, context: Context): Disposable? {
