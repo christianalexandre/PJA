@@ -10,15 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentArchivedBinding
 import com.example.todolist.ui.adapter.TaskAdapter
-import com.example.todolist.ui.database.db.AppDatabase
+import com.example.todolist.ui.add.AddViewModelFactory
 import com.example.todolist.ui.database.instance.DatabaseInstance
+import com.example.todolist.ui.database.repository.TaskRepository
 
 class ArchivedFragment : Fragment() {
 
-    private var _binding: FragmentArchivedBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentArchivedBinding
 
-    private lateinit var database: AppDatabase
     private lateinit var archivedViewModel: ArchivedViewModel
     private lateinit var taskAdapter: TaskAdapter
 
@@ -27,10 +26,15 @@ class ArchivedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentArchivedBinding.inflate(inflater, container, false)
+        binding = FragmentArchivedBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        database = DatabaseInstance.getDatabase(requireContext())
+        val database = DatabaseInstance.getDatabase(requireContext())
+        val repository = TaskRepository(database.taskDao())
+
+        val factory = ArchivedViewModelFactory(repository)
+        archivedViewModel = ViewModelProvider(this, factory)[ArchivedViewModel::class.java]
+
 
         setupArchivedViewModel()
         setupRecyclerView()
@@ -39,9 +43,6 @@ class ArchivedFragment : Fragment() {
     }
 
     private fun setupArchivedViewModel() {
-        val factory = ArchivedViewModelFactory(database.taskDao())
-        archivedViewModel = ViewModelProvider(this, factory)[ArchivedViewModel::class.java]
-
         archivedViewModel.archivedTasksLiveData.observe(viewLifecycleOwner, Observer { tasks ->
             taskAdapter.updateTasks(tasks.toMutableList())
         })
@@ -60,7 +61,7 @@ class ArchivedFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding
     }
 }
 

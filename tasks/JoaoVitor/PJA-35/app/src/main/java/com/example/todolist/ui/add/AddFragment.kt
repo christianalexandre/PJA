@@ -18,17 +18,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.todolist.R
 import com.example.todolist.databinding.FragmentAddBinding
-import com.example.todolist.ui.database.db.AppDatabase
 import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
+import com.example.todolist.ui.database.repository.TaskRepository
 
 class AddFragment : Fragment() {
 
-    private lateinit var database: AppDatabase
     private lateinit var addViewModel: AddViewModel
 
-    private var _binding: FragmentAddBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentAddBinding
 
     private val titleText: String
         get() = binding.textFieldTitleText.text?.toString() ?: ""
@@ -47,21 +45,22 @@ class AddFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddBinding.inflate(inflater, container, false)
+        binding = FragmentAddBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        // Inicializar o banco de dados
-        database = DatabaseInstance.getDatabase(requireContext())
-
-        // Inicializar o ViewModel
-        val factory = AddViewModelFactory(database.taskDao())
-        addViewModel = ViewModelProvider(this, factory)[AddViewModel::class.java]
-
+        setupAddViewModel()
         updateButton()
         verificationChar()
-        saveTask()
+        clickSaveButton()
 
         return root
+    }
+
+    private fun setupAddViewModel() {
+        val database = DatabaseInstance.getDatabase(requireContext())
+        val repository = TaskRepository(database.taskDao())
+        val factory = AddViewModelFactory(repository)
+        addViewModel = ViewModelProvider(this, factory)[AddViewModel::class.java]
     }
 
     private fun updateButton() {
@@ -102,13 +101,13 @@ class AddFragment : Fragment() {
         }
     }
 
-    private fun saveTask() {
+    private fun clickSaveButton() {
         with(binding) {
             outlinedButton.setOnClickListener {
                 val title = textFieldTitleText.text.toString()
                 val description = textFieldAnotationText.text.toString()
                 val newTask = Task(title = title, description = description)
-                addViewModel.inserirTask(newTask)
+                addViewModel.insertTask(newTask)
                 textFieldTitleText.text?.clear()
                 textFieldAnotationText.text?.clear()
 
@@ -124,8 +123,7 @@ class AddFragment : Fragment() {
                 val viewPager = requireActivity().findViewById<ViewPager2>(R.id.vp)
                 viewPager.currentItem = 0
 
-                Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -134,9 +132,7 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rootLayout: View = view.findViewById(R.id.fragmentXmlAdd)
-
-        rootLayout.setOnTouchListener { _, event ->
+        binding.fragmentXmlAdd.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val focusedView = requireActivity().currentFocus
                 if (focusedView is EditText) {
@@ -156,6 +152,6 @@ class AddFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding
     }
 }

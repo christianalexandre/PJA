@@ -10,15 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentHomeBinding
 import com.example.todolist.ui.adapter.TaskAdapter
-import com.example.todolist.ui.database.db.AppDatabase
 import com.example.todolist.ui.database.instance.DatabaseInstance
+import com.example.todolist.ui.database.repository.TaskRepository
 
 class HomeFragment : Fragment() {
 
-    private lateinit var database: AppDatabase
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var taskAdapter: TaskAdapter
-
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
@@ -30,8 +28,6 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        database = DatabaseInstance.getDatabase(requireContext())
-
         setupHomeViewModel()
         setupRecyclerView()
 
@@ -39,10 +35,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupHomeViewModel() {
-        val factory = HomeViewModelFactory(database.taskDao())
+        val database = DatabaseInstance.getDatabase(requireContext())
+        val repository = TaskRepository(database.taskDao())
+
+        val factory = HomeViewModelFactory(repository)
         homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
-        // Observar mudanças na lista de tarefas
         homeViewModel.tasksLiveData.observe(viewLifecycleOwner, Observer { tasks ->
             taskAdapter.updateTasks(tasks.toMutableList())
         })

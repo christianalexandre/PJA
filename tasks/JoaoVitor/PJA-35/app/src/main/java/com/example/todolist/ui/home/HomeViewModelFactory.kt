@@ -2,14 +2,13 @@ package com.example.todolist.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todolist.ui.database.dao.TaskDao
+import com.example.todolist.ui.database.repository.TaskRepository
 
-class HomeViewModelFactory(private val taskDao: TaskDao) : ViewModelProvider.Factory {
+class HomeViewModelFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(taskDao) as T
+            return HomeViewModel(repository) as T
         }
-        throw IllegalArgumentException("ViewModel desconhecido")
+        throw IllegalArgumentException("ViewModel Desconhecida")
     }
 }
