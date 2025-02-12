@@ -75,7 +75,7 @@ class TaskAdapter(val taskList: MutableList<Task>, val homeViewModel: HomeViewMo
 
             dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
 
-                homeViewModel?.deleteTask(task ?: return@setOnClickListener)
+                homeViewModel?.deleteTask(task ?: return@setOnClickListener, itemView.context)
                 dialog?.hide()
 
             }

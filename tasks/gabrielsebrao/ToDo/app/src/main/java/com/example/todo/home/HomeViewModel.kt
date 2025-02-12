@@ -57,7 +57,9 @@ class HomeViewModel: ViewModel() {
 
     }
 
-    fun deleteTask(task: Task): Disposable {
+    fun deleteTask(task: Task, context: Context): Disposable? {
+
+        val toDoSharedPref = ToDoSharedPref.getInstance(context) ?: return null
 
         return Single.create { emitter ->
             emitter.onSuccess(taskDao?.deleteTaskById(task.id) ?: emitter.onError(NullPointerException()))
@@ -72,7 +74,7 @@ class HomeViewModel: ViewModel() {
                 removedItemIndex = TaskSingleton.openTaskList?.indexOf(removedTask) ?: return@subscribe
 
                 TaskSingleton.openTaskList?.remove(removedTask)
-                TaskSingleton.openTaskIdList?.remove(removedItemIndex)
+                toDoSharedPref.removeOpenTaskId(task.id)
 
                 Log.d("RX_DEBUG", "DELETE TASK: OK")
                 Log.d("ROOM_DEBUG", "TASK TO BE DELETED: $task")

@@ -119,11 +119,6 @@ class HomeFragment : Fragment() {
                 return@observe
             }
 
-            Log.d("DEBUG rapido", "LISTA OPEN TASKS: ${TaskSingleton.openTaskList}")
-            Log.d("DEBUG rapido", "LISTA DE IDS DA OPEN TASKS: ${TaskSingleton.openTaskIdList}")
-            Log.d("DEBUG rapido", "LISTA ARCHIVED TASKS: ${TaskSingleton.archivedTaskList}")
-            Log.d("DEBUG rapido", "LISTA DE IDS DA ARCHIVED TASKS: ${TaskSingleton.archivedTaskIdList}")
-
             displayRecyclerViewScreen()
 
         }
@@ -149,6 +144,11 @@ class HomeFragment : Fragment() {
                 return@observe
 
             taskAdapter?.notifyItemRemoved(homeViewModel?.archivedItemIndex ?: 0)
+
+            if(taskAdapter?.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
 
         }
 
