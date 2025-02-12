@@ -43,6 +43,9 @@ class TaskAdapter(val taskList: MutableList<Task>, val homeViewModel: HomeViewMo
 
             this.task = task
 
+            dialogView = LayoutInflater.from(itemView.context)
+                .inflate(R.layout.item_dialog_delete_or_archive_task, itemView.parent as ViewGroup?, false)
+
             itemView.findViewById<TextView>(R.id.title).text = task.title
             itemView.findViewById<TextView>(R.id.content).text = task.content
 
@@ -59,8 +62,6 @@ class TaskAdapter(val taskList: MutableList<Task>, val homeViewModel: HomeViewMo
         }
 
         private fun setupCheckIconListener() {
-
-            dialogView = LayoutInflater.from(itemView.context).inflate(R.layout.item_dialog_delete_or_archive_task, itemView.parent as ViewGroup?, false)
 
             dialog = AlertDialog.Builder(itemView.context)
                 .setCustomTitle(itemView.findViewById(R.id.titleDialog))
