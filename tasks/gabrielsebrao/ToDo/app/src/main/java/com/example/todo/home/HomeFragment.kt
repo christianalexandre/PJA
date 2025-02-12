@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.TaskSingleton
-import com.example.todo.adapter.TaskAdapter
+import com.example.todo.adapter.OpenTaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.room.DataBase
 import com.example.todo.room.Task
@@ -25,7 +25,7 @@ class HomeFragment : Fragment() {
     private var homeViewModel: HomeViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
-    private var taskAdapter: TaskAdapter? = null
+    private var openTaskAdapter: OpenTaskAdapter? = null
     private var toDoSharedPref: ToDoSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +71,8 @@ class HomeFragment : Fragment() {
             val from = viewHolder.adapterPosition
             val to = target.adapterPosition
 
-            taskAdapter?.taskList?.let { Collections.swap(it, from, to) }
-            taskAdapter?.notifyItemMoved(from, to)
+            openTaskAdapter?.taskList?.let { Collections.swap(it, from, to) }
+            openTaskAdapter?.notifyItemMoved(from, to)
 
             val list: MutableList<Int> = emptyList<Int>().toMutableList()
             TaskSingleton.openTaskList?.map { list.add(it.id) }
@@ -92,7 +92,7 @@ class HomeFragment : Fragment() {
         if((TaskSingleton.openTaskList?.size ?: return) > 0)
             displayRecyclerViewScreen()
 
-        taskAdapter?.addNewTask(TaskSingleton.newTask)
+        openTaskAdapter?.addNewTask(TaskSingleton.newTask)
         TaskSingleton.newTask = null
 
         binding?.recyclerViewTasks?.scrollToPosition(0)
@@ -106,15 +106,15 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            if(taskAdapter == null) {
-                taskAdapter = TaskAdapter(TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(), homeViewModel)
-                binding?.recyclerViewTasks?.adapter = taskAdapter
+            if(openTaskAdapter == null) {
+                openTaskAdapter = OpenTaskAdapter(TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(), homeViewModel)
+                binding?.recyclerViewTasks?.adapter = openTaskAdapter
                 binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
             }
 
             homeViewModel?.isGetAllTasksSuccess?.value = false
 
-            if(taskAdapter?.taskList?.isEmpty() == true) {
+            if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
             }
@@ -129,9 +129,9 @@ class HomeFragment : Fragment() {
                 return@observe
 
             homeViewModel?.isDeleteTaskSuccess?.value = false
-            taskAdapter?.notifyItemRemoved(homeViewModel?.removedItemIndex ?: 0)
+            openTaskAdapter?.notifyItemRemoved(homeViewModel?.removedItemIndex ?: 0)
 
-            if(taskAdapter?.taskList?.isEmpty() == true) {
+            if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
             }
@@ -143,9 +143,9 @@ class HomeFragment : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            taskAdapter?.notifyItemRemoved(homeViewModel?.archivedItemIndex ?: 0)
+            openTaskAdapter?.notifyItemRemoved(homeViewModel?.archivedItemIndex ?: 0)
 
-            if(taskAdapter?.taskList?.isEmpty() == true) {
+            if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
             }
