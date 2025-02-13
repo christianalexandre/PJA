@@ -22,7 +22,7 @@
     <Button
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_marginEnd="15dp"
-        android:id="@+id/outlinedButton"
+        android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

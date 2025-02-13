@@ -16,7 +16,6 @@ class AddViewModel(private val repository: TaskRepository) : ViewModel() {
     // LiveData para observar as tarefas no banco nao arquivadas
     val todosLiveData: LiveData<List<Task>> = repository.getAllTasksLiveData()
 
-    // Inserir uma nova tarefa
     @SuppressLint("CheckResult")
     fun insertTask(task: Task) {
         val disposable = repository.insertTask(task)

@@ -5,58 +5,75 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentArchivedBinding
+import com.example.todolist.ui.adapter.CustomDialogFragment
 import com.example.todolist.ui.adapter.TaskAdapter
-import com.example.todolist.ui.add.AddViewModelFactory
+import com.example.todolist.ui.adapter.TaskListener
 import com.example.todolist.ui.database.instance.DatabaseInstance
+import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
 
-class ArchivedFragment : Fragment() {
+class ArchivedFragment : Fragment(), TaskListener {
 
     private lateinit var binding: FragmentArchivedBinding
-
     private lateinit var archivedViewModel: ArchivedViewModel
     private lateinit var taskAdapter: TaskAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentArchivedBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
         val database = DatabaseInstance.getDatabase(requireContext())
         val repository = TaskRepository(database.taskDao())
-
         val factory = ArchivedViewModelFactory(repository)
+
         archivedViewModel = ViewModelProvider(this, factory)[ArchivedViewModel::class.java]
 
-
-        setupArchivedViewModel()
         setupRecyclerView()
+        observeViewModel()
 
-        return root
-    }
-
-    private fun setupArchivedViewModel() {
-        archivedViewModel.archivedTasksLiveData.observe(viewLifecycleOwner, Observer { tasks ->
-            taskAdapter.updateTasks(tasks.toMutableList())
-        })
+        return binding.root
     }
 
     private fun setupRecyclerView() {
-        taskAdapter = TaskAdapter(mutableListOf(),
-            onDeleteTask = { task -> archivedViewModel.deleteTask(task) }, {},
-            onUnarchiveTask = { task -> archivedViewModel.unarchiveTask(task) })
-
+        taskAdapter = TaskAdapter(mutableListOf(), this, false)
         binding.recyclerViewFromArchived.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskAdapter
         }
+    }
+
+    private fun observeViewModel() {
+        archivedViewModel.archivedTasksLiveData.observe(viewLifecycleOwner) { tasks ->
+            taskAdapter.updateTasks(tasks.toMutableList())
+        }
+    }
+
+
+    private fun showDialog(task: Task) {
+        val listener = object: CustomDialogFragment.DialogListener {
+            override fun onFirstPressed() {
+                archivedViewModel.unarchiveTask(task)
+            }
+
+            override fun onSecondPressed() {
+                archivedViewModel.deleteTask(task)
+            }
+        }
+
+        this.fragmentManager?.let {
+            CustomDialogFragment(
+                isFromHome = false,
+                listener = listener
+            ).show(it, "CustomDialogArchivedFragment")
+        }
+    }
+
+    override fun onCheckPressed(task: Task) {
+        showDialog(task)
     }
 
     override fun onDestroyView() {
@@ -64,4 +81,3 @@ class ArchivedFragment : Fragment() {
         binding
     }
 }
-

@@ -45,13 +45,15 @@
                     android:maxLines="1"
                     android:ellipsize="end" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/checkButton"
+                    android:stateListAnimator="@animator/click_animator"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/ic_check_circle"
                     android:layout_marginStart="8dp"
-                    android:backgroundTint="@color/off_white" />
+                    android:src="@drawable/ic_check_circle"
+                    android:backgroundTint="@color/off_white"
+                    android:contentDescription="checkButton" />
 
             </LinearLayout>
 

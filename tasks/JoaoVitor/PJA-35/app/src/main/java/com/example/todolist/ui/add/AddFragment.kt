@@ -21,6 +21,7 @@ import com.example.todolist.databinding.FragmentAddBinding
 import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
+import com.google.android.material.textfield.TextInputLayout
 
 class AddFragment : Fragment() {
 
@@ -66,8 +67,8 @@ class AddFragment : Fragment() {
     private fun updateButton() {
         with(binding) {
             val shouldEnableButton = isTitleValid && isAnnotationValid
-            outlinedButton.isEnabled = shouldEnableButton
-            outlinedButton.alpha = if (shouldEnableButton) 1f else 0.5f
+            saveButton.isEnabled = shouldEnableButton
+            saveButton.alpha = if (shouldEnableButton) 1f else 0.5f
         }
     }
 
@@ -75,35 +76,30 @@ class AddFragment : Fragment() {
         with(binding) {
             textFieldTitleText.doOnTextChanged { _, _, _, _ ->
                 updateButton()
-
-                textFieldTitle.setEndIconTintList(
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            if (!isTitleValid) R.color.red_error else R.color.orange_01
-                        )
-                    )
-                )
+                updateTextInputColor(textFieldTitle, isTitleValid)
             }
 
             textFieldAnotationText.doOnTextChanged { _, _, _, _ ->
                 updateButton()
-
-                textFieldAnotation.setEndIconTintList(
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            if (!isAnnotationValid) R.color.red_error else R.color.orange_01
-                        )
-                    )
-                )
+                updateTextInputColor(textFieldAnotation, isAnnotationValid)
             }
         }
     }
 
+    private fun updateTextInputColor(textInput: TextInputLayout, isValid: Boolean) {
+        textInput.setEndIconTintList(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (isValid) R.color.orange_01 else R.color.red_error
+                )
+            )
+        )
+    }
+
     private fun clickSaveButton() {
         with(binding) {
-            outlinedButton.setOnClickListener {
+            saveButton.setOnClickListener {
                 val title = textFieldTitleText.text.toString()
                 val description = textFieldAnotationText.text.toString()
                 val newTask = Task(title = title, description = description)

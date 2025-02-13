@@ -5,61 +5,78 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentHomeBinding
 import com.example.todolist.ui.adapter.TaskAdapter
+import com.example.todolist.ui.adapter.TaskListener
+import com.example.todolist.ui.adapter.CustomDialogFragment
 import com.example.todolist.ui.database.instance.DatabaseInstance
+import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), TaskListener {
 
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var taskAdapter: TaskAdapter
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root = binding.root
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        setupHomeViewModel()
-        setupRecyclerView()
-
-        return root
-    }
-
-    private fun setupHomeViewModel() {
         val database = DatabaseInstance.getDatabase(requireContext())
         val repository = TaskRepository(database.taskDao())
-
         val factory = HomeViewModelFactory(repository)
+
         homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
-        homeViewModel.tasksLiveData.observe(viewLifecycleOwner, Observer { tasks ->
-            taskAdapter.updateTasks(tasks.toMutableList())
-        })
+        setupRecyclerView()
+        observeViewModel()
+
+        return binding.root
     }
 
     private fun setupRecyclerView() {
-        taskAdapter = TaskAdapter(mutableListOf(),
-            onDeleteTask = { task -> homeViewModel.deleteTask(task) },
-            onArchiveTask = { task -> homeViewModel.archiveTask(task) }, {}
-        )
-
+        taskAdapter = TaskAdapter(mutableListOf(), this, true)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskAdapter
         }
     }
 
+    private fun observeViewModel() {
+        homeViewModel.tasksLiveData.observe(viewLifecycleOwner) { tasks ->
+            taskAdapter.updateTasks(tasks.toMutableList())
+        }
+    }
+
+    private fun showDialog(task: Task) {
+        val listener = object: CustomDialogFragment.DialogListener {
+            override fun onFirstPressed() {
+                homeViewModel.archiveTask(task)
+            }
+
+            override fun onSecondPressed() {
+                homeViewModel.deleteTask(task)
+            }
+        }
+
+        this.fragmentManager?.let {
+            CustomDialogFragment(
+                isFromHome = true,
+                listener = listener
+            ).show(it, "CustomDialogFragment")
+        }
+    }
+
+    override fun onCheckPressed(task: Task) {
+        showDialog(task)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding
     }
 }
