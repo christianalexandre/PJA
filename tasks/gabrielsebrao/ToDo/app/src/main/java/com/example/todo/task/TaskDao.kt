@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.todo.task.Task
 import io.reactivex.rxjava3.core.Completable
 
 @Dao

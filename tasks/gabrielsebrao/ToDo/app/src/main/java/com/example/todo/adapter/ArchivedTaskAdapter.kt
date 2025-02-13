@@ -90,9 +90,7 @@ class ArchivedTaskAdapter(
 
             setupCheckIconListener()
             setupDialogDeleteButtonListener()
-            setupDialogUnArchiveButtonListener(
-
-            )
+            setupDialogUnArchiveButtonListener()
 
         }
 

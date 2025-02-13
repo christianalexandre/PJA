@@ -1,7 +1,5 @@
 package com.example.todo.task
 
-import com.example.todo.task.Task
-
 object TaskSingleton {
 
     var openTaskList: MutableList<Task>? = null
