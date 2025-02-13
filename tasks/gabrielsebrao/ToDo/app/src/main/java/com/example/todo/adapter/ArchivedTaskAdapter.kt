@@ -11,9 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.task.Task
+import com.example.todo.task.TaskActionListener
 
 class ArchivedTaskAdapter(
-    val taskList: MutableList<Task>
+    val taskList: MutableList<Task>,
+    private val listener: TaskActionListener
 ): RecyclerView.Adapter<ArchivedTaskAdapter.TaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchivedTaskAdapter.TaskViewHolder {
@@ -90,7 +92,7 @@ class ArchivedTaskAdapter(
 
             setupCheckIconListener()
             setupDialogDeleteButtonListener()
-            setupDialogUnArchiveButtonListener()
+            setupDialogUnarchiveButtonListener()
 
         }
 
@@ -104,17 +106,18 @@ class ArchivedTaskAdapter(
 
             dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
 
-                //listener.onDeleteTask(task)
+                listener.onDeleteTask(task)
                 dialog?.hide()
 
             }
 
         }
 
-        private fun setupDialogUnArchiveButtonListener() {
+        private fun setupDialogUnarchiveButtonListener() {
 
             dialogView?.findViewById<View>(R.id.button_second)?.setOnClickListener {
 
+                listener.onUnarchiveTask(task)
                 dialog?.hide()
 
             }

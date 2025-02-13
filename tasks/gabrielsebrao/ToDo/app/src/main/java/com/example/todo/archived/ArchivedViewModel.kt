@@ -22,7 +22,7 @@ class ArchivedViewModel(application: Application): AndroidViewModel(application)
     private val sharedPref: ToDoSharedPref? = ToDoSharedPref.getInstance(contextRef.get())
     private val taskDao: TaskDao? = DataBase.getInstance(contextRef.get())?.taskDao()
 
-    private val isDeleteTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDeleteTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private var removedTask: Task? = null
     var removedItemIndex: Int = 0

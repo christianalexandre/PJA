@@ -13,12 +13,14 @@ import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
 import com.example.todo.task.Task
+import com.example.todo.task.TaskActionListener
 import com.example.todo.task.TaskDao
 
 class ArchivedFragment : Fragment() {
 
     private var binding: FragmentArchivedBinding? = null
     private var mainViewModel: MainViewModel? = null
+    private var archivedViewModel: ArchivedViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
     private var archivedTaskAdapter: ArchivedTaskAdapter? = null
@@ -29,6 +31,7 @@ class ArchivedFragment : Fragment() {
         db = DataBase.getInstance(context)
         taskDao = db?.taskDao()
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        archivedViewModel = ViewModelProvider(this)[ArchivedViewModel::class.java]
 
         setupObservers()
 
@@ -52,7 +55,18 @@ class ArchivedFragment : Fragment() {
                 return@observe
 
             if(archivedTaskAdapter == null) {
-                archivedTaskAdapter = ArchivedTaskAdapter(TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList())
+                archivedTaskAdapter = ArchivedTaskAdapter(
+                    TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(),
+                    object: TaskActionListener {
+                        override fun onUnarchiveTask(task: Task?) {}
+
+                        override fun onDeleteTask(task: Task?) {
+                            archivedViewModel?.deleteTask(task)
+                        }
+
+                        override fun onArchiveTask(task: Task?) {}
+
+                    })
                 binding?.recyclerViewTasks?.adapter = archivedTaskAdapter
                 binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
             }
@@ -80,6 +94,21 @@ class ArchivedFragment : Fragment() {
             }
 
             displayRecyclerViewScreen()
+
+        }
+
+        archivedViewModel?.isDeleteTaskSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            archivedTaskAdapter?.notifyItemRemoved(archivedViewModel?.removedItemIndex ?: 0)
+            if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
+
+            archivedViewModel?.isDeleteTaskSuccess?.value = false
 
         }
 

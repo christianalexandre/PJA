@@ -122,6 +122,8 @@ class HomeFragment : Fragment() {
                         override fun onDeleteTask(task: Task?) {
                             homeViewModel?.deleteTask(task)
                         }
+
+                        override fun onUnarchiveTask(task: Task?) {}
                     })
 
                 binding?.recyclerHomeViewTasks?.adapter = openTaskAdapter
