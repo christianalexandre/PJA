@@ -13,7 +13,7 @@ import com.example.todo.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.home.HomeFragment
 import com.example.todo.room.DataBase
-import com.example.todo.room.TaskDao
+import com.example.todo.task.TaskDao
 
 private const val HOME_FRAGMENT = "home_fragment"
 private const val ARCHIVED_FRAGMENT = "archived_fragment"

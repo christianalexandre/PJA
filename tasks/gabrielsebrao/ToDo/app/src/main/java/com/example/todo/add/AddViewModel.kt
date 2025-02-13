@@ -8,10 +8,10 @@ import android.util.Log
 import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.todo.TaskSingleton
+import com.example.todo.task.TaskSingleton
 import com.example.todo.databinding.FragmentAddBinding
-import com.example.todo.room.Task
-import com.example.todo.room.TaskDao
+import com.example.todo.task.Task
+import com.example.todo.task.TaskDao
 import com.example.todo.sharedpref.ToDoSharedPref
 import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

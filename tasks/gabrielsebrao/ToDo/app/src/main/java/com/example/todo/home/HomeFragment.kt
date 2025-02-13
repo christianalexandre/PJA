@@ -6,20 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todo.TaskActionListener
-import com.example.todo.TaskSingleton
+import com.example.todo.task.TaskActionListener
+import com.example.todo.task.TaskSingleton
 import com.example.todo.adapter.OpenTaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.main.MainActivity
 import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
-import com.example.todo.room.Task
-import com.example.todo.room.TaskDao
+import com.example.todo.task.Task
+import com.example.todo.task.TaskDao
 import com.example.todo.sharedpref.ToDoSharedPref
 import java.util.Collections
 

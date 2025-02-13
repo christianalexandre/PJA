@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.TaskActionListener
-import com.example.todo.room.Task
+import com.example.todo.task.TaskActionListener
+import com.example.todo.task.Task
 
 class OpenTaskAdapter(
     val taskList: MutableList<Task>,

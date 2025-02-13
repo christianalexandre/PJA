@@ -1,7 +1,7 @@
 package com.example.todo.sharedpref
 
 import android.content.Context
-import com.example.todo.TaskSingleton
+import com.example.todo.task.TaskSingleton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type

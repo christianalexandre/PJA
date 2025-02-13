@@ -1,6 +1,6 @@
-package com.example.todo
+package com.example.todo.task
 
-import com.example.todo.room.Task
+import com.example.todo.task.Task
 
 interface TaskActionListener {
     fun onDeleteTask(task: Task?)

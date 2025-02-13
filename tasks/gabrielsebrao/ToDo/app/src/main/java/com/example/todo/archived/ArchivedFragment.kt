@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.todo.TaskSingleton
+import com.example.todo.task.TaskSingleton
 import com.example.todo.adapter.ArchivedTaskAdapter
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
-import com.example.todo.room.Task
-import com.example.todo.room.TaskDao
+import com.example.todo.task.Task
+import com.example.todo.task.TaskDao
 
 class ArchivedFragment : Fragment() {
 

@@ -12,7 +12,7 @@ import com.example.todo.main.MainActivity
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.room.DataBase
-import com.example.todo.room.TaskDao
+import com.example.todo.task.TaskDao
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"

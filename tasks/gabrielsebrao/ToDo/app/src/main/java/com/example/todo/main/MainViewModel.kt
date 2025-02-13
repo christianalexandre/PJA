@@ -5,10 +5,10 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.todo.TaskSingleton
+import com.example.todo.task.TaskSingleton
 import com.example.todo.room.DataBase
-import com.example.todo.room.Task
-import com.example.todo.room.TaskDao
+import com.example.todo.task.Task
+import com.example.todo.task.TaskDao
 import com.example.todo.sharedpref.ToDoSharedPref
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
