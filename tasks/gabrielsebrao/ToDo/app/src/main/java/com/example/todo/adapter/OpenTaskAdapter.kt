@@ -10,11 +10,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.home.HomeViewModel
+import com.example.todo.TaskActionListener
 import com.example.todo.room.Task
-import org.w3c.dom.Text
 
-class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel: HomeViewModel?): RecyclerView.Adapter<OpenTaskAdapter.TaskViewHolder>() {
+class OpenTaskAdapter(
+    val taskList: MutableList<Task>,
+    private val listener: TaskActionListener
+): RecyclerView.Adapter<OpenTaskAdapter.TaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_card_task, parent, false)
@@ -101,7 +103,7 @@ class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel
 
             dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
 
-                homeViewModel?.deleteTask(task ?: return@setOnClickListener, itemView.context)
+                listener.onDeleteTask(task)
                 dialog?.hide()
 
             }
@@ -112,7 +114,7 @@ class OpenTaskAdapter(val taskList: MutableList<Task>, private val homeViewModel
 
             dialogView?.findViewById<View>(R.id.button_second)?.setOnClickListener {
 
-                homeViewModel?.archiveTask(task ?: return@setOnClickListener, itemView.context)
+                listener.onArchiveTask(task)
                 dialog?.hide()
 
             }

@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         db = DataBase.getInstance(this)
         taskDao = db?.taskDao()
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-            .taskDao(taskDao)
 
         setupFragments()
         setupListeners()
@@ -68,8 +67,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFragments() {
 
-        homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment(mainViewModel as MainViewModel)
-        archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment(mainViewModel as MainViewModel)
+        homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment()
+        archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment()
         addFragment = supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) ?: AddFragment()
 
         if(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) == null) {
@@ -174,6 +173,14 @@ class MainActivity : AppCompatActivity() {
         hideFragment(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT))
         binding?.bottomNavigationView?.selectedItemId = R.id.home
         currentFragmentTag = HOME_FRAGMENT
+
+    }
+
+    fun switchFromHomeFragmentToArchivedFragment() {
+
+        hideFragment(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT))
+        binding?.bottomNavigationView?.selectedItemId = R.id.archived
+        currentFragmentTag = ARCHIVED_FRAGMENT
 
     }
 

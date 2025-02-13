@@ -10,10 +10,12 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.archived.ArchivedViewModel
+import com.example.todo.TaskActionListener
 import com.example.todo.room.Task
 
-class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val archivedViewModel: ArchivedViewModel?): RecyclerView.Adapter<ArchivedTaskAdapter.TaskViewHolder>() {
+class ArchivedTaskAdapter(
+    val taskList: MutableList<Task>
+): RecyclerView.Adapter<ArchivedTaskAdapter.TaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchivedTaskAdapter.TaskViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_card_task, parent, false)
@@ -24,6 +26,15 @@ class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val archivedV
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(taskList[position])
+    }
+
+    fun addNewTask(task: Task?) {
+
+        if(task == null)
+            return
+
+        notifyItemInserted(0)
+
     }
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,6 +49,11 @@ class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val archivedV
 
             dialogView = LayoutInflater.from(itemView.context)
                 .inflate(R.layout.item_dialog_task_check, itemView.parent as ViewGroup?, false)
+
+            dialog = AlertDialog.Builder(itemView.context)
+                .setCustomTitle(itemView.findViewById(R.id.titleDialog))
+                .setView(dialogView)
+                .create()
 
             setupView()
             setupDialogView()
@@ -74,17 +90,37 @@ class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val archivedV
         private fun setupListener() {
 
             setupCheckIconListener()
+            setupDialogDeleteButtonListener()
+            setupDialogUnArchiveButtonListener(
+
+            )
 
         }
 
         private fun setupCheckIconListener() {
 
-            dialog = AlertDialog.Builder(itemView.context)
-                .setCustomTitle(itemView.findViewById(R.id.titleDialog))
-                .setView(dialogView)
-                .create()
-
             itemView.findViewById<ImageView>(R.id.icon_check).setOnClickListener { dialog?.show() }
+
+        }
+
+        private fun setupDialogDeleteButtonListener() {
+
+            dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
+
+                //listener.onDeleteTask(task)
+                dialog?.hide()
+
+            }
+
+        }
+
+        private fun setupDialogUnArchiveButtonListener() {
+
+            dialogView?.findViewById<View>(R.id.button_second)?.setOnClickListener {
+
+                dialog?.hide()
+
+            }
 
         }
 

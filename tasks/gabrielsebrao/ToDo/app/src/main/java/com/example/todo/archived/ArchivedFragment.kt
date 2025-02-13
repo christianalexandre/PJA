@@ -15,10 +15,10 @@ import com.example.todo.room.DataBase
 import com.example.todo.room.Task
 import com.example.todo.room.TaskDao
 
-class ArchivedFragment(private val mainViewModel: MainViewModel?) : Fragment() {
+class ArchivedFragment : Fragment() {
 
     private var binding: FragmentArchivedBinding? = null
-    private var archivedViewModel: ArchivedViewModel? = null
+    private var mainViewModel: MainViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
     private var archivedTaskAdapter: ArchivedTaskAdapter? = null
@@ -28,8 +28,7 @@ class ArchivedFragment(private val mainViewModel: MainViewModel?) : Fragment() {
         super.onCreate(savedInstanceState)
         db = DataBase.getInstance(context)
         taskDao = db?.taskDao()
-        archivedViewModel = ViewModelProvider(this)[ArchivedViewModel::class.java]
-            .taskDao(taskDao)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         setupObservers()
 
@@ -53,7 +52,7 @@ class ArchivedFragment(private val mainViewModel: MainViewModel?) : Fragment() {
                 return@observe
 
             if(archivedTaskAdapter == null) {
-                archivedTaskAdapter = ArchivedTaskAdapter(TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(), archivedViewModel)
+                archivedTaskAdapter = ArchivedTaskAdapter(TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList())
                 binding?.recyclerViewTasks?.adapter = archivedTaskAdapter
                 binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
             }
@@ -66,6 +65,25 @@ class ArchivedFragment(private val mainViewModel: MainViewModel?) : Fragment() {
             displayRecyclerViewScreen()
 
         }
+
+        mainViewModel?.isArchiveTaskSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            archivedTaskAdapter?.addNewTask(TaskSingleton.archivedTask)
+            binding?.recyclerViewTasks?.scrollToPosition(0)
+
+            if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
+
+            displayRecyclerViewScreen()
+
+        }
+
+
 
     }
 

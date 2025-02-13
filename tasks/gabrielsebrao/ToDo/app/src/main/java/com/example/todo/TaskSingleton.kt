@@ -11,6 +11,6 @@ object TaskSingleton {
     var archivedTaskIdList: MutableList<Int>? = null
 
     var newTask: Task? = null
-    var deletedTaskId: Int? = null
+    var archivedTask: Task? = null
 
 }

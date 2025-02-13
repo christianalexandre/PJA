@@ -6,13 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todo.TaskActionListener
 import com.example.todo.TaskSingleton
 import com.example.todo.adapter.OpenTaskAdapter
 import com.example.todo.databinding.FragmentHomeBinding
+import com.example.todo.main.MainActivity
 import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
 import com.example.todo.room.Task
@@ -20,9 +23,10 @@ import com.example.todo.room.TaskDao
 import com.example.todo.sharedpref.ToDoSharedPref
 import java.util.Collections
 
-class HomeFragment(private val mainViewModel: MainViewModel?) : Fragment() {
+class HomeFragment : Fragment() {
 
     private var binding: FragmentHomeBinding? = null
+    private var mainViewModel: MainViewModel? = null
     private var homeViewModel: HomeViewModel? = null
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
@@ -34,8 +38,8 @@ class HomeFragment(private val mainViewModel: MainViewModel?) : Fragment() {
         super.onCreate(savedInstanceState)
         db = DataBase.getInstance(context)
         taskDao = db?.taskDao()
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-            .taskDao(taskDao)
         toDoSharedPref = ToDoSharedPref.getInstance(context)
 
         setupObservers()
@@ -108,12 +112,24 @@ class HomeFragment(private val mainViewModel: MainViewModel?) : Fragment() {
                 return@observe
 
             if(openTaskAdapter == null) {
-                openTaskAdapter = OpenTaskAdapter(TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(), homeViewModel)
+
+                openTaskAdapter = OpenTaskAdapter(
+                    TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(),
+                    object : TaskActionListener {
+                        override fun onArchiveTask(task: Task?) {
+                            mainViewModel?.archiveTask(task)
+                        }
+
+                        override fun onDeleteTask(task: Task?) {
+                            homeViewModel?.deleteTask(task)
+                        }
+                    })
+
                 binding?.recyclerHomeViewTasks?.adapter = openTaskAdapter
                 binding?.recyclerHomeViewTasks?.layoutManager = LinearLayoutManager(context)
             }
 
-            mainViewModel.isGetAllTasksSuccess.value = false
+            mainViewModel?.isGetAllTasksSuccess?.value = false
 
             if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
@@ -129,22 +145,24 @@ class HomeFragment(private val mainViewModel: MainViewModel?) : Fragment() {
             if(!isSuccess)
                 return@observe
 
-            homeViewModel?.isDeleteTaskSuccess?.value = false
             openTaskAdapter?.notifyItemRemoved(homeViewModel?.removedItemIndex ?: 0)
-
             if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
             }
 
+            homeViewModel?.isDeleteTaskSuccess?.value = false
+
+
         }
 
-        homeViewModel?.isArchiveTaskSuccess?.observe(this) { isSuccess ->
+        mainViewModel?.isArchiveTaskSuccess?.observe(this) { isSuccess ->
 
             if(!isSuccess)
                 return@observe
 
-            openTaskAdapter?.notifyItemRemoved(homeViewModel?.archivedItemIndex ?: 0)
+            openTaskAdapter?.notifyItemRemoved(mainViewModel?.archivedItemIndex ?: 0)
+            (activity as MainActivity).switchFromHomeFragmentToArchivedFragment()
 
             if(openTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
