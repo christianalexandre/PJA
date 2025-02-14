@@ -1,4 +1,4 @@
-package com.example.todolist.ui.adapter
+package com.example.todolist.ui.dialog
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.todolist.R
 import com.example.todolist.databinding.CustomDialogBinding
@@ -51,5 +52,13 @@ class CustomDialogFragment(
     interface DialogListener {
         fun onFirstPressed()
         fun onSecondPressed()
+    }
+
+    companion object {
+        fun checkShowDialog(fragmentManager: FragmentManager, isFromHome: Boolean, listener: DialogListener) {
+            if (fragmentManager.findFragmentByTag("CustomDialog") == null) {
+                CustomDialogFragment(isFromHome, listener).show(fragmentManager, "CustomDialog")
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentArchivedBinding
-import com.example.todolist.ui.adapter.CustomDialogFragment
+import com.example.todolist.ui.dialog.CustomDialogFragment
 import com.example.todolist.ui.adapter.TaskAdapter
 import com.example.todolist.ui.adapter.TaskListener
 import com.example.todolist.ui.database.instance.DatabaseInstance
@@ -52,23 +52,18 @@ class ArchivedFragment : Fragment(), TaskListener {
         }
     }
 
-
     private fun showDialog(task: Task) {
-        val listener = object: CustomDialogFragment.DialogListener {
-            override fun onFirstPressed() {
-                archivedViewModel.unarchiveTask(task)
-            }
+        if (parentFragmentManager.findFragmentByTag("CustomDialogArchivedFragment") == null) {
+            val listener = object : CustomDialogFragment.DialogListener {
+                override fun onFirstPressed() {
+                    archivedViewModel.unarchiveTask(task)
+                }
 
-            override fun onSecondPressed() {
-                archivedViewModel.deleteTask(task)
+                override fun onSecondPressed() {
+                    archivedViewModel.deleteTask(task)
+                }
             }
-        }
-
-        this.fragmentManager?.let {
-            CustomDialogFragment(
-                isFromHome = false,
-                listener = listener
-            ).show(it, "CustomDialogArchivedFragment")
+            CustomDialogFragment.checkShowDialog(parentFragmentManager, false, listener)
         }
     }
 

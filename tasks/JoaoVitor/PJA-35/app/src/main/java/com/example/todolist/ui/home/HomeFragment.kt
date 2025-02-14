@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentHomeBinding
 import com.example.todolist.ui.adapter.TaskAdapter
 import com.example.todolist.ui.adapter.TaskListener
-import com.example.todolist.ui.adapter.CustomDialogFragment
+import com.example.todolist.ui.dialog.CustomDialogFragment
 import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
@@ -53,21 +53,17 @@ class HomeFragment : Fragment(), TaskListener {
     }
 
     private fun showDialog(task: Task) {
-        val listener = object: CustomDialogFragment.DialogListener {
-            override fun onFirstPressed() {
-                homeViewModel.archiveTask(task)
-            }
+        if (parentFragmentManager.findFragmentByTag("CustomDialogFragment") == null) {
+            val listener = object : CustomDialogFragment.DialogListener {
+                override fun onFirstPressed() {
+                    homeViewModel.archiveTask(task)
+                }
 
-            override fun onSecondPressed() {
-                homeViewModel.deleteTask(task)
+                override fun onSecondPressed() {
+                    homeViewModel.deleteTask(task)
+                }
             }
-        }
-
-        this.fragmentManager?.let {
-            CustomDialogFragment(
-                isFromHome = true,
-                listener = listener
-            ).show(it, "CustomDialogFragment")
+            CustomDialogFragment.checkShowDialog(parentFragmentManager, true, listener)
         }
     }
 

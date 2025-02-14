@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="title_home">Home</string>
+    <string name="title_my_tasks">Minhas tarefas</string>
     <string name="title_archived">Arquivadas</string>
+    <string name="title_my_archived_tasks">Tarefas arquivadas</string>
     <string name="title_add">Adicionar</string>
     <string name="title_add_card">Adição de card</string>
     <string name="button_save_text">Salvar</string>

@@ -11,15 +11,16 @@ import com.example.todolist.ui.database.model.Task
 class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
     private val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
-    private val checkButtonHome: ImageView? = itemView.findViewById(R.id.checkButton)
+    private val checkButton: ImageView? = itemView.findViewById(R.id.checkButton)
 
     fun bind(task: Task, listener: TaskListener, isFromHome: Boolean) {
         titleTextView.text = task.title
         descriptionTextView.text = task.description
 
-        if (!isFromHome) checkButtonHome?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+        if (!isFromHome) checkButton?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+        if (isFromHome) checkButton?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
 
-        checkButtonHome?.setOnClickListener { view ->
+        checkButton?.setOnClickListener { view ->
                 view.animate()
                     .scaleX(0.8f)
                     .scaleY(0.8f)
