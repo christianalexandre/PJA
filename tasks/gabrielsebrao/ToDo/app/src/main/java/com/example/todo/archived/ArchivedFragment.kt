@@ -1,21 +1,26 @@
 package com.example.todo.archived
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.task.TaskSingleton
 import com.example.todo.adapter.ArchivedTaskAdapter
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.main.MainActivity
 import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
+import com.example.todo.sharedpref.ToDoSharedPref
 import com.example.todo.task.Task
 import com.example.todo.task.TaskActionListener
 import com.example.todo.task.TaskDao
+import java.util.Collections
 
 class ArchivedFragment : Fragment() {
 
@@ -25,6 +30,7 @@ class ArchivedFragment : Fragment() {
     private var db: DataBase? = null
     private var taskDao: TaskDao? = null
     private var archivedTaskAdapter: ArchivedTaskAdapter? = null
+    private var toDoSharedPref: ToDoSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -33,6 +39,7 @@ class ArchivedFragment : Fragment() {
         taskDao = db?.taskDao()
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         archivedViewModel = ViewModelProvider(this)[ArchivedViewModel::class.java]
+        toDoSharedPref = ToDoSharedPref.getInstance(context)
 
         setupObservers()
 
@@ -44,7 +51,42 @@ class ArchivedFragment : Fragment() {
     ): View? {
 
         binding = FragmentArchivedBinding.inflate(layoutInflater)
+
+        val helper = ItemTouchHelper(ArchivedItemTouchHelper(
+            ItemTouchHelper.UP or
+                    ItemTouchHelper.DOWN,
+            0
+        ))
+
+        helper.attachToRecyclerView(binding?.recyclerViewTasks)
+
         return binding?.root
+
+    }
+
+    inner class ArchivedItemTouchHelper(
+        dragDirs: Int,
+        swipeDirs: Int
+    ) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
+
+        private val list: MutableList<Int> = emptyList<Int>().toMutableList()
+
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            val from = viewHolder.adapterPosition
+            val to = target.adapterPosition
+
+            archivedTaskAdapter?.taskList?.let { Collections.swap(it, from, to) }
+            archivedTaskAdapter?.notifyItemMoved(from, to)
+
+            TaskSingleton.archivedTaskList?.map { list.add(it.id) }
+            toDoSharedPref?.saveArchivedTaskIdList(list)
+
+            Log.d("SHARED_PREF", "TASK ID LIST: ${TaskSingleton.openTaskIdList}")
+
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
     }
 
