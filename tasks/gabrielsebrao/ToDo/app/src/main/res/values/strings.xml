@@ -30,4 +30,7 @@
     <string name="archived_delete_button_text">Deletar tarefa </string>
     <string name="archived_unarchive_button_text">Desarquivar tarefa</string>
     <string name="alt_icon_unarchived">Ícone de desarquivar tarefas.</string>
+    <string name="task_archived">Tarefa arquivada</string>
+    <string name="task_unarchived">Tarefa desarquivada</string>
+    <string name="task_deleted">Tarefa deletada</string>
 </resources>

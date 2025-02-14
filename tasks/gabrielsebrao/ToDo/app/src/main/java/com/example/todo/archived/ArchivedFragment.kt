@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todo.R
 import com.example.todo.task.TaskSingleton
 import com.example.todo.adapter.ArchivedTaskAdapter
 import com.example.todo.databinding.FragmentArchivedBinding
@@ -150,6 +152,8 @@ class ArchivedFragment : Fragment() {
             archivedTaskAdapter?.notifyItemRemoved(mainViewModel?.unarchivedItemIndex ?: 0)
             (activity as MainActivity).switchFromArchivedFragmentToHomeFragment()
 
+            Toast.makeText(context, getString(R.string.task_unarchived), Toast.LENGTH_LONG).show()
+
             if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
@@ -165,6 +169,9 @@ class ArchivedFragment : Fragment() {
                 return@observe
 
             archivedTaskAdapter?.notifyItemRemoved(archivedViewModel?.removedItemIndex ?: 0)
+
+            Toast.makeText(context, getString(R.string.task_deleted), Toast.LENGTH_LONG).show()
+
             if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
                 displayDefaultScreen()
                 return@observe
