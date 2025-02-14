@@ -5,6 +5,7 @@ import android.graphics.drawable.Icon
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -51,6 +52,11 @@ class OpenTaskAdapter(
             dialogView = LayoutInflater.from(itemView.context)
                 .inflate(R.layout.item_dialog_task_check, itemView.parent as ViewGroup?, false)
 
+            dialog = AlertDialog.Builder(itemView.context)
+                .setCustomTitle(itemView.findViewById(R.id.titleDialog))
+                .setView(dialogView)
+                .create()
+
             setupView()
             setupDialogView()
             setupListener()
@@ -90,12 +96,7 @@ class OpenTaskAdapter(
 
         private fun setupCheckIconListener() {
 
-            dialog = AlertDialog.Builder(itemView.context)
-                .setCustomTitle(itemView.findViewById(R.id.titleDialog))
-                .setView(dialogView)
-                .create()
-
-            itemView.findViewById<ImageView>(R.id.icon_check).setOnClickListener { dialog?.show() }
+            itemView.findViewById<FrameLayout>(R.id.frame_layout).setOnClickListener { dialog?.show() }
 
         }
 

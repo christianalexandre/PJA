@@ -5,6 +5,7 @@ import android.graphics.drawable.Icon
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -98,7 +99,7 @@ class ArchivedTaskAdapter(
 
         private fun setupCheckIconListener() {
 
-            itemView.findViewById<ImageView>(R.id.icon_check).setOnClickListener { dialog?.show() }
+            itemView.findViewById<FrameLayout>(R.id.frame_layout).setOnClickListener { dialog?.show() }
 
         }
 
