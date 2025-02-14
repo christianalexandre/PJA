@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todo.task.TaskSingleton
 import com.example.todo.adapter.ArchivedTaskAdapter
 import com.example.todo.databinding.FragmentArchivedBinding
+import com.example.todo.main.MainActivity
 import com.example.todo.main.MainViewModel
 import com.example.todo.room.DataBase
 import com.example.todo.task.Task
@@ -58,7 +59,9 @@ class ArchivedFragment : Fragment() {
                 archivedTaskAdapter = ArchivedTaskAdapter(
                     TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(),
                     object: TaskActionListener {
-                        override fun onUnarchiveTask(task: Task?) {}
+                        override fun onUnarchiveTask(task: Task?) {
+                            mainViewModel?.unarchiveTask(task)
+                        }
 
                         override fun onDeleteTask(task: Task?) {
                             archivedViewModel?.deleteTask(task)
@@ -94,6 +97,23 @@ class ArchivedFragment : Fragment() {
             }
 
             displayRecyclerViewScreen()
+
+        }
+
+        mainViewModel?.isUnarchiveTaskSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            archivedTaskAdapter?.notifyItemRemoved(mainViewModel?.unarchivedItemIndex ?: 0)
+            (activity as MainActivity).switchFromArchivedFragmentToHomeFragment()
+
+            if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
+
+            mainViewModel?.isUnarchiveTaskSuccess?.value = false
 
         }
 

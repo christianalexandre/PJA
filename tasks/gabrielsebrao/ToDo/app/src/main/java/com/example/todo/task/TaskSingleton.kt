@@ -10,5 +10,6 @@ object TaskSingleton {
 
     var newTask: Task? = null
     var archivedTask: Task? = null
+    var unarchivedTask: Task? = null
 
 }

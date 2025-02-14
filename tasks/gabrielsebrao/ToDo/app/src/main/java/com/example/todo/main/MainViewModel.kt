@@ -24,10 +24,13 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     val isGetAllTasksSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
     val isArchiveTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isUnarchiveTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private var archivedTask: Task? = null
+    private var unarchivedTask: Task? = null
 
     var archivedItemIndex: Int = 0
+    var unarchivedItemIndex: Int = 0
 
     fun getAllTasks(): Disposable {
 
@@ -85,7 +88,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 TaskSingleton.openTaskList?.remove(task)
                 sharedPref?.removeOpenTaskId(task.id)
 
-
                 TaskSingleton.archivedTask = task
 
                 Log.d("RX_DEBUG", "ARCHIVE TASK: OK")
@@ -97,6 +99,46 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 Log.e("RX_DEBUG", "ARCHIVE TASK: ${error.message}")
             })
 
+    }
+
+    fun unarchiveTask(task: Task?): Disposable? {
+
+        if(task == null)
+            return null
+
+        return Single.create { emitter->
+            emitter.onSuccess(taskDao?.changeIsArchivedById(task.id, false) ?: emitter.onError(NullPointerException()))
+        }
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                task.isArchived = false
+
+                if(TaskSingleton.openTaskList == null)
+                    TaskSingleton.openTaskList = mutableListOf(task)
+                else
+                    TaskSingleton.openTaskList?.add(0, task)
+
+                if(TaskSingleton.openTaskIdList == null)
+                    sharedPref?.saveOpenTaskIdList(mutableListOf(task.id))
+                else
+                    sharedPref?.addOpenTaskIdToList(task.id)
+
+                unarchivedTask = TaskSingleton.archivedTaskList?.find { !it.isArchived } ?: return@subscribe
+                unarchivedItemIndex = TaskSingleton.archivedTaskList?.indexOf(unarchivedTask) ?: return@subscribe
+
+                TaskSingleton.archivedTaskList?.remove(task)
+                sharedPref?.removeArchivedTaskId(task.id)
+
+                TaskSingleton.unarchivedTask = task
+
+                Log.e("RX_DEBUG", "UNARCHIVE TASK: OK")
+                isUnarchiveTaskSuccess.postValue(true)
+
+            }, { error ->
+                Log.e("RX_DEBUG", "UNARCHIVE TASK: ${error.message}")
+            })
     }
 
 }

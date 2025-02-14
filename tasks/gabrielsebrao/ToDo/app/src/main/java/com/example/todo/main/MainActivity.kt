@@ -184,4 +184,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun switchFromArchivedFragmentToHomeFragment() {
+
+        hideFragment(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT))
+        binding?.bottomNavigationView?.selectedItemId = R.id.home
+        currentFragmentTag = HOME_FRAGMENT
+
+    }
+
 }

@@ -172,6 +172,23 @@ class HomeFragment : Fragment() {
 
         }
 
+        mainViewModel?.isUnarchiveTaskSuccess?.observe(this) { isSuccess ->
+
+            if(!isSuccess)
+                return@observe
+
+            openTaskAdapter?.addNewTask(TaskSingleton.unarchivedTask)
+            binding?.recyclerHomeViewTasks?.scrollToPosition(0)
+
+            if(openTaskAdapter?.taskList?.isEmpty() == true) {
+                displayDefaultScreen()
+                return@observe
+            }
+
+            displayRecyclerViewScreen()
+
+        }
+
     }
 
     private fun displayRecyclerViewScreen() {

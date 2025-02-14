@@ -91,14 +91,10 @@ class AddViewModel: ViewModel() {
                     return
                 }
 
-
-
                 if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
                     binding.buttonSave.isActivated = false
                     return
                 }
-
-                binding?.buttonSave?.isActivated = true
 
                 binding?.buttonSave?.isActivated = true
 
