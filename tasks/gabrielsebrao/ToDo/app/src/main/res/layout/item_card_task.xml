@@ -10,14 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="16dp"
+        android:layout_margin="8dp"
         android:padding="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="10dp">
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/title"
