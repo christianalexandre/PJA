@@ -159,8 +159,6 @@ class ArchivedFragment : Fragment() {
                 return@observe
             }
 
-            mainViewModel?.isUnarchiveTaskSuccess?.value = false
-
         }
 
         archivedViewModel?.isDeleteTaskSuccess?.observe(this) { isSuccess ->

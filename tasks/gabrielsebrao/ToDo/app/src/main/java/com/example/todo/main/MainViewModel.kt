@@ -48,6 +48,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                     TaskSingleton.openTaskIdList?.indexOf(task.id)
                 }?.toMutableList()
 
+                TaskSingleton.archivedTaskList = TaskSingleton.archivedTaskList?.sortedBy { task ->
+                    TaskSingleton.archivedTaskIdList?.indexOf(task.id)
+                }?.toMutableList()
+
                 Log.e("ROOM_DEBUG", "${TaskSingleton.openTaskList}")
                 Log.d("RX_DEBUG", "GET ALL TASK: OK")
                 isGetAllTasksSuccess.postValue(true)

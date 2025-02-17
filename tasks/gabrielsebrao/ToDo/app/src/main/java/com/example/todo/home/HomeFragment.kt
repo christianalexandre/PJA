@@ -185,6 +185,7 @@ class HomeFragment : Fragment() {
                 return@observe
 
             openTaskAdapter?.addNewTask(TaskSingleton.unarchivedTask)
+            TaskSingleton.unarchivedTask = null
             binding?.recyclerHomeViewTasks?.scrollToPosition(0)
 
             if(openTaskAdapter?.taskList?.isEmpty() == true) {
