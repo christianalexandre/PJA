@@ -18,4 +18,6 @@
     <string name="button2_dialog_home">ARQUIVAR</string>
     <string name="text_restauring">RESTAURAR</string>
     <string name="text_task_concluded">Tarefa arquivada</string>
+    <string name="attachment">Anexar</string>
+    <string name="add_attach">Nenhuma imagem anexada</string>
 </resources>

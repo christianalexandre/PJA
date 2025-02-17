@@ -39,7 +39,7 @@ class CustomDialogFragment(
 
             buttonArchive.setOnClickListener {
                 val viewPager = requireActivity().findViewById<ViewPager2>(R.id.vp)
-                viewPager.currentItem = if (isFromHome) 1 else 0
+                viewPager.currentItem = if (isFromHome) 0 else 0
                 listener.onFirstPressed()
                 dismiss()
             }

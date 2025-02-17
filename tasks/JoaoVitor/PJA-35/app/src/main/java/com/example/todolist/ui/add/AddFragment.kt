@@ -53,6 +53,7 @@ class AddFragment : Fragment() {
         updateButton()
         verificationChar()
         clickSaveButton()
+        openBottomSheet()
 
         return root
     }
@@ -123,6 +124,22 @@ class AddFragment : Fragment() {
             }
         }
     }
+
+    private fun openBottomSheet() {
+        binding.anexoButton.setOnClickListener {
+            val bottomSheet = AddBottomSheet(object : AddBottomSheet.PhotoPickerListener {
+                override fun onCameraSelected() {
+
+                }
+
+                override fun onGallerySelected() {
+
+                }
+            })
+            bottomSheet.show(parentFragmentManager, "AddBottomSheet")
+        }
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

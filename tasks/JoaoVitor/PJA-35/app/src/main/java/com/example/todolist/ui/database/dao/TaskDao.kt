@@ -9,7 +9,6 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.todolist.ui.database.model.Task
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface TaskDao {
