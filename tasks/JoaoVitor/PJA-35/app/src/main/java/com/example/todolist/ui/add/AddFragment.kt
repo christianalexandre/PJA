@@ -41,6 +41,12 @@ class AddFragment : Fragment() {
     private val isAnnotationValid
         get() = annotationText.length <= 300 && annotationText.isNotBlank()
 
+    private val isTitleValidColorIcon
+        get() = titleText.length <= 50
+
+    private val isAnnotationValidColorIcon
+        get() = annotationText.length <= 300
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,12 +83,12 @@ class AddFragment : Fragment() {
         with(binding) {
             textFieldTitleText.doOnTextChanged { _, _, _, _ ->
                 updateButton()
-                updateTextInputColor(textFieldTitle, isTitleValid)
+                updateTextInputColor(textFieldTitle, isTitleValidColorIcon)
             }
 
             textFieldAnotationText.doOnTextChanged { _, _, _, _ ->
                 updateButton()
-                updateTextInputColor(textFieldAnotation, isAnnotationValid)
+                updateTextInputColor(textFieldAnotation, isAnnotationValidColorIcon)
             }
         }
     }
@@ -139,7 +145,6 @@ class AddFragment : Fragment() {
             bottomSheet.show(parentFragmentManager, "AddBottomSheet")
         }
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

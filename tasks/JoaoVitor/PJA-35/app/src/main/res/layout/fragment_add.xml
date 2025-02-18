@@ -58,14 +58,14 @@
                 app:errorEnabled="true"
                 app:boxStrokeErrorColor="@color/red_error"
                 app:errorTextColor="@color/red_error"
-                tools:ignore="MissingConstraints">
+                android:textColorHint="@color/off_white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/textFieldTitleText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -85,6 +85,7 @@
                 app:errorEnabled="true"
                 app:boxStrokeErrorColor="@color/red_error"
                 app:errorTextColor="@color/red_error"
+                android:textColorHint="@color/off_white"
                 app:layout_constraintTop_toBottomOf="@id/textFieldTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
