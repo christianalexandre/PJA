@@ -23,8 +23,8 @@
     <string name="default_archived_message">Nenhuma tarefa arquivada.</string>
     <string name="dialog_title">Você deseja:</string>
     <string name="alt_icon_delete">Ícone de deletar.</string>
-    <string name="archive_button_text">Marcar como concluída e arquivar</string>
-    <string name="delete_button_text">Marcar como concluída e apagar</string>
+    <string name="archive_button_text">Arquivar tarefa</string>
+    <string name="delete_button_text">Apagar tarefa</string>
     <string name="default_button_second">Texto do segundo botão.</string>
     <string name="default_delete_text">Texto de deletar task.</string>
     <string name="archived_delete_button_text">Deletar tarefa </string>
@@ -33,4 +33,9 @@
     <string name="task_archived">Tarefa arquivada</string>
     <string name="task_unarchived">Tarefa desarquivada</string>
     <string name="task_deleted">Tarefa deletada</string>
+    <string name="error_task_created">Erro ao tentar criar tarefa. Tente novamente.</string>
+    <string name="error_task_get">Erro ao carregar tarefas. Abra e feche o app.</string>
+    <string name="error_task_delete">Erro ao tentar deletar tarefa. Tente novamente.</string>
+    <string name="error_task_unarchive">Erro ao tentar desarquivar tarefa. Tente novamente.</string>
+    <string name="error_task_archive">Erro ao tentar arquivar tarefa. Tente novamente.</string>
 </resources>

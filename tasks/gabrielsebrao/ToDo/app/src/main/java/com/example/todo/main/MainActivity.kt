@@ -1,43 +1,29 @@
 package com.example.todo.main
 
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.add.AddFragment
 import com.example.todo.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.home.HomeFragment
-import com.example.todo.room.DataBase
-import com.example.todo.task.TaskDao
-
-private const val HOME_FRAGMENT = "home_fragment"
-private const val ARCHIVED_FRAGMENT = "archived_fragment"
-private var ADD_FRAGMENT = "add_fragment"
 
 class MainActivity : AppCompatActivity() {
 
     private var binding: ActivityMainBinding? = null
-    private var db: DataBase? = null
-    private var taskDao: TaskDao? = null
-    private var mainViewModel: ViewModel? = null
+    private var mainViewModel: MainViewModel? = null
     private var homeFragment: Fragment? = null
     private var archivedFragment: Fragment? = null
     private var addFragment: Fragment? = null
-    private var fragmentMap: Map<String, String>? = null
-    private var currentFragmentTag: String = HOME_FRAGMENT
+    private var currentFragmentTag: String = HomeFragment.TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-        db = DataBase.getInstance(this)
-        taskDao = db?.taskDao()
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         setupFragments()
@@ -50,45 +36,28 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         val activeFragment = supportFragmentManager.fragments.find { !it.isHidden }
-        currentFragmentTag = activeFragment?.tag ?: HOME_FRAGMENT
+        currentFragmentTag = activeFragment?.tag ?: HomeFragment.TAG
 
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action == MotionEvent.ACTION_DOWN) {
-            currentFocus?.let { view ->
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
-                view.clearFocus()
-            }
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun setupFragments() {
 
-        homeFragment = supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) ?: HomeFragment()
-        archivedFragment = supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) ?: ArchivedFragment()
-        addFragment = supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) ?: AddFragment()
+        homeFragment = supportFragmentManager.findFragmentByTag(HomeFragment.TAG) ?: HomeFragment()
+        archivedFragment = supportFragmentManager.findFragmentByTag(ArchivedFragment.TAG) ?: ArchivedFragment()
+        addFragment = supportFragmentManager.findFragmentByTag(AddFragment.TAG) ?: AddFragment()
 
-        if(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT) == null) {
-            addFragment(addFragment, ADD_FRAGMENT)
+        if(supportFragmentManager.findFragmentByTag(AddFragment.TAG) == null) {
+            createFragment(addFragment, AddFragment.TAG)
             hideFragment(addFragment)
         }
 
-        if(supportFragmentManager.findFragmentByTag(ARCHIVED_FRAGMENT) == null) {
-            addFragment(archivedFragment, ARCHIVED_FRAGMENT)
+        if(supportFragmentManager.findFragmentByTag(ArchivedFragment.TAG) == null) {
+            createFragment(archivedFragment, ArchivedFragment.TAG)
             hideFragment(archivedFragment)
         }
 
-        if(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) == null)
-            addFragment(homeFragment, HOME_FRAGMENT)
-
-        fragmentMap = mapOf(
-            Pair(addFragment?.javaClass.toString(), ADD_FRAGMENT),
-            Pair(archivedFragment?.javaClass.toString(), ARCHIVED_FRAGMENT),
-            Pair(homeFragment?.javaClass.toString(), HOME_FRAGMENT)
-        )
+        if(supportFragmentManager.findFragmentByTag(HomeFragment.TAG) == null)
+            createFragment(homeFragment, HomeFragment.TAG)
 
     }
 
@@ -121,7 +90,12 @@ class MainActivity : AppCompatActivity() {
             hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
 
             showFragment(fragment)
-            currentFragmentTag = fragmentMap?.get(fragment?.javaClass.toString()) ?: currentFragmentTag
+            currentFragmentTag = when(fragment) {
+                is HomeFragment -> HomeFragment.TAG
+                is ArchivedFragment -> ArchivedFragment.TAG
+                is AddFragment -> AddFragment.TAG
+                else -> currentFragmentTag
+            }
 
             true
 
@@ -129,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun addFragment(fragment: Fragment?, fragmentTag: String) {
+    private fun createFragment(fragment: Fragment?, fragmentTag: String) {
 
         if(fragment == null)
             return
@@ -170,25 +144,25 @@ class MainActivity : AppCompatActivity() {
 
     fun switchFromAddFragmentToHomeFragment() {
 
-        hideFragment(supportFragmentManager.findFragmentByTag(ADD_FRAGMENT))
+        hideFragment(supportFragmentManager.findFragmentByTag(AddFragment.TAG))
         binding?.bottomNavigationView?.selectedItemId = R.id.home
-        currentFragmentTag = HOME_FRAGMENT
+        currentFragmentTag = HomeFragment.TAG
 
     }
 
     fun switchFromHomeFragmentToArchivedFragment() {
 
-        hideFragment(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT))
+        hideFragment(supportFragmentManager.findFragmentByTag(HomeFragment.TAG))
         binding?.bottomNavigationView?.selectedItemId = R.id.archived
-        currentFragmentTag = ARCHIVED_FRAGMENT
+        currentFragmentTag = ArchivedFragment.TAG
 
     }
 
     fun switchFromArchivedFragmentToHomeFragment() {
 
-        hideFragment(supportFragmentManager.findFragmentByTag(HOME_FRAGMENT))
+        hideFragment(supportFragmentManager.findFragmentByTag(HomeFragment.TAG))
         binding?.bottomNavigationView?.selectedItemId = R.id.home
-        currentFragmentTag = HOME_FRAGMENT
+        currentFragmentTag = HomeFragment.TAG
 
     }
 

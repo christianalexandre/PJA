@@ -4,12 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.todo.task.TaskSingleton
 import com.example.todo.room.DataBase
 import com.example.todo.task.Task
 import com.example.todo.task.TaskDao
 import com.example.todo.sharedpref.ToDoSharedPref
+import com.example.todo.task.TaskState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
@@ -22,9 +24,15 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private val sharedPref: ToDoSharedPref? = ToDoSharedPref.getInstance(contextRef.get())
     private val taskDao: TaskDao? = DataBase.getInstance(contextRef.get())?.taskDao()
 
-    val isGetAllTasksSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isArchiveTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isUnarchiveTaskSuccess: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _addTaskState: MutableLiveData<TaskState?> = MutableLiveData()
+    private val _getTasksState: MutableLiveData<TaskState?> = MutableLiveData()
+    private val _archiveTaskState: MutableLiveData<TaskState?> = MutableLiveData()
+    private val _unarchiveTaskState: MutableLiveData<TaskState?> = MutableLiveData()
+
+    val getTasksState: LiveData<TaskState?> = _getTasksState
+    val addTaskState: LiveData<TaskState?> = _addTaskState
+    val archiveTaskState: LiveData<TaskState?> = _archiveTaskState
+    val unarchiveTaskState: LiveData<TaskState?> = _unarchiveTaskState
 
     private var archivedTask: Task? = null
     private var unarchivedTask: Task? = null
@@ -54,10 +62,52 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
                 Log.e("ROOM_DEBUG", "${TaskSingleton.openTaskList}")
                 Log.d("RX_DEBUG", "GET ALL TASK: OK")
-                isGetAllTasksSuccess.postValue(true)
+                _getTasksState.postValue(TaskState.Success)
 
             }, { error ->
+                _getTasksState.postValue(TaskState.Error)
                 Log.e("RX_DEBUG", "GET ALL TASKS: ${error.message}")
+            })
+
+    }
+
+    fun addTask(title: String, content: String): Disposable? {
+
+        val task: Task?
+
+        try {
+            task = Task(sharedPref?.nextTaskId ?: 0, title, content, false)
+        } catch(error: Exception) {
+            _addTaskState.value = TaskState.Error
+            Log.e("ROOM_DEBUG", "ADD TASK: ${error.message}")
+            return null
+        }
+
+        if(TaskSingleton.openTaskIdList == null)
+            sharedPref?.saveOpenTaskIdList(mutableListOf(sharedPref.nextTaskId))
+        else
+            sharedPref?.addOpenTaskIdToList(sharedPref.nextTaskId)
+
+        return taskDao?.insertAll(task)
+            ?.subscribeOn(Schedulers.newThread())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({
+
+                Log.d("RX_DEBUG", "ADD TASK: OK")
+                Log.d("RX_DEBUG", "LIST FROM SHARED PREF: ${TaskSingleton.openTaskIdList}")
+                Log.d("RX_DEBUG", "CURRENT TASK ID: ${sharedPref?.nextTaskId}")
+
+                sharedPref?.incrementCurrentTaskId()
+                TaskSingleton.newTask = task
+                TaskSingleton.openTaskList?.add(0, task)
+
+                Log.d("RX_DEBUG", "${TaskSingleton.openTaskList}")
+
+                _addTaskState.postValue(TaskState.Success)
+
+            }, { error ->
+                _addTaskState.postValue(TaskState.Error)
+                Log.e("RX_DEBUG", "ADD TASK: ${error.message}")
             })
 
     }
@@ -97,9 +147,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 Log.d("RX_DEBUG", "ARCHIVE TASK: OK")
                 Log.d("ROOM_DEBUG", "ARCHIVED TASK ID LIST: ${TaskSingleton.archivedTaskIdList}")
                 Log.d("ROOM_DEBUG", "ARCHIVED TASK LIST: ${TaskSingleton.archivedTaskList}")
-                isArchiveTaskSuccess.postValue(true)
+                _archiveTaskState.postValue(TaskState.Success)
 
             }, { error ->
+                _archiveTaskState.postValue(TaskState.Error)
                 Log.e("RX_DEBUG", "ARCHIVE TASK: ${error.message}")
             })
 
@@ -138,9 +189,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 TaskSingleton.unarchivedTask = task
 
                 Log.e("RX_DEBUG", "UNARCHIVE TASK: OK")
-                isUnarchiveTaskSuccess.postValue(true)
+                _unarchiveTaskState.postValue(TaskState.Success)
 
             }, { error ->
+                _unarchiveTaskState.postValue(TaskState.Error)
                 Log.e("RX_DEBUG", "UNARCHIVE TASK: ${error.message}")
             })
     }

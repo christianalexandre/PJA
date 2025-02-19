@@ -2,17 +2,23 @@ package com.example.todo.add
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.main.MainActivity
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
-import com.example.todo.room.DataBase
-import com.example.todo.task.TaskDao
+import com.example.todo.main.MainViewModel
+import com.example.todo.task.TaskState
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -20,17 +26,16 @@ private const val EDIT_TEXT_CONTENT = "edit_text_content"
 class AddFragment : Fragment() {
 
     private var binding: FragmentAddBinding? = null
-    private var addViewModel: AddViewModel? = null
-    private var db: DataBase? = null
-    private var taskDao: TaskDao? = null
+    private var mainViewModel: MainViewModel? = null
+
+    companion object {
+        const val TAG = "add_fragment"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        db = DataBase.getInstance(context)
-        taskDao = db?.taskDao()
-        addViewModel = ViewModelProvider(this)[AddViewModel::class.java]
-            .taskDao(taskDao)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         setupObserver()
 
@@ -64,11 +69,21 @@ class AddFragment : Fragment() {
 
     private fun setupObserver() {
 
-        addViewModel?.isSuccess?.observe(this) { isSuccess ->
+        mainViewModel?.addTaskState?.observe(this) { state ->
 
-            if(isSuccess) {
-                (activity as MainActivity).switchFromAddFragmentToHomeFragment()
-                addViewModel?.isSuccess?.value = false
+            when(state) {
+
+                is TaskState.Success -> {
+                    (activity as MainActivity).switchFromAddFragmentToHomeFragment()
+                    Toast.makeText(context, getString(R.string.task_created), Toast.LENGTH_SHORT).show()
+                }
+
+                is TaskState.Error -> {
+                    Toast.makeText(context, getString(R.string.error_task_created), Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+
             }
 
         }
@@ -85,10 +100,7 @@ class AddFragment : Fragment() {
 
     private fun setupSaveButtonListener() {
 
-        val title = binding?.inputLayoutAddTitle?.editText?.text ?: getString(R.string.default_error_title)
-        val content = binding?.inputLayoutAddContent?.editText?.text ?: getString(R.string.default_error_content)
-
-        if(title.isNotBlank() && content.isNotBlank())
+        if(binding?.inputLayoutAddTitle?.editText?.text?.isNotBlank() == true && binding?.inputLayoutAddContent?.editText?.text?.isNotBlank() == true)
             binding?.buttonSave?.isActivated = true
 
         binding?.buttonSave?.setOnClickListener {
@@ -96,19 +108,22 @@ class AddFragment : Fragment() {
             if(!it.isActivated)
                 return@setOnClickListener
 
-            if(title.isBlank()) {
+            if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true) {
                 binding?.inputLayoutAddTitle?.error = getString(R.string.error_add_title)
                 it.isActivated = false
                 return@setOnClickListener
             }
 
-            addViewModel?.addTask(
-                title.toString(),
-                content.toString(),
-                requireContext()
+            mainViewModel?.addTask(
+                binding?.inputLayoutAddTitle?.editText?.text.toString(),
+                binding?.inputLayoutAddContent?.editText?.text.toString()
             )
 
-            Toast.makeText(context, getString(R.string.task_created), Toast.LENGTH_SHORT).show()
+            (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                .hideSoftInputFromWindow(view?.windowToken, 0)
+
+            binding?.inputLayoutAddTitle?.editText?.setText("")
+            binding?.inputLayoutAddContent?.editText?.setText("")
 
         }
 
@@ -116,20 +131,19 @@ class AddFragment : Fragment() {
 
     private fun setupInputLayoutsListener() {
 
-        addViewModel?.filterMaxLength(binding?.inputLayoutAddTitle?.editText, 50)
-        binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(addViewModel?.disableErrorTaskTitle(binding?.inputLayoutAddTitle))
-        binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(addViewModel?.enableSaveButtonTaskTitle(binding))
+        filterMaxLength(binding?.inputLayoutAddTitle?.editText, 50)
+        binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(enableSaveButtonTaskTitle(binding))
 
-        addViewModel?.filterMaxLength(binding?.inputLayoutAddContent?.editText, 300)
-        binding?.inputLayoutAddContent?.editText?.addTextChangedListener(addViewModel?.enableSaveButtonTaskContent(binding))
+        filterMaxLength(binding?.inputLayoutAddContent?.editText, 300)
+        binding?.inputLayoutAddContent?.editText?.addTextChangedListener(enableSaveButtonTaskContent(binding))
 
     }
 
     private fun setupRootListener() {
 
-        binding?.root?.viewTreeObserver?.addOnGlobalLayoutListener {
+        val rect = Rect()
 
-            val rect = Rect()
+        binding?.root?.viewTreeObserver?.addOnGlobalLayoutListener {
             binding?.root?.getWindowVisibleDisplayFrame(rect)
 
             val screenHeight = binding?.root?.rootView?.height
@@ -144,6 +158,54 @@ class AddFragment : Fragment() {
 
         }
 
+    }
+
+    private fun filterMaxLength(editText: EditText?, maxLength: Int) {
+
+        if(editText == null)
+            return
+
+        editText.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+
+    }
+
+    private fun enableSaveButtonTaskTitle(binding: FragmentAddBinding?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true ) {
+                    binding.buttonSave.isActivated = false
+                    return
+                }
+
+                if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
+                    binding.buttonSave.isActivated = false
+                    return
+                }
+
+                binding?.buttonSave?.isActivated = true
+
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+    }
+
+    private fun enableSaveButtonTaskContent(binding: FragmentAddBinding?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
+                    binding.buttonSave.isActivated = false
+                    return
+                }
+
+                binding?.buttonSave?.isActivated = true
+
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
     }
 
 }
