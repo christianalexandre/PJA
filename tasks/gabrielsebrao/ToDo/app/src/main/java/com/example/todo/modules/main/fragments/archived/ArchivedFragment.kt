@@ -1,4 +1,4 @@
-package com.example.todo.archived
+package com.example.todo.modules.main.fragments.archived
 
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +12,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.task.TaskSingleton
-import com.example.todo.adapter.ArchivedTaskAdapter
+import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentArchivedBinding
-import com.example.todo.main.MainActivity
-import com.example.todo.main.MainViewModel
-import com.example.todo.sharedpref.ToDoSharedPref
-import com.example.todo.task.Task
-import com.example.todo.task.TaskActionListener
-import com.example.todo.task.TaskState
+import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.sharedpref.TaskIdListSharedPref
+import com.example.todo.utils.models.Task
+import com.example.todo.utils.listener.TaskActionListener
+import com.example.todo.utils.task.TaskState
 import java.util.Collections
 
 class ArchivedFragment : Fragment() {
@@ -29,7 +27,7 @@ class ArchivedFragment : Fragment() {
     private var mainViewModel: MainViewModel? = null
     private var archivedViewModel: ArchivedViewModel? = null
     private var archivedTaskAdapter: ArchivedTaskAdapter? = null
-    private var toDoSharedPref: ToDoSharedPref? = null
+    private var taskIdListSharedPref: TaskIdListSharedPref? = null
 
     companion object {
         const val TAG = "archived_fragment"
@@ -40,7 +38,7 @@ class ArchivedFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         archivedViewModel = ViewModelProvider(this)[ArchivedViewModel::class.java]
-        toDoSharedPref = ToDoSharedPref.getInstance(context)
+        taskIdListSharedPref = TaskIdListSharedPref.getInstance(context)
 
         setupObservers()
 
@@ -80,7 +78,7 @@ class ArchivedFragment : Fragment() {
             archivedTaskAdapter?.notifyItemMoved(from, to)
 
             TaskSingleton.archivedTaskList?.map { list.add(it.id) }
-            toDoSharedPref?.saveArchivedTaskIdList(list)
+            taskIdListSharedPref?.saveArchivedTaskIdList(list)
 
             Log.d("SHARED_PREF", "TASK ID LIST: ${TaskSingleton.openTaskIdList}")
 
@@ -93,87 +91,13 @@ class ArchivedFragment : Fragment() {
 
     private fun setupObservers() {
 
-        mainViewModel?.getTasksState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-
-                    if(archivedTaskAdapter == null)
-                        setupAdapter()
-
-                    if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
-                        displayDefaultScreen()
-                        return@observe
-                    }
-
-                    displayRecyclerViewScreen()
-
-                }
-
-                else -> {}
-
-            }
-
-        }
-
-        mainViewModel?.archiveTaskState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-
-                    archivedTaskAdapter?.addNewTask(TaskSingleton.archivedTask)
-                    binding?.recyclerViewTasks?.scrollToPosition(0)
-
-                    if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
-                        displayDefaultScreen()
-                        return@observe
-                    }
-
-                    displayRecyclerViewScreen()
-
-                }
-
-                else -> {}
-
-            }
-
-        }
-
-        mainViewModel?.unarchiveTaskState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-
-                    archivedTaskAdapter?.notifyItemRemoved(mainViewModel?.unarchivedItemIndex ?: 0)
-                    (activity as MainActivity).switchFromArchivedFragmentToHomeFragment()
-
-                    Toast.makeText(context, getString(R.string.task_unarchived), Toast.LENGTH_LONG).show()
-
-                    if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
-                        displayDefaultScreen()
-                        return@observe
-                    }
-
-                    displayRecyclerViewScreen()
-
-                }
-
-                else -> {}
-
-            }
-
-        }
-
         archivedViewModel?.deleteTaskState?.observe(this) { state ->
 
             when(state) {
 
                 is TaskState.Success -> {
 
-                    archivedTaskAdapter?.notifyItemRemoved(archivedViewModel?.removedItemIndex ?: 0)
+                    archivedTaskAdapter?.removeTask(archivedViewModel?.removedItemIndex ?: 0)
 
                     Toast.makeText(context, getString(R.string.task_deleted), Toast.LENGTH_LONG).show()
 
@@ -229,6 +153,47 @@ class ArchivedFragment : Fragment() {
 
         binding?.defaultEmptyTaskList?.visibility = View.GONE
         binding?.recyclerViewTasks?.visibility = View.VISIBLE
+
+    }
+
+    fun onGetTasks() {
+
+        if(archivedTaskAdapter == null)
+            setupAdapter()
+
+        if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
+            displayDefaultScreen()
+            return
+        }
+
+        displayRecyclerViewScreen()
+
+    }
+
+    fun onArchiveTask() {
+
+        archivedTaskAdapter?.addNewTask()
+        binding?.recyclerViewTasks?.scrollToPosition(0)
+
+        if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
+            displayDefaultScreen()
+            return
+        }
+
+        displayRecyclerViewScreen()
+
+    }
+
+    fun onUnarchiveTask() {
+
+        archivedTaskAdapter?.removeTask(mainViewModel?.unarchivedItemIndex ?: 0)
+
+        if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
+            displayDefaultScreen()
+            return
+        }
+
+        displayRecyclerViewScreen()
 
     }
 

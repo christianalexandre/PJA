@@ -1,4 +1,4 @@
-package com.example.todo.home
+package com.example.todo.modules.main.fragments.home
 
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +12,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.task.TaskActionListener
-import com.example.todo.task.TaskSingleton
-import com.example.todo.adapter.OpenTaskAdapter
+import com.example.todo.utils.listener.TaskActionListener
+import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentHomeBinding
-import com.example.todo.main.MainActivity
-import com.example.todo.main.MainViewModel
-import com.example.todo.task.Task
-import com.example.todo.sharedpref.ToDoSharedPref
-import com.example.todo.task.TaskState
+import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.models.Task
+import com.example.todo.utils.sharedpref.TaskIdListSharedPref
+import com.example.todo.utils.task.TaskState
 import java.util.Collections
 
 class HomeFragment : Fragment() {
@@ -28,8 +26,8 @@ class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding? = null
     private var mainViewModel: MainViewModel? = null
     private var homeViewModel: HomeViewModel? = null
-    private var openTaskAdapter: OpenTaskAdapter? = null
-    private var toDoSharedPref: ToDoSharedPref? = null
+    private var homeTaskAdapter: HomeTaskAdapter? = null
+    private var taskIdListSharedPref: TaskIdListSharedPref? = null
 
     companion object {
         const val TAG = "home_fragment"
@@ -40,7 +38,7 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        toDoSharedPref = ToDoSharedPref.getInstance(context)
+        taskIdListSharedPref = TaskIdListSharedPref.getInstance(context)
 
         setupObservers()
 
@@ -76,12 +74,12 @@ class HomeFragment : Fragment() {
             val from = viewHolder.adapterPosition
             val to = target.adapterPosition
 
-            openTaskAdapter?.taskList?.let { Collections.swap(it, from, to) }
-            openTaskAdapter?.notifyItemMoved(from, to)
+            homeTaskAdapter?.taskList?.let { Collections.swap(it, from, to) }
+            homeTaskAdapter?.notifyItemMoved(from, to)
 
             val list: MutableList<Int> = emptyList<Int>().toMutableList()
             TaskSingleton.openTaskList?.map { list.add(it.id) }
-            toDoSharedPref?.saveOpenTaskIdList(list)
+            taskIdListSharedPref?.saveOpenTaskIdList(list)
 
             Log.d("SHARED_PREF", "TASK ID LIST: ${TaskSingleton.openTaskIdList}")
 
@@ -92,45 +90,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    fun onShown() {
-
-        if((TaskSingleton.openTaskList?.size ?: return) > 0)
-            displayRecyclerViewScreen()
-
-        openTaskAdapter?.addNewTask(TaskSingleton.newTask)
-        TaskSingleton.newTask = null
-
-        binding?.recyclerHomeViewTasks?.scrollToPosition(0)
-
-    }
-
     private fun setupObservers() {
-
-        mainViewModel?.getTasksState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-
-                    if(openTaskAdapter == null)
-                        setupAdapter()
-
-                    if(openTaskAdapter?.taskList?.isEmpty() == true) {
-                        displayDefaultScreen()
-                        return@observe
-                    }
-
-                    displayRecyclerViewScreen()
-
-                }
-
-                is TaskState.Error -> { Toast.makeText(context, getString(R.string.error_task_get), Toast.LENGTH_LONG).show() }
-
-                else -> {}
-
-            }
-
-        }
 
         homeViewModel?.deleteTaskState?.observe(this) { state ->
 
@@ -138,11 +98,11 @@ class HomeFragment : Fragment() {
 
                 is TaskState.Success -> {
 
-                    openTaskAdapter?.notifyItemRemoved(homeViewModel?.removedItemIndex ?: 0)
+                    homeTaskAdapter?.removeTask(homeViewModel?.removedItemIndex ?: 0)
 
                     Toast.makeText(context, getString(R.string.task_deleted), Toast.LENGTH_LONG).show()
 
-                    if(openTaskAdapter?.taskList?.isEmpty() == true) {
+                    if(homeTaskAdapter?.taskList?.isEmpty() == true) {
                         displayDefaultScreen()
                         return@observe
                     }
@@ -159,61 +119,11 @@ class HomeFragment : Fragment() {
 
         }
 
-        mainViewModel?.archiveTaskState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-
-                    openTaskAdapter?.notifyItemRemoved(mainViewModel?.archivedItemIndex ?: 0)
-                    (activity as MainActivity).switchFromHomeFragmentToArchivedFragment()
-
-                    Toast.makeText(context, getString(R.string.task_archived), Toast.LENGTH_LONG).show()
-
-                    if(openTaskAdapter?.taskList?.isEmpty() == true) {
-                        displayDefaultScreen()
-                        return@observe
-                    }
-
-                    displayRecyclerViewScreen()
-
-                }
-
-                is TaskState.Error -> { Toast.makeText(context, getString(R.string.error_task_archive), Toast.LENGTH_LONG).show() }
-
-                else -> {}
-
-            }
-
-        }
-
-        mainViewModel?.unarchiveTaskState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-
-                    openTaskAdapter?.addNewTask(TaskSingleton.unarchivedTask)
-                    TaskSingleton.unarchivedTask = null
-                    binding?.recyclerHomeViewTasks?.scrollToPosition(0)
-
-                    displayRecyclerViewScreen()
-
-                }
-
-                is TaskState.Error -> { Toast.makeText(context, R.string.error_task_unarchive, Toast.LENGTH_LONG).show() }
-
-                else -> {}
-
-            }
-
-        }
-
     }
 
     private fun setupAdapter() {
 
-        openTaskAdapter = OpenTaskAdapter(
+        homeTaskAdapter = HomeTaskAdapter(
             TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(),
             object : TaskActionListener {
                 override fun onArchiveTask(task: Task?) {
@@ -227,7 +137,7 @@ class HomeFragment : Fragment() {
                 override fun onUnarchiveTask(task: Task?) {}
             })
 
-        binding?.recyclerHomeViewTasks?.adapter = openTaskAdapter
+        binding?.recyclerHomeViewTasks?.adapter = homeTaskAdapter
         binding?.recyclerHomeViewTasks?.layoutManager = LinearLayoutManager(context)
 
     }
@@ -243,6 +153,55 @@ class HomeFragment : Fragment() {
 
         binding?.defaultHomeEmptyTaskList?.visibility = View.VISIBLE
         binding?.recyclerHomeViewTasks?.visibility = View.GONE
+
+    }
+
+    fun onGetTasks() {
+
+        if(homeTaskAdapter == null)
+            setupAdapter()
+
+        if(homeTaskAdapter?.taskList?.isEmpty() == true) {
+            displayDefaultScreen()
+            return
+        }
+
+        displayRecyclerViewScreen()
+
+    }
+
+    fun onAddTask() {
+
+        if((TaskSingleton.openTaskList?.size ?: return) > 0)
+            displayRecyclerViewScreen()
+
+        homeTaskAdapter?.addNewTask()
+        TaskSingleton.newTask = null
+
+        binding?.recyclerHomeViewTasks?.scrollToPosition(0)
+
+    }
+
+    fun onArchiveTask() {
+
+        homeTaskAdapter?.removeTask(mainViewModel?.archivedItemIndex ?: 0)
+
+        if(homeTaskAdapter?.taskList?.isEmpty() == true) {
+            displayDefaultScreen()
+            return
+        }
+
+        displayRecyclerViewScreen()
+
+    }
+
+    fun onUnarchiveTask() {
+
+        homeTaskAdapter?.addNewTask()
+        TaskSingleton.unarchivedTask = null
+        binding?.recyclerHomeViewTasks?.scrollToPosition(0)
+
+        displayRecyclerViewScreen()
 
     }
 

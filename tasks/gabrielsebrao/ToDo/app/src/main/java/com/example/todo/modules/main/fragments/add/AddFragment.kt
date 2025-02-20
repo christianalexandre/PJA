@@ -1,24 +1,21 @@
-package com.example.todo.add
+package com.example.todo.modules.main.fragments.add
 
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.todo.main.MainActivity
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
-import com.example.todo.main.MainViewModel
-import com.example.todo.task.TaskState
+import com.example.todo.modules.main.MainViewModel
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -35,9 +32,8 @@ class AddFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-        setupObserver()
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
     }
 
@@ -49,8 +45,12 @@ class AddFragment : Fragment() {
         binding = FragmentAddBinding.inflate(layoutInflater)
 
         if(savedInstanceState != null) {
-            binding?.inputLayoutAddTitle?.editText?.setText(savedInstanceState.getString(EDIT_TEXT_TITLE))
-            binding?.inputLayoutAddContent?.editText?.setText(savedInstanceState.getString(EDIT_TEXT_CONTENT))
+            binding?.inputLayoutAddTitle?.editText?.setText(savedInstanceState.getString(
+                EDIT_TEXT_TITLE
+            ))
+            binding?.inputLayoutAddContent?.editText?.setText(savedInstanceState.getString(
+                EDIT_TEXT_CONTENT
+            ))
         }
 
         setupListener()
@@ -64,29 +64,6 @@ class AddFragment : Fragment() {
 
         outState.putString(EDIT_TEXT_TITLE, binding?.inputLayoutAddTitle?.editText?.text.toString())
         outState.putString(EDIT_TEXT_CONTENT, binding?.inputLayoutAddContent?.editText?.text.toString())
-
-    }
-
-    private fun setupObserver() {
-
-        mainViewModel?.addTaskState?.observe(this) { state ->
-
-            when(state) {
-
-                is TaskState.Success -> {
-                    (activity as MainActivity).switchFromAddFragmentToHomeFragment()
-                    Toast.makeText(context, getString(R.string.task_created), Toast.LENGTH_SHORT).show()
-                }
-
-                is TaskState.Error -> {
-                    Toast.makeText(context, getString(R.string.error_task_created), Toast.LENGTH_SHORT).show()
-                }
-
-                else -> {}
-
-            }
-
-        }
 
     }
 
@@ -121,9 +98,6 @@ class AddFragment : Fragment() {
 
             (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
                 .hideSoftInputFromWindow(view?.windowToken, 0)
-
-            binding?.inputLayoutAddTitle?.editText?.setText("")
-            binding?.inputLayoutAddContent?.editText?.setText("")
 
         }
 
@@ -206,6 +180,13 @@ class AddFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         }
+    }
+
+    fun onAddTask() {
+
+        binding?.inputLayoutAddTitle?.editText?.setText("")
+        binding?.inputLayoutAddContent?.editText?.setText("")
+
     }
 
 }

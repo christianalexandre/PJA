@@ -1,4 +1,6 @@
-package com.example.todo.task
+package com.example.todo.utils.singleton
+
+import com.example.todo.utils.models.Task
 
 object TaskSingleton {
 

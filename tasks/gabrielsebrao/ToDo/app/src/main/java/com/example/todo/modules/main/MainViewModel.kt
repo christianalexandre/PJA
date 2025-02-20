@@ -1,4 +1,4 @@
-package com.example.todo.main
+package com.example.todo.modules.main
 
 import android.app.Application
 import android.content.Context
@@ -6,12 +6,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.todo.task.TaskSingleton
-import com.example.todo.room.DataBase
-import com.example.todo.task.Task
-import com.example.todo.task.TaskDao
-import com.example.todo.sharedpref.ToDoSharedPref
-import com.example.todo.task.TaskState
+import com.example.todo.utils.singleton.TaskSingleton
+import com.example.todo.utils.database.DataBase
+import com.example.todo.utils.models.Task
+import com.example.todo.utils.database.TaskDao
+import com.example.todo.utils.sharedpref.TaskIdListSharedPref
+import com.example.todo.utils.task.TaskState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private val contextRef: WeakReference<Context> = WeakReference(application.applicationContext)
-    private val sharedPref: ToDoSharedPref? = ToDoSharedPref.getInstance(contextRef.get())
+    private val sharedPref: TaskIdListSharedPref? = TaskIdListSharedPref.getInstance(contextRef.get())
     private val taskDao: TaskDao? = DataBase.getInstance(contextRef.get())?.taskDao()
 
     private val _addTaskState: MutableLiveData<TaskState?> = MutableLiveData()

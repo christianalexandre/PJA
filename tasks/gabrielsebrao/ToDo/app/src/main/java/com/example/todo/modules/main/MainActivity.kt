@@ -1,14 +1,16 @@
-package com.example.todo.main
+package com.example.todo.modules.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
-import com.example.todo.add.AddFragment
-import com.example.todo.archived.ArchivedFragment
+import com.example.todo.modules.main.fragments.add.AddFragment
+import com.example.todo.modules.main.fragments.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
-import com.example.todo.home.HomeFragment
+import com.example.todo.modules.main.fragments.home.HomeFragment
+import com.example.todo.utils.task.TaskState
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         setupFragments()
         setupListeners()
+        setupObservers()
 
     }
 
@@ -103,6 +106,92 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setupObservers() {
+
+        mainViewModel?.getTasksState?.observe(this) { state ->
+            when(state) {
+
+                is TaskState.Success -> {
+
+                    (homeFragment as? HomeFragment)?.onGetTasks()
+                    (archivedFragment as? ArchivedFragment)?.onGetTasks()
+
+                }
+
+                is TaskState.Error -> {
+                    Toast.makeText(this, getString(R.string.error_task_get), Toast.LENGTH_LONG).show()
+                }
+
+                else -> {}
+
+            }
+        }
+
+        mainViewModel?.addTaskState?.observe(this) { state ->
+            when(state) {
+
+                is TaskState.Success -> {
+
+                    (addFragment as? AddFragment)?.onAddTask()
+                    switchFromAddFragmentToHomeFragment()
+                    (homeFragment as? HomeFragment)?.onAddTask()
+                    Toast.makeText(this, getString(R.string.task_created), Toast.LENGTH_SHORT).show()
+
+                }
+
+                is TaskState.Error -> {
+                    Toast.makeText(this, getString(R.string.error_task_created), Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+
+            }
+        }
+
+        mainViewModel?.archiveTaskState?.observe(this) { state ->
+            when(state) {
+
+                is TaskState.Success -> {
+
+                    (homeFragment as? HomeFragment)?.onArchiveTask()
+                    switchFromHomeFragmentToArchivedFragment()
+                    (archivedFragment as? ArchivedFragment)?.onArchiveTask()
+                    Toast.makeText(this, getString(R.string.task_archived), Toast.LENGTH_LONG).show()
+
+                }
+
+                is TaskState.Error -> {
+                    Toast.makeText(this, getString(R.string.error_task_archive), Toast.LENGTH_LONG).show()
+                }
+
+                else -> {}
+
+            }
+        }
+
+        mainViewModel?.unarchiveTaskState?.observe(this) { state ->
+            when(state) {
+
+                is TaskState.Success -> {
+
+                    (archivedFragment as? ArchivedFragment)?.onUnarchiveTask()
+                    switchFromArchivedFragmentToHomeFragment()
+                    (homeFragment as? HomeFragment)?.onUnarchiveTask()
+                    Toast.makeText(this, getString(R.string.task_unarchived), Toast.LENGTH_LONG).show()
+
+                }
+
+                is TaskState.Error -> {
+                    Toast.makeText(this, R.string.error_task_unarchive, Toast.LENGTH_LONG).show()
+                }
+
+                else -> {}
+
+            }
+        }
+
+    }
+
     private fun createFragment(fragment: Fragment?, fragmentTag: String) {
 
         if(fragment == null)
@@ -125,9 +214,6 @@ class MainActivity : AppCompatActivity() {
             .show(fragment)
             .commit()
 
-        if(fragment is HomeFragment)
-            fragment.onShown()
-
     }
 
     private fun hideFragment(fragment: Fragment?) {
@@ -142,7 +228,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun switchFromAddFragmentToHomeFragment() {
+    private fun switchFromAddFragmentToHomeFragment() {
 
         hideFragment(supportFragmentManager.findFragmentByTag(AddFragment.TAG))
         binding?.bottomNavigationView?.selectedItemId = R.id.home
@@ -150,7 +236,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun switchFromHomeFragmentToArchivedFragment() {
+    private fun switchFromHomeFragmentToArchivedFragment() {
 
         hideFragment(supportFragmentManager.findFragmentByTag(HomeFragment.TAG))
         binding?.bottomNavigationView?.selectedItemId = R.id.archived
@@ -158,7 +244,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun switchFromArchivedFragmentToHomeFragment() {
+    private fun switchFromArchivedFragmentToHomeFragment() {
 
         hideFragment(supportFragmentManager.findFragmentByTag(HomeFragment.TAG))
         binding?.bottomNavigationView?.selectedItemId = R.id.home

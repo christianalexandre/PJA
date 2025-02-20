@@ -1,7 +1,7 @@
-package com.example.todo.sharedpref
+package com.example.todo.utils.sharedpref
 
 import android.content.Context
-import com.example.todo.task.TaskSingleton
+import com.example.todo.utils.singleton.TaskSingleton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -12,7 +12,7 @@ private const val DEFAULT_NEXT_TASK_ID = 1
 private const val KEY_LIST = "PositionListSharedPreferences"
 private const val ARCHIVED_KEY_LIST = "ArchivedPositionListSharedPreferences"
 
-class ToDoSharedPref private constructor(context: Context) {
+class TaskIdListSharedPref private constructor(context: Context) {
 
     private val appContext: Context = context.applicationContext
     private val gson = Gson()
@@ -23,15 +23,15 @@ class ToDoSharedPref private constructor(context: Context) {
     companion object {
 
         @Volatile
-        private var INSTANCE: ToDoSharedPref? = null
+        private var INSTANCE: TaskIdListSharedPref? = null
 
-        fun getInstance(context: Context?): ToDoSharedPref? {
+        fun getInstance(context: Context?): TaskIdListSharedPref? {
 
             if(context == null)
                 return null
 
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: ToDoSharedPref(context).also { INSTANCE = it }
+                INSTANCE ?: TaskIdListSharedPref(context).also { INSTANCE = it }
             }
         }
 
