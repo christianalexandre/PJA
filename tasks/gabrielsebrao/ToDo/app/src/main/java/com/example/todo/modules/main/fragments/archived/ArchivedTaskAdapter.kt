@@ -4,13 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
+import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
-import com.example.todo.utils.listener.TaskActionListener
 
-class ArchivedTaskAdapter(
-    val taskList: MutableList<Task>,
-    private val listener: TaskActionListener
-): RecyclerView.Adapter<ArchivedTaskViewHolder>() {
+class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val listener: CardActionListener): RecyclerView.Adapter<ArchivedTaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchivedTaskViewHolder {
         return ArchivedTaskViewHolder(

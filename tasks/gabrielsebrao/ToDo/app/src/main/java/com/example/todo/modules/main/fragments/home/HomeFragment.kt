@@ -16,12 +16,14 @@ import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.dialog.TaskDialog
+import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 import com.example.todo.utils.sharedpref.TaskIdListSharedPref
 import com.example.todo.utils.task.TaskState
 import java.util.Collections
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), TaskActionListener {
 
     private var binding: FragmentHomeBinding? = null
     private var mainViewModel: MainViewModel? = null
@@ -63,6 +65,14 @@ class HomeFragment : Fragment() {
 
         return binding?.root
 
+    }
+
+    override fun onDeleteTask(task: Task?) {
+        homeViewModel?.deleteTask(task)
+    }
+
+    override fun onSecondAction(task: Task?) {
+        mainViewModel?.archiveTask(task)
     }
 
     inner class HomeItemTouchHelper(
@@ -125,16 +135,16 @@ class HomeFragment : Fragment() {
 
         homeTaskAdapter = HomeTaskAdapter(
             TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(),
-            object : TaskActionListener {
-                override fun onArchiveTask(task: Task?) {
-                    mainViewModel?.archiveTask(task)
-                }
+            object : CardActionListener {
+                override fun onCheckClicked(task: Task?) {
+                    val dialog = TaskDialog.newInstance(
+                        task,
+                        this@HomeFragment,
+                        true
+                    )
 
-                override fun onDeleteTask(task: Task?) {
-                    homeViewModel?.deleteTask(task)
+                    dialog.show(parentFragmentManager, TaskDialog.TAG)
                 }
-
-                override fun onUnarchiveTask(task: Task?) {}
             })
 
         binding?.recyclerHomeViewTasks?.adapter = homeTaskAdapter

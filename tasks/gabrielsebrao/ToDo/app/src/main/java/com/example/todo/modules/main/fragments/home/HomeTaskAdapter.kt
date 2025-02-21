@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.utils.listener.TaskActionListener
+import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 
 class HomeTaskAdapter(
     val taskList: MutableList<Task>,
-    private val listener: TaskActionListener
+    private val listener: CardActionListener
 ): RecyclerView.Adapter<HomeTaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeTaskViewHolder {

@@ -11,10 +11,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
+import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
-import com.example.todo.utils.listener.TaskActionListener
 
-class ArchivedTaskViewHolder(itemView: View, private val listener: TaskActionListener) : RecyclerView.ViewHolder(itemView) {
+class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
 
     private var dialog: AlertDialog? = null
     private var dialogView: View? = null
@@ -33,7 +33,6 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: TaskActionLis
             .create()
 
         setupView()
-        setupDialogView()
         setupListener()
 
     }
@@ -48,55 +47,9 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: TaskActionLis
 
     }
 
-    private fun setupDialogView() {
-
-        dialogView?.findViewById<TextView>(R.id.button_delete_text)
-            ?.setText(R.string.archived_delete_button_text)
-
-        dialogView?.findViewById<TextView>(R.id.button_second_text)
-            ?.setText(R.string.archived_unarchive_button_text)
-
-        dialogView?.findViewById<ImageView>(R.id.icon_second)
-            ?.setImageIcon(Icon.createWithResource(itemView.context, R.drawable.icon_unarchive))
-
-        dialogView?.findViewById<ImageView>(R.id.icon_second)
-            ?.contentDescription = ContextCompat.getString(itemView.context, R.string.alt_icon_unarchived)
-
-    }
-
     private fun setupListener() {
 
-        setupCheckIconListener()
-        setupDialogDeleteButtonListener()
-        setupDialogUnarchiveButtonListener()
-
-    }
-
-    private fun setupCheckIconListener() {
-
-        itemView.findViewById<FrameLayout>(R.id.frame_layout).setOnClickListener { dialog?.show() }
-
-    }
-
-    private fun setupDialogDeleteButtonListener() {
-
-        dialogView?.findViewById<View>(R.id.button_delete_task)?.setOnClickListener {
-
-            listener.onDeleteTask(task)
-            dialog?.hide()
-
-        }
-
-    }
-
-    private fun setupDialogUnarchiveButtonListener() {
-
-        dialogView?.findViewById<View>(R.id.button_second)?.setOnClickListener {
-
-            listener.onUnarchiveTask(task)
-            dialog?.hide()
-
-        }
+        itemView.findViewById<FrameLayout>(R.id.frame_layout).setOnClickListener { listener.onCheckClicked(task) }
 
     }
 

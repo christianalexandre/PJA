@@ -10,6 +10,7 @@ import com.example.todo.modules.main.fragments.add.AddFragment
 import com.example.todo.modules.main.fragments.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.modules.main.fragments.home.HomeFragment
+import com.example.todo.utils.models.Task
 import com.example.todo.utils.task.TaskState
 
 class MainActivity : AppCompatActivity() {
