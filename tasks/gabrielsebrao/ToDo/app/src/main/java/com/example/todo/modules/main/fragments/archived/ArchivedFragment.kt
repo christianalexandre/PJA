@@ -15,13 +15,15 @@ import com.example.todo.R
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.dialog.TaskDialog
+import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.sharedpref.TaskIdListSharedPref
 import com.example.todo.utils.models.Task
 import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.task.TaskState
 import java.util.Collections
 
-class ArchivedFragment : Fragment() {
+class ArchivedFragment : Fragment(), TaskActionListener {
 
     private var binding: FragmentArchivedBinding? = null
     private var mainViewModel: MainViewModel? = null
@@ -61,6 +63,14 @@ class ArchivedFragment : Fragment() {
 
         return binding?.root
 
+    }
+
+    override fun onDeleteTask(task: Task?) {
+        archivedViewModel?.deleteTask(task)
+    }
+
+    override fun onSecondAction(task: Task?) {
+        mainViewModel?.unarchiveTask(task)
     }
 
     inner class ArchivedItemTouchHelper(
@@ -124,17 +134,14 @@ class ArchivedFragment : Fragment() {
 
         archivedTaskAdapter = ArchivedTaskAdapter(
             TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(),
-            object: TaskActionListener {
-                override fun onUnarchiveTask(task: Task?) {
-                    mainViewModel?.unarchiveTask(task)
+            object: CardActionListener {
+                override fun onCheckClicked(task: Task?) {
+                    if (parentFragmentManager.findFragmentByTag(TaskDialog.TAG) != null)
+                        return
+
+                    val dialog = TaskDialog.newInstance(task, this@ArchivedFragment, false)
+                    dialog.show(parentFragmentManager, TaskDialog.TAG)
                 }
-
-                override fun onDeleteTask(task: Task?) {
-                    archivedViewModel?.deleteTask(task)
-                }
-
-                override fun onArchiveTask(task: Task?) {}
-
             })
 
         binding?.recyclerViewTasks?.adapter = archivedTaskAdapter

@@ -137,12 +137,14 @@ class HomeFragment : Fragment(), TaskActionListener {
             TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(),
             object : CardActionListener {
                 override fun onCheckClicked(task: Task?) {
-                    val dialog = TaskDialog.newInstance(
-                        task,
-                        this@HomeFragment,
-                        true
-                    )
+                    if (parentFragmentManager.findFragmentByTag(TaskDialog.TAG) != null)
+                        return
 
+                    parentFragmentManager.findFragmentByTag(TaskDialog.TAG)?.let { fragment ->
+                        (fragment as? TaskDialog)?.dismiss()
+                    }
+
+                    val dialog = TaskDialog.newInstance(task, this@HomeFragment, true)
                     dialog.show(parentFragmentManager, TaskDialog.TAG)
                 }
             })

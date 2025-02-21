@@ -1,13 +1,8 @@
 package com.example.todo.utils.dialog
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.ContextCompat
@@ -63,8 +58,8 @@ class TaskDialog: AppCompatDialogFragment() {
         setupListeners()
 
         return AlertDialog.Builder(requireContext())
-            .setView(LayoutInflater.from(context).inflate(R.layout.item_dialog_task_check, binding?.root))
-            .setCustomTitle(binding?.titleDialog)
+            .setView(binding?.root)
+            .setCustomTitle(null)
             .create()
 
     }
