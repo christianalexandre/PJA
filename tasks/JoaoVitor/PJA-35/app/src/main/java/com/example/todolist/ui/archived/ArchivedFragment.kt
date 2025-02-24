@@ -49,6 +49,8 @@ class ArchivedFragment : Fragment(), TaskListener {
     private fun observeViewModel() {
         archivedViewModel.archivedTasksLiveData.observe(viewLifecycleOwner) { tasks ->
             taskAdapter.updateTasks(tasks.toMutableList())
+
+            binding.notTaskFromArchived.visibility = if (tasks.isEmpty()) View.VISIBLE else View.GONE
         }
     }
 

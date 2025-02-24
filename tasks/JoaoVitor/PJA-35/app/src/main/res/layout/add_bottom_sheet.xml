@@ -1,84 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="@color/gray"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
     android:orientation="vertical">
 
-    <TextView
+    <Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selecionar Imagem"
-        android:textColor="@color/off_white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="16dp" />
+        app:layout_constraintBottom_toBottomOf="@id/card"
+        app:layout_constraintStart_toStartOf="@id/card"
+        app:layout_constraintEnd_toEndOf="@id/card"
+        android:background="@color/gray_hard"/>
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="300dp"
+        android:backgroundTint="@color/gray_hard"
+        android:padding="8dp"
+        app:cardCornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <LinearLayout
-            android:id="@+id/btnCamera"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/photo_camera_24dp"
-                android:contentDescription="Câmera" />
+            <Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="40dp"
+                android:layout_height="3dp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="16dp"
+                android:background="@color/off_white" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Câmera"
-                android:textColor="@color/off_white"
-                android:textSize="14sp"
                 android:gravity="center"
-                android:paddingTop="4dp" />
+                android:text="Selecionar Imagem"
+                android:textColor="@color/off_white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title">
+
+                <LinearLayout
+                    android:id="@+id/btnCamera"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription="Câmera"
+                        android:src="@drawable/photo_camera_24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="4dp"
+                        android:text="Câmera"
+                        android:textColor="@color/off_white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnGallery"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription="Galeria"
+                        android:src="@drawable/ic_gallery_thumbnail_24dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="4dp"
+                        android:text="Galeria"
+                        android:textColor="@color/off_white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/btnGallery"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="vertical"
-            android:padding="8dp">
+    </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_gallery_thumbnail_24dp"
-                android:contentDescription="Galeria" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Galeria"
-                android:textColor="@color/off_white"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:paddingTop="4dp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cancelar"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

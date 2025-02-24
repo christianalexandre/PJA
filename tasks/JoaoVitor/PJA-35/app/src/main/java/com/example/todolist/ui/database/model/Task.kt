@@ -8,5 +8,6 @@ data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val description: String? = null,
+    val image: String? = null,
     var isArchived: Boolean = false
 )

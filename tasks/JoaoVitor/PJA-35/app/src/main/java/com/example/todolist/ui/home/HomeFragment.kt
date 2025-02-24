@@ -49,6 +49,8 @@ class HomeFragment : Fragment(), TaskListener {
     private fun observeViewModel() {
         homeViewModel.tasksLiveData.observe(viewLifecycleOwner) { tasks ->
             taskAdapter.updateTasks(tasks.toMutableList())
+
+            binding.notTaskFromHome.visibility = if (tasks.isEmpty()) View.VISIBLE else View.GONE
         }
     }
 

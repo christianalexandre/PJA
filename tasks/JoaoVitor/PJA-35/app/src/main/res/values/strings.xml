@@ -20,4 +20,7 @@
     <string name="text_task_concluded">Tarefa arquivada</string>
     <string name="attachment">Anexar</string>
     <string name="add_attach">Nenhuma imagem anexada</string>
+    <string name="delete_attach_tex">apagar anexo</string>
+    <string name="not_task_text">Nenhuma tarefa</string>
+    <string name="not_task_archived_text">Nenhuma tarefa arquivada</string>
 </resources>
