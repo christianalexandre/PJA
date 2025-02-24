@@ -26,7 +26,7 @@ class ArchivedViewModel(private val repository: TaskRepository) : ViewModel() {
     }
 
     fun unarchiveTask(task: Task) {
-        val unarchivedTask = task.copy(isArchived = false)
+        val unarchivedTask = task.copy(isArchived = false, image = task.image)
         val disposable = repository.updateTask(unarchivedTask)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

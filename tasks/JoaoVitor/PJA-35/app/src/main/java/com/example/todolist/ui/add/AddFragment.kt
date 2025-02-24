@@ -121,21 +121,14 @@ class AddFragment : Fragment() {
     }
 
     private fun updateTextInputColor(textInput: TextInputLayout, isValid: Boolean) {
-        textInput.setEndIconTintList(
-            ColorStateList.valueOf(
-                ContextCompat.getColor(
-                    requireContext(),
-                    if (isValid) R.color.orange_01 else R.color.red_error
-                )
-            )
-        )
+        textInput.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), if (isValid) R.color.orange_01 else R.color.red_error)))
     }
 
     private fun clickSaveButton() {
         binding.saveButton.setOnClickListener {
             val title = titleText
             val description = annotationText
-            val imageUri = binding.picture.tag as? String
+            val imageUri = (binding.picture.tag as? String)?.takeIf { it.isNotEmpty() }
 
             val newTask = Task(title = title, description = description, image = imageUri)
 
@@ -143,6 +136,8 @@ class AddFragment : Fragment() {
             binding.textFieldTitleText.text?.clear()
             binding.textFieldAnotationText.text?.clear()
             removeAttachedImage()
+            // Reset
+            binding.picture.tag = null
 
             // Esconder teclado
             val inputMethodManager =

@@ -3,6 +3,7 @@ package com.example.todolist.ui.adapter
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.todolist.R
 import com.example.todolist.ui.database.model.Task
-
 
 class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -25,20 +25,13 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         titleTextView?.text = task.title
         descriptionTextView?.text = task.description
 
-        if (!isFromHome) checkButton?.setColorFilter(
-            ContextCompat.getColor(
-                itemView.context,
-                R.color.orange_01
-            )
-        )
-        if (isFromHome) checkButton?.setImageDrawable(
-            ContextCompat.getDrawable(
-                itemView.context,
-                R.drawable.ic_uncheck_24dp
-            )
-        )
+        if (!isFromHome) checkButton?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+        if (isFromHome) checkButton?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+
+        buttonPhoto?.visibility = View.VISIBLE // Garante que o botão de foto comece visível
 
         if (!task.image.isNullOrEmpty()) {
+            Log.d("TaskViewHolder", "Task ID: ${task.id}, Image Path: ${task.image}")
             imageTask?.let {
                 Glide.with(itemView.context)
                     .load(task.image)
@@ -64,16 +57,12 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 try {
                     itemView.context.startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
-                    buttonPhoto.visibility = View.GONE
+                    buttonPhoto?.visibility = View.GONE
                 }
             }
         } else {
-            imageTask?.setImageDrawable(
-                ContextCompat.getDrawable(
-                    itemView.context,
-                    R.drawable.no_photography_24dp
-                )
-            )
+            Log.d("TaskViewHolder", "Task ID: ${task.id} has no image.")
+            imageTask?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.no_photography_24dp))
             buttonPhoto?.visibility = View.GONE
             buttonPhoto?.setOnClickListener(null)
         }
