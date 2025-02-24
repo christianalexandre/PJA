@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.rxadapter)
     implementation(libs.rxjavaroom)
     implementation(libs.gson)
+    implementation(libs.viewpager)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -5,12 +5,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.example.todo.R
 import com.example.todo.modules.main.fragments.add.AddFragment
 import com.example.todo.modules.main.fragments.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.modules.main.fragments.home.HomeFragment
-import com.example.todo.utils.models.Task
 import com.example.todo.utils.task.TaskState
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var homeFragment: Fragment? = null
     private var archivedFragment: Fragment? = null
     private var addFragment: Fragment? = null
-    private var currentFragmentTag: String = HomeFragment.TAG
+    private var viewPager: ViewPager2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -35,33 +35,21 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onResume() {
-
-        super.onResume()
-
-        val activeFragment = supportFragmentManager.fragments.find { !it.isHidden }
-        currentFragmentTag = activeFragment?.tag ?: HomeFragment.TAG
-
-    }
-
     private fun setupFragments() {
 
-        homeFragment = supportFragmentManager.findFragmentByTag(HomeFragment.TAG) ?: HomeFragment()
-        archivedFragment = supportFragmentManager.findFragmentByTag(ArchivedFragment.TAG) ?: ArchivedFragment()
-        addFragment = supportFragmentManager.findFragmentByTag(AddFragment.TAG) ?: AddFragment()
+        homeFragment = HomeFragment()
+        archivedFragment = ArchivedFragment()
+        addFragment = AddFragment()
 
-        if(supportFragmentManager.findFragmentByTag(AddFragment.TAG) == null) {
-            createFragment(addFragment, AddFragment.TAG)
-            hideFragment(addFragment)
-        }
+        viewPager = binding?.viewPager
+        viewPager?.adapter = MainViewPagerAdapter(this, listOf(homeFragment, archivedFragment, addFragment))
 
-        if(supportFragmentManager.findFragmentByTag(ArchivedFragment.TAG) == null) {
-            createFragment(archivedFragment, ArchivedFragment.TAG)
-            hideFragment(archivedFragment)
-        }
-
-        if(supportFragmentManager.findFragmentByTag(HomeFragment.TAG) == null)
-            createFragment(homeFragment, HomeFragment.TAG)
+        viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding?.bottomNavigationView?.menu?.getItem(position)?.isChecked = true
+            }
+        })
 
     }
 
@@ -73,32 +61,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationViewListeners() {
 
-        var fragment: Fragment?
-
         binding?.bottomNavigationView?.setOnItemSelectedListener { item ->
 
-            fragment = when(item.itemId) {
+            when(item.itemId) {
 
-                R.id.home -> homeFragment
+                R.id.home -> viewPager?.currentItem = 0
 
-                R.id.archived -> archivedFragment
+                R.id.archived -> viewPager?.currentItem = 1
 
-                R.id.add -> addFragment
+                R.id.add -> viewPager?.currentItem = 2
 
-                else -> null
-            }
-
-            if(fragment?.tag == currentFragmentTag)
-                return@setOnItemSelectedListener true
-
-            hideFragment(supportFragmentManager.findFragmentByTag(currentFragmentTag))
-
-            showFragment(fragment)
-            currentFragmentTag = when(fragment) {
-                is HomeFragment -> HomeFragment.TAG
-                is ArchivedFragment -> ArchivedFragment.TAG
-                is AddFragment -> AddFragment.TAG
-                else -> currentFragmentTag
             }
 
             true
@@ -134,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 is TaskState.Success -> {
 
                     (addFragment as? AddFragment)?.onAddTask()
-                    switchFromAddFragmentToHomeFragment()
+                    binding?.bottomNavigationView?.selectedItemId = R.id.home
                     (homeFragment as? HomeFragment)?.onAddTask()
                     Toast.makeText(this, getString(R.string.task_created), Toast.LENGTH_SHORT).show()
 
@@ -155,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                 is TaskState.Success -> {
 
                     (homeFragment as? HomeFragment)?.onArchiveTask()
-                    switchFromHomeFragmentToArchivedFragment()
+                    binding?.bottomNavigationView?.selectedItemId = R.id.archived
                     (archivedFragment as? ArchivedFragment)?.onArchiveTask()
                     Toast.makeText(this, getString(R.string.task_archived), Toast.LENGTH_LONG).show()
 
@@ -176,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                 is TaskState.Success -> {
 
                     (archivedFragment as? ArchivedFragment)?.onUnarchiveTask()
-                    switchFromArchivedFragmentToHomeFragment()
+                    binding?.bottomNavigationView?.selectedItemId = R.id.home
                     (homeFragment as? HomeFragment)?.onUnarchiveTask()
                     Toast.makeText(this, getString(R.string.task_unarchived), Toast.LENGTH_LONG).show()
 
@@ -190,66 +162,6 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-
-    }
-
-    private fun createFragment(fragment: Fragment?, fragmentTag: String) {
-
-        if(fragment == null)
-            return
-
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.frame_layout, fragment, fragmentTag)
-            .commit()
-
-    }
-
-    private fun showFragment(fragment: Fragment?) {
-
-        if(fragment == null)
-            return
-
-        supportFragmentManager
-            .beginTransaction()
-            .show(fragment)
-            .commit()
-
-    }
-
-    private fun hideFragment(fragment: Fragment?) {
-
-        if(fragment == null)
-            return
-
-        supportFragmentManager
-            .beginTransaction()
-            .hide(fragment)
-            .commit()
-
-    }
-
-    private fun switchFromAddFragmentToHomeFragment() {
-
-        hideFragment(supportFragmentManager.findFragmentByTag(AddFragment.TAG))
-        binding?.bottomNavigationView?.selectedItemId = R.id.home
-        currentFragmentTag = HomeFragment.TAG
-
-    }
-
-    private fun switchFromHomeFragmentToArchivedFragment() {
-
-        hideFragment(supportFragmentManager.findFragmentByTag(HomeFragment.TAG))
-        binding?.bottomNavigationView?.selectedItemId = R.id.archived
-        currentFragmentTag = ArchivedFragment.TAG
-
-    }
-
-    private fun switchFromArchivedFragmentToHomeFragment() {
-
-        hideFragment(supportFragmentManager.findFragmentByTag(HomeFragment.TAG))
-        binding?.bottomNavigationView?.selectedItemId = R.id.home
-        currentFragmentTag = HomeFragment.TAG
 
     }
 
