@@ -25,10 +25,6 @@ class AddFragment : Fragment() {
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
 
-    companion object {
-        const val TAG = "add_fragment"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -149,11 +145,6 @@ class AddFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true ) {
-                    binding.buttonSave.isActivated = false
-                    return
-                }
-
-                if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
                     binding.buttonSave.isActivated = false
                     return
                 }

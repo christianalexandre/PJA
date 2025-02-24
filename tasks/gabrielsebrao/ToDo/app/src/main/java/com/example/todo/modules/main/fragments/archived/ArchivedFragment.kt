@@ -20,7 +20,6 @@ import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.sharedpref.TaskIdListSharedPref
 import com.example.todo.utils.models.Task
 import com.example.todo.utils.listener.TaskActionListener
-import com.example.todo.utils.task.TaskState
 import java.util.Collections
 
 class ArchivedFragment : Fragment(), TaskActionListener {
@@ -30,10 +29,6 @@ class ArchivedFragment : Fragment(), TaskActionListener {
     private var archivedViewModel: ArchivedViewModel? = null
     private var archivedTaskAdapter: ArchivedTaskAdapter? = null
     private var taskIdListSharedPref: TaskIdListSharedPref? = null
-
-    companion object {
-        const val TAG = "archived_fragment"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -77,9 +72,6 @@ class ArchivedFragment : Fragment(), TaskActionListener {
         dragDirs: Int,
         swipeDirs: Int
     ) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
-
-        private val list: MutableList<Int> = emptyList<Int>().toMutableList()
-
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             val from = viewHolder.adapterPosition
             val to = target.adapterPosition
@@ -87,10 +79,9 @@ class ArchivedFragment : Fragment(), TaskActionListener {
             archivedTaskAdapter?.taskList?.let { Collections.swap(it, from, to) }
             archivedTaskAdapter?.notifyItemMoved(from, to)
 
+            val list: MutableList<Int> = emptyList<Int>().toMutableList()
             TaskSingleton.archivedTaskList?.map { list.add(it.id) }
             taskIdListSharedPref?.saveArchivedTaskIdList(list)
-
-            Log.d("SHARED_PREF", "TASK ID LIST: ${TaskSingleton.openTaskIdList}")
 
             return true
         }
@@ -101,11 +92,11 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
     private fun setupObservers() {
 
-        archivedViewModel?.deleteTaskState?.observe(this) { state ->
+        archivedViewModel?.deleteTaskSuccess?.observe(this) { state ->
 
             when(state) {
 
-                is TaskState.Success -> {
+                true -> {
 
                     archivedTaskAdapter?.removeTask(archivedViewModel?.removedItemIndex ?: 0)
 
@@ -120,7 +111,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
                 }
 
-                is TaskState.Error -> { Toast.makeText(context, getString(R.string.error_task_delete), Toast.LENGTH_LONG).show() }
+                false -> { Toast.makeText(context, getString(R.string.error_task_delete), Toast.LENGTH_LONG).show() }
 
                 else -> {}
 

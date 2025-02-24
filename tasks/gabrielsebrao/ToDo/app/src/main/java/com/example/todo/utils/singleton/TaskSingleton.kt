@@ -10,8 +10,4 @@ object TaskSingleton {
     var openTaskIdList: MutableList<Int>? = null
     var archivedTaskIdList: MutableList<Int>? = null
 
-    var newTask: Task? = null
-    var archivedTask: Task? = null
-    var unarchivedTask: Task? = null
-
 }

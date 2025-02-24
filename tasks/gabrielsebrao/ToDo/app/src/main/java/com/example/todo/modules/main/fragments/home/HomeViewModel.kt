@@ -11,7 +11,6 @@ import com.example.todo.utils.database.DataBase
 import com.example.todo.utils.models.Task
 import com.example.todo.utils.database.TaskDao
 import com.example.todo.utils.sharedpref.TaskIdListSharedPref
-import com.example.todo.utils.task.TaskState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
@@ -24,9 +23,9 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
     private val sharedPref: TaskIdListSharedPref? = TaskIdListSharedPref.getInstance(contextRef.get())
     private val taskDao: TaskDao? = DataBase.getInstance(contextRef.get())?.taskDao()
 
-    private val _deleteTaskState: MutableLiveData<TaskState?> = MutableLiveData()
+    private val _deleteTaskSuccess: MutableLiveData<Boolean?> = MutableLiveData()
 
-    val deleteTaskState: LiveData<TaskState?> = _deleteTaskState
+    val deleteTaskSuccess: LiveData<Boolean?> = _deleteTaskSuccess
 
     private var removedTask: Task? = null
     var removedItemIndex: Int = 0
@@ -50,11 +49,10 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
                 sharedPref?.removeOpenTaskId(task.id)
 
                 Log.d("RX_DEBUG", "DELETE TASK: OK")
-                Log.d("ROOM_DEBUG", "TASK TO BE DELETED: $task")
-                _deleteTaskState.postValue(TaskState.Success)
+                _deleteTaskSuccess.postValue(true)
 
             }, { error ->
-                _deleteTaskState.postValue(TaskState.Error)
+                _deleteTaskSuccess.postValue(false)
                 Log.e("RX_DEBUG", "DELETE TASK: ${error.message}")
             })
 

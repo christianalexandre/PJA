@@ -13,6 +13,7 @@
         <activity
             android:name=".modules.main.MainActivity"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="uiMode|screenSize|smallestScreenSize"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.ToDo" >

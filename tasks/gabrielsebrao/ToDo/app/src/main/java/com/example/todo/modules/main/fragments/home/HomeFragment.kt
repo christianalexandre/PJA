@@ -20,7 +20,6 @@ import com.example.todo.utils.dialog.TaskDialog
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 import com.example.todo.utils.sharedpref.TaskIdListSharedPref
-import com.example.todo.utils.task.TaskState
 import java.util.Collections
 
 class HomeFragment : Fragment(), TaskActionListener {
@@ -31,10 +30,6 @@ class HomeFragment : Fragment(), TaskActionListener {
     private var homeTaskAdapter: HomeTaskAdapter? = null
     private var taskIdListSharedPref: TaskIdListSharedPref? = null
 
-    companion object {
-        const val TAG = "home_fragment"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -43,8 +38,6 @@ class HomeFragment : Fragment(), TaskActionListener {
         taskIdListSharedPref = TaskIdListSharedPref.getInstance(context)
 
         setupObservers()
-
-        mainViewModel?.getAllTasks()
 
     }
 
@@ -91,8 +84,6 @@ class HomeFragment : Fragment(), TaskActionListener {
             TaskSingleton.openTaskList?.map { list.add(it.id) }
             taskIdListSharedPref?.saveOpenTaskIdList(list)
 
-            Log.d("SHARED_PREF", "TASK ID LIST: ${TaskSingleton.openTaskIdList}")
-
             return true
         }
 
@@ -102,11 +93,11 @@ class HomeFragment : Fragment(), TaskActionListener {
 
     private fun setupObservers() {
 
-        homeViewModel?.deleteTaskState?.observe(this) { state ->
+        homeViewModel?.deleteTaskSuccess?.observe(this) { isSuccess ->
 
-            when(state) {
+            when(isSuccess) {
 
-                is TaskState.Success -> {
+                true -> {
 
                     homeTaskAdapter?.removeTask(homeViewModel?.removedItemIndex ?: 0)
 
@@ -121,7 +112,7 @@ class HomeFragment : Fragment(), TaskActionListener {
 
                 }
 
-                is TaskState.Error -> { Toast.makeText(context, getString(R.string.error_task_delete), Toast.LENGTH_LONG).show() }
+                false -> { Toast.makeText(context, getString(R.string.error_task_delete), Toast.LENGTH_LONG).show() }
 
                 else -> {}
 
@@ -188,7 +179,6 @@ class HomeFragment : Fragment(), TaskActionListener {
             displayRecyclerViewScreen()
 
         homeTaskAdapter?.addNewTask()
-        TaskSingleton.newTask = null
 
         binding?.recyclerHomeViewTasks?.scrollToPosition(0)
 
@@ -210,7 +200,6 @@ class HomeFragment : Fragment(), TaskActionListener {
     fun onUnarchiveTask() {
 
         homeTaskAdapter?.addNewTask()
-        TaskSingleton.unarchivedTask = null
         binding?.recyclerHomeViewTasks?.scrollToPosition(0)
 
         displayRecyclerViewScreen()

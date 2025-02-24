@@ -1,6 +1,7 @@
 package com.example.todo.modules.main
 
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,7 +12,6 @@ import com.example.todo.modules.main.fragments.add.AddFragment
 import com.example.todo.modules.main.fragments.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.modules.main.fragments.home.HomeFragment
-import com.example.todo.utils.task.TaskState
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     private var homeFragment: Fragment? = null
     private var archivedFragment: Fragment? = null
     private var addFragment: Fragment? = null
-    private var viewPager: ViewPager2? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -33,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         setupObservers()
 
+        mainViewModel?.getAllTasks()
+
     }
 
     private fun setupFragments() {
@@ -41,13 +42,19 @@ class MainActivity : AppCompatActivity() {
         archivedFragment = ArchivedFragment()
         addFragment = AddFragment()
 
-        viewPager = binding?.viewPager
-        viewPager?.adapter = MainViewPagerAdapter(this, listOf(homeFragment, archivedFragment, addFragment))
+        binding?.viewPager?.adapter = MainViewPagerAdapter(this, listOf(homeFragment, archivedFragment, addFragment))
+        binding?.viewPager?.offscreenPageLimit = 2
 
-        viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding?.viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+
                 super.onPageSelected(position)
+
                 binding?.bottomNavigationView?.menu?.getItem(position)?.isChecked = true
+
+                (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+                    .hideSoftInputFromWindow(binding?.root?.windowToken, 0)
+
             }
         })
 
@@ -65,11 +72,11 @@ class MainActivity : AppCompatActivity() {
 
             when(item.itemId) {
 
-                R.id.home -> viewPager?.currentItem = 0
+                R.id.home -> binding?.viewPager?.currentItem = 0
 
-                R.id.archived -> viewPager?.currentItem = 1
+                R.id.archived -> binding?.viewPager?.currentItem = 1
 
-                R.id.add -> viewPager?.currentItem = 2
+                R.id.add -> binding?.viewPager?.currentItem = 2
 
             }
 
@@ -81,17 +88,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObservers() {
 
-        mainViewModel?.getTasksState?.observe(this) { state ->
-            when(state) {
+        mainViewModel?.getTasksSuccess?.observe(this) { isSuccess ->
+            when(isSuccess) {
 
-                is TaskState.Success -> {
+                true -> {
 
                     (homeFragment as? HomeFragment)?.onGetTasks()
                     (archivedFragment as? ArchivedFragment)?.onGetTasks()
 
                 }
 
-                is TaskState.Error -> {
+                false -> {
                     Toast.makeText(this, getString(R.string.error_task_get), Toast.LENGTH_LONG).show()
                 }
 
@@ -100,10 +107,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel?.addTaskState?.observe(this) { state ->
-            when(state) {
+        mainViewModel?.addTaskSuccess?.observe(this) { isSuccess ->
+            when(isSuccess) {
 
-                is TaskState.Success -> {
+                true -> {
 
                     (addFragment as? AddFragment)?.onAddTask()
                     binding?.bottomNavigationView?.selectedItemId = R.id.home
@@ -112,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                is TaskState.Error -> {
+                false -> {
                     Toast.makeText(this, getString(R.string.error_task_created), Toast.LENGTH_SHORT).show()
                 }
 
@@ -121,10 +128,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel?.archiveTaskState?.observe(this) { state ->
-            when(state) {
+        mainViewModel?.archiveTaskSuccess?.observe(this) { isSuccess ->
+            when(isSuccess) {
 
-                is TaskState.Success -> {
+                true -> {
 
                     (homeFragment as? HomeFragment)?.onArchiveTask()
                     binding?.bottomNavigationView?.selectedItemId = R.id.archived
@@ -133,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                is TaskState.Error -> {
+                false -> {
                     Toast.makeText(this, getString(R.string.error_task_archive), Toast.LENGTH_LONG).show()
                 }
 
@@ -142,10 +149,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel?.unarchiveTaskState?.observe(this) { state ->
-            when(state) {
+        mainViewModel?.unarchiveTaskSuccess?.observe(this) { isSuccess ->
+            when(isSuccess) {
 
-                is TaskState.Success -> {
+                true -> {
 
                     (archivedFragment as? ArchivedFragment)?.onUnarchiveTask()
                     binding?.bottomNavigationView?.selectedItemId = R.id.home
@@ -154,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                is TaskState.Error -> {
+                false -> {
                     Toast.makeText(this, R.string.error_task_unarchive, Toast.LENGTH_LONG).show()
                 }
 

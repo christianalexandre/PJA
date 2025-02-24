@@ -7,7 +7,10 @@ import com.example.todo.R
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 
-class ArchivedTaskAdapter(val taskList: MutableList<Task>, private val listener: CardActionListener): RecyclerView.Adapter<ArchivedTaskViewHolder>() {
+class ArchivedTaskAdapter(
+    val taskList: MutableList<Task>,
+    private val listener: CardActionListener
+): RecyclerView.Adapter<ArchivedTaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArchivedTaskViewHolder {
         return ArchivedTaskViewHolder(
