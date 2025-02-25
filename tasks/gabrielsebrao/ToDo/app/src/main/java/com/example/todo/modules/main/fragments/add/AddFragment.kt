@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -102,10 +103,10 @@ class AddFragment : Fragment() {
     private fun setupInputLayoutsListener() {
 
         filterMaxLength(binding?.inputLayoutAddTitle?.editText, 50)
-        binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(enableSaveButtonTaskTitle(binding))
+        binding?.inputLayoutAddTitle?.editText?.addTextChangedListener(enableSaveButton())
 
         filterMaxLength(binding?.inputLayoutAddContent?.editText, 300)
-        binding?.inputLayoutAddContent?.editText?.addTextChangedListener(enableSaveButtonTaskContent(binding))
+        binding?.inputLayoutAddContent?.editText?.addTextChangedListener(enableSaveButton())
 
     }
 
@@ -139,30 +140,18 @@ class AddFragment : Fragment() {
 
     }
 
-    private fun enableSaveButtonTaskTitle(binding: FragmentAddBinding?): TextWatcher {
+    private fun enableSaveButton(): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 if(binding?.inputLayoutAddTitle?.editText?.text?.isBlank() == true ) {
-                    binding.buttonSave.isActivated = false
+                    binding?.buttonSave?.isActivated = false
                     return
                 }
 
-                binding?.buttonSave?.isActivated = true
-
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        }
-    }
-
-    private fun enableSaveButtonTaskContent(binding: FragmentAddBinding?): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
                 if(binding?.inputLayoutAddContent?.editText?.text?.isBlank() == true ) {
-                    binding.buttonSave.isActivated = false
+                    binding?.buttonSave?.isActivated = false
                     return
                 }
 

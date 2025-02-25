@@ -5,36 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="60dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_task"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:background="@drawable/background_button_save"
-            android:layout_marginEnd="20dp"
-            android:letterSpacing="0.05"
-            android:text="@string/save"
-            android:textAllCaps="false" />
-
-    </Toolbar>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/green" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -62,7 +32,7 @@
             style="@style/input_layout_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/content"
             app:counterEnabled="true"
             app:counterMaxLength="300">
@@ -74,5 +44,19 @@
                 android:minHeight="160dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:textSize="15sp"
+            android:text="@string/save"
+            android:textColor="@color/off_white"
+            android:textAllCaps="false"
+            android:layout_gravity="end"
+            android:background="@drawable/background_button_save"
+            android:layout_marginTop="20dp"/>
+
     </LinearLayout>
 </LinearLayout>

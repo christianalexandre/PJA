@@ -1,7 +1,6 @@
 package com.example.todo.modules.main.fragments.archived
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -100,7 +99,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
                     archivedTaskAdapter?.removeTask(archivedViewModel?.removedItemIndex ?: 0)
 
-                    Toast.makeText(context, getString(R.string.task_deleted), Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, getString(R.string.task_deleted), Toast.LENGTH_SHORT).show()
 
                     if(archivedTaskAdapter?.taskList?.isEmpty() == true) {
                         displayDefaultScreen()
@@ -111,7 +110,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
                 }
 
-                false -> { Toast.makeText(context, getString(R.string.error_task_delete), Toast.LENGTH_LONG).show() }
+                false -> { Toast.makeText(context, getString(R.string.error_task_delete), Toast.LENGTH_SHORT).show() }
 
                 else -> {}
 

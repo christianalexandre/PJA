@@ -28,11 +28,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
+        setupView()
         setupFragments()
         setupListeners()
         setupObservers()
 
         mainViewModel?.getAllTasks()
+
+    }
+
+    private fun setupView() {
+
+        
+
+        setSupportActionBar(binding?.toolBar)
+        supportActionBar?.title = getString(R.string.home)
 
     }
 
@@ -45,12 +55,25 @@ class MainActivity : AppCompatActivity() {
         binding?.viewPager?.adapter = MainViewPagerAdapter(this, listOf(homeFragment, archivedFragment, addFragment))
         binding?.viewPager?.offscreenPageLimit = 2
 
+    }
+
+    private fun setupListeners() {
+
+        setupViewPagerListeners()
+        setupBottomNavigationViewListeners()
+
+    }
+
+    private fun setupViewPagerListeners() {
+
         binding?.viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
 
                 super.onPageSelected(position)
 
-                binding?.bottomNavigationView?.menu?.getItem(position)?.isChecked = true
+                with(binding?.bottomNavigationView) {
+                    this?.selectedItemId = this?.menu?.getItem(position)?.itemId ?: R.id.home
+                }
 
                 (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
                     .hideSoftInputFromWindow(binding?.root?.windowToken, 0)
@@ -60,23 +83,26 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setupListeners() {
-
-        setupBottomNavigationViewListeners()
-
-    }
-
     private fun setupBottomNavigationViewListeners() {
 
         binding?.bottomNavigationView?.setOnItemSelectedListener { item ->
 
             when(item.itemId) {
 
-                R.id.home -> binding?.viewPager?.currentItem = 0
+                R.id.home -> {
+                    binding?.viewPager?.currentItem = 0
+                    supportActionBar?.title = getString(R.string.home)
+                }
 
-                R.id.archived -> binding?.viewPager?.currentItem = 1
+                R.id.archived -> {
+                    binding?.viewPager?.currentItem = 1
+                    supportActionBar?.title = getString(R.string.archived)
+                }
 
-                R.id.add -> binding?.viewPager?.currentItem = 2
+                R.id.add -> {
+                    binding?.viewPager?.currentItem = 2
+                    supportActionBar?.title = getString(R.string.add)
+                }
 
             }
 
@@ -99,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 false -> {
-                    Toast.makeText(this, getString(R.string.error_task_get), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.error_task_get), Toast.LENGTH_SHORT).show()
                 }
 
                 else -> {}
@@ -136,12 +162,12 @@ class MainActivity : AppCompatActivity() {
                     (homeFragment as? HomeFragment)?.onArchiveTask()
                     binding?.bottomNavigationView?.selectedItemId = R.id.archived
                     (archivedFragment as? ArchivedFragment)?.onArchiveTask()
-                    Toast.makeText(this, getString(R.string.task_archived), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.task_archived), Toast.LENGTH_SHORT).show()
 
                 }
 
                 false -> {
-                    Toast.makeText(this, getString(R.string.error_task_archive), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.error_task_archive), Toast.LENGTH_SHORT).show()
                 }
 
                 else -> {}
@@ -157,12 +183,12 @@ class MainActivity : AppCompatActivity() {
                     (archivedFragment as? ArchivedFragment)?.onUnarchiveTask()
                     binding?.bottomNavigationView?.selectedItemId = R.id.home
                     (homeFragment as? HomeFragment)?.onUnarchiveTask()
-                    Toast.makeText(this, getString(R.string.task_unarchived), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.task_unarchived), Toast.LENGTH_SHORT).show()
 
                 }
 
                 false -> {
-                    Toast.makeText(this, R.string.error_task_unarchive, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.error_task_unarchive, Toast.LENGTH_SHORT).show()
                 }
 
                 else -> {}

@@ -18,4 +18,5 @@
     <color name="alpha_green">#4d00b26b</color>
     <color name="gray">#e8eaed</color>
     <color name="pressed_gray">#C4C7CA</color>
+    <color name="gray_text">#204D59</color>
 </resources>
