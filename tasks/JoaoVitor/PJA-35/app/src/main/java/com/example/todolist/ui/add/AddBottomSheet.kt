@@ -12,14 +12,18 @@ import android.view.ViewGroup
 import com.example.todolist.databinding.AddBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class AddBottomSheet(private val listener: PhotoPickerListener) : BottomSheetDialogFragment() {
-
+class AddBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var binding: AddBottomSheetBinding
+    private var listener: PhotoPickerListener? = null
 
     interface PhotoPickerListener {
         fun onPhotoSelected(uri: Uri?)  // Retorna URI da galeria
         fun onPhotoCaptured(bitmap: Bitmap?)  // Retorna Bitmap da câmera
+    }
+
+    fun setPhotoPickerListener(listener: PhotoPickerListener) {
+        this.listener = listener
     }
 
     override fun onCreateView(
@@ -54,24 +58,23 @@ class AddBottomSheet(private val listener: PhotoPickerListener) : BottomSheetDia
             when (requestCode) {
                 REQUEST_GALLERY -> {
                     val selectedImageUri: Uri? = data?.data
-                    listener.onPhotoSelected(selectedImageUri)
+                    listener?.onPhotoSelected(selectedImageUri)
                 }
                 REQUEST_CAMERA -> {
                     val photo: Bitmap? = data?.extras?.get("data") as? Bitmap
-                    listener.onPhotoCaptured(photo)
+                    listener?.onPhotoCaptured(photo)
                 }
             }
             dismiss()
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding
-    }
-
     companion object {
         private const val REQUEST_GALLERY = 100
         private const val REQUEST_CAMERA = 101
+
+        fun newInstance(): AddBottomSheet {
+            return AddBottomSheet()
+        }
     }
 }

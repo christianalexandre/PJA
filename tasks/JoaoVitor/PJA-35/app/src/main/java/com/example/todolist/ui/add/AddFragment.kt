@@ -34,8 +34,6 @@ class AddFragment : Fragment() {
     private lateinit var addViewModel: AddViewModel
     private lateinit var binding: FragmentAddBinding
 
-    private val CAMERA_PERMISSION_REQUEST_CODE = 100
-
     private val titleText: String
         get() = binding.textFieldTitleText.text?.toString() ?: ""
 
@@ -165,34 +163,33 @@ class AddFragment : Fragment() {
     }
 
     private fun setOnclickAddFragmentPicture() {
-        with(binding) {
-            if (parentFragmentManager.findFragmentByTag("AddBottomSheet") == null) {
-                val bottomSheet = AddBottomSheet(object : AddBottomSheet.PhotoPickerListener {
-                    override fun onPhotoSelected(uri: Uri?) {
-                        uri?.let {
-                            picture.setImageURI(it)
-                            picture.tag = it.toString()
-                            cardImageView.visibility = View.GONE
-                            cardImageViewPicture.visibility = View.VISIBLE
-                            deleteAttachButton.visibility = View.VISIBLE
-                        }
-                    }
-
-                    override fun onPhotoCaptured(bitmap: Bitmap?) {
-                        bitmap?.let {
-                            val imageUri = saveBitmapToFile(it)
-                            picture.setImageBitmap(it)
-                            picture.tag = imageUri.toString()
-                            cardImageView.visibility = View.GONE
-                            cardImageViewPicture.visibility = View.VISIBLE
-                            deleteAttachButton.visibility = View.VISIBLE
-                        }
-                    }
-                })
-                bottomSheet.show(parentFragmentManager, "AddBottomSheet")
+        val bottomSheet = AddBottomSheet.newInstance()
+        bottomSheet.setPhotoPickerListener(object : AddBottomSheet.PhotoPickerListener {
+            override fun onPhotoSelected(uri: Uri?) {
+                uri?.let {
+                    binding.picture.setImageURI(it)
+                    binding.picture.tag = it.toString()
+                    binding.cardImageView.visibility = View.GONE
+                    binding.cardImageViewPicture.visibility = View.VISIBLE
+                    binding.deleteAttachButton.visibility = View.VISIBLE
+                }
             }
-        }
+
+            override fun onPhotoCaptured(bitmap: Bitmap?) {
+                bitmap?.let {
+                    val imageUri = saveBitmapToFile(it)
+                    binding.picture.setImageBitmap(it)
+                    binding.picture.tag = imageUri.toString()
+                    binding.cardImageView.visibility = View.GONE
+                    binding.cardImageViewPicture.visibility = View.VISIBLE
+                    binding.deleteAttachButton.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        bottomSheet.show(parentFragmentManager, "AddBottomSheet")
     }
+
 
     private fun saveBitmapToFile(bitmap: Bitmap): Uri {
         val filesDir = requireContext().filesDir
