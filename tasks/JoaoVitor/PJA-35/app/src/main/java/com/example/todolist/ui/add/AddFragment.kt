@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import android.Manifest
 import com.example.todolist.R
+import com.example.todolist.databinding.AddBottomSheetBinding
 import com.example.todolist.databinding.FragmentAddBinding
 import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
@@ -33,6 +34,7 @@ class AddFragment : Fragment() {
 
     private lateinit var addViewModel: AddViewModel
     private lateinit var binding: FragmentAddBinding
+    private lateinit var bindingFromAddBottomSheet: AddBottomSheetBinding
 
     private val titleText: String
         get() = binding.textFieldTitleText.text?.toString() ?: ""
@@ -60,6 +62,8 @@ class AddFragment : Fragment() {
 
             if (cameraGranted && storageGranted) {
                 setOnclickAddFragmentPicture()
+            } else if (cameraGranted || storageGranted) {
+                setOnclickAddFragmentPicture()
             } else {
                 Toast.makeText(requireContext(), "Permissões negadas!", Toast.LENGTH_SHORT).show()
             }
@@ -71,6 +75,7 @@ class AddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddBinding.inflate(inflater, container, false)
+        bindingFromAddBottomSheet = AddBottomSheetBinding.inflate(inflater, container, false)
 
         setupAddViewModel()
         updateButton()
@@ -186,10 +191,8 @@ class AddFragment : Fragment() {
                 }
             }
         })
-
         bottomSheet.show(parentFragmentManager, "AddBottomSheet")
     }
-
 
     private fun saveBitmapToFile(bitmap: Bitmap): Uri {
         val filesDir = requireContext().filesDir
@@ -226,9 +229,7 @@ class AddFragment : Fragment() {
             getStoragePermission()
         )
 
-        if (cameraPermission == PackageManager.PERMISSION_GRANTED &&
-            storagePermission == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (cameraPermission == PackageManager.PERMISSION_GRANTED && storagePermission == PackageManager.PERMISSION_GRANTED) {
             setOnclickAddFragmentPicture()
         } else {
             requestPermissionsLauncher.launch(
