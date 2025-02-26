@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,9 @@ class AddBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = AddBottomSheetBinding.inflate(inflater, container, false)
+
+        checkPermission()
+
         return binding.root
     }
 
@@ -46,7 +50,9 @@ class AddBottomSheet : BottomSheetDialogFragment() {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 openCamera()
             } else {
-                Toast.makeText(requireContext(), "Permissão negada!", Toast.LENGTH_SHORT).show()
+                val notification = Toast.makeText(requireContext(), "Permissão negada!", Toast.LENGTH_SHORT)
+                notification.setGravity(Gravity.CENTER, 50, 50)
+                notification.show()
             }
         }
 
@@ -54,8 +60,30 @@ class AddBottomSheet : BottomSheetDialogFragment() {
             if (ContextCompat.checkSelfPermission(requireContext(), getStoragePermission()) == PackageManager.PERMISSION_GRANTED) {
                 openGallery()
             } else {
-                Toast.makeText(requireContext(), "Permissão negada!", Toast.LENGTH_SHORT).show()
+                val notification = Toast.makeText(requireContext(), "Permissão negada!", Toast.LENGTH_SHORT)
+                notification.setGravity(Gravity.CENTER, 50, 50)
+                notification.show()
             }
+        }
+    }
+
+    private fun checkPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            binding.btnCamera.alpha = 1f
+        } else {
+            binding.btnCamera.alpha = 0.5f
+            val notification = Toast.makeText(requireContext(), "Permissão para acessar a câmera negada!", Toast.LENGTH_SHORT)
+            notification.setGravity(Gravity.CENTER, 50, 50)
+            notification.show()
+        }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), getStoragePermission()) == PackageManager.PERMISSION_GRANTED) {
+            binding.btnGallery.alpha = 1f
+        } else {
+            binding.btnGallery.alpha = 0.5f
+            val notification = Toast.makeText(requireContext(), "Permissão para acessar a galeria negada!", Toast.LENGTH_SHORT)
+            notification.setGravity(Gravity.CENTER, 50, 50)
+            notification.show()
         }
     }
 

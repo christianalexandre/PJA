@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Selecionar Imagem"
-                android:textColor="@color/off_white"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -75,7 +75,8 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:contentDescription="Câmera"
-                        android:src="@drawable/photo_camera_24dp" />
+                        android:src="@drawable/photo_camera_24dp"
+                        app:tint="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -83,7 +84,7 @@
                         android:gravity="center"
                         android:paddingTop="4dp"
                         android:text="Câmera"
-                        android:textColor="@color/off_white"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -101,7 +102,8 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:contentDescription="Galeria"
-                        android:src="@drawable/ic_gallery_thumbnail_24dp" />
+                        android:src="@drawable/ic_gallery_thumbnail_24dp"
+                        app:tint="@color/white"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -109,9 +111,10 @@
                         android:gravity="center"
                         android:paddingTop="4dp"
                         android:text="Galeria"
-                        android:textColor="@color/off_white"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

@@ -133,14 +133,16 @@ class AddFragment : Fragment() {
             val description = annotationText
             val imageUri = (binding.picture.tag as? String)?.takeIf { it.isNotEmpty() }
 
-            val newTask = Task(title = title, description = description, image = imageUri)
+            val newTask = Task(
+                title = title,
+                description = description,
+                image = imageUri
+            )
 
             addViewModel.insertTask(newTask)
             binding.textFieldTitleText.text?.clear()
             binding.textFieldAnotationText.text?.clear()
             removeAttachedImage()
-            // Reset
-            binding.picture.tag = null
 
             // Esconder teclado
             val inputMethodManager =
@@ -158,9 +160,11 @@ class AddFragment : Fragment() {
         }
     }
 
+
     private fun removeAttachedImage() {
         with(binding) {
             picture.setImageDrawable(null)
+            picture.tag = null  // Remove a referência da imagem
             cardImageView.visibility = View.VISIBLE
             cardImageViewPicture.visibility = View.GONE
             deleteAttachButton.visibility = View.GONE
