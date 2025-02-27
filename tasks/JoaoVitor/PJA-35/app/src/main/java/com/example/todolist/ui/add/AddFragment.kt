@@ -124,7 +124,14 @@ class AddFragment : Fragment() {
     }
 
     private fun updateTextInputColor(textInput: TextInputLayout, isValid: Boolean) {
-        textInput.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), if (isValid) R.color.orange_01 else R.color.red_error)))
+        textInput.setEndIconTintList(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (isValid) R.color.orange_01 else R.color.red_error
+                )
+            )
+        )
     }
 
     private fun clickSaveButton() {
@@ -156,10 +163,10 @@ class AddFragment : Fragment() {
             val viewPager = requireActivity().findViewById<ViewPager2>(R.id.vp)
             viewPager.currentItem = 0
 
-            Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT)
+                .show()
         }
     }
-
 
     private fun removeAttachedImage() {
         with(binding) {

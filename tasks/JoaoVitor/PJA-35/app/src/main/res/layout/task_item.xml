@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/off_white"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"/>
 
