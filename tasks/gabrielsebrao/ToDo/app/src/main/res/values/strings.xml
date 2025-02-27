@@ -37,4 +37,9 @@
     <string name="error_task_delete">Erro ao tentar deletar tarefa. Tente novamente.</string>
     <string name="error_task_unarchive">Erro ao tentar desarquivar tarefa. Tente novamente.</string>
     <string name="error_task_archive">Erro ao tentar arquivar tarefa. Tente novamente.</string>
+    <string name="add_image">Adicionar imagem</string>
+    <string name="camera_access">Acessar câmera</string>
+    <string name="image_access">Acessar galeria</string>
+    <string name="alt_icon_camera">Ícone de câmera.</string>
+    <string name="alt_icon_image">Ícone da galeria.</string>
 </resources>

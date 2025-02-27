@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.bottomsheet.BottomSheetFragment
+import com.example.todo.utils.dialog.TaskDialog
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -25,6 +26,7 @@ class AddFragment : Fragment() {
 
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
+    private val bottomSheetFragment: BottomSheetFragment = BottomSheetFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -69,6 +71,7 @@ class AddFragment : Fragment() {
         setupSaveButtonListener()
         setupInputLayoutsListener()
         setupRootListener()
+        setupSetImageButtonListener()
 
     }
 
@@ -127,6 +130,17 @@ class AddFragment : Fragment() {
                 return@addOnGlobalLayoutListener
             }
 
+        }
+
+    }
+
+    private fun setupSetImageButtonListener() {
+
+        binding?.buttonSetImage?.setOnClickListener {
+            if(parentFragmentManager.fragments.any { it.tag == BottomSheetFragment.TAG })
+                return@setOnClickListener
+
+            bottomSheetFragment.show(parentFragmentManager, BottomSheetFragment.TAG)
         }
 
     }

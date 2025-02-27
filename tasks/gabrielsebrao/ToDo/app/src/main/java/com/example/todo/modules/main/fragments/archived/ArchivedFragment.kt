@@ -126,7 +126,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
             TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(),
             object: CardActionListener {
                 override fun onCheckClicked(task: Task?) {
-                    if (parentFragmentManager.findFragmentByTag(TaskDialog.TAG) != null)
+                    if(parentFragmentManager.fragments.any { it.tag == TaskDialog.TAG })
                         return
 
                     val dialog = TaskDialog.newInstance(task, this@ArchivedFragment, false)

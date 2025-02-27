@@ -127,7 +127,7 @@ class HomeFragment : Fragment(), TaskActionListener {
             TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(),
             object : CardActionListener {
                 override fun onCheckClicked(task: Task?) {
-                    if (parentFragmentManager.findFragmentByTag(TaskDialog.TAG) != null)
+                    if(parentFragmentManager.fragments.any { it.tag == TaskDialog.TAG })
                         return
 
                     parentFragmentManager.findFragmentByTag(TaskDialog.TAG)?.let { fragment ->

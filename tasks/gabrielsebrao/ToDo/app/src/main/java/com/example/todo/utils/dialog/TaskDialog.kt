@@ -1,6 +1,7 @@
 package com.example.todo.utils.dialog
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -8,6 +9,8 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.ContextCompat
 import com.example.todo.R
 import com.example.todo.databinding.ItemDialogTaskCheckBinding
+import com.example.todo.modules.main.fragments.archived.ArchivedFragment
+import com.example.todo.modules.main.fragments.home.HomeFragment
 import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.models.Task
 
