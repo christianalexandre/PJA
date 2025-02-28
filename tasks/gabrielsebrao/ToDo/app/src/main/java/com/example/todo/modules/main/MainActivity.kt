@@ -1,8 +1,11 @@
 package com.example.todo.modules.main
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -38,8 +41,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-
-        
 
         setSupportActionBar(binding?.toolBar)
         supportActionBar?.title = getString(R.string.home)

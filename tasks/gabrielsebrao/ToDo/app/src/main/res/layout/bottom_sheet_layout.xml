@@ -21,6 +21,7 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/button_access_camera"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -52,6 +53,7 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/button_access_gallery"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">

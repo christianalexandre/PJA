@@ -41,6 +41,15 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionLis
         itemView.findViewById<TextView>(R.id.title).text = task?.title
         itemView.findViewById<TextView>(R.id.content).text = task?.content
 
+        if(task?.image?.isEmpty() != true) {
+
+            itemView.findViewById<ImageView>(R.id.image_icon).visibility = View.VISIBLE
+            itemView.findViewById<ImageView>(R.id.image_icon).setOnClickListener {
+                listener.onImageCLicked(task)
+            }
+
+        }
+
         itemView.findViewById<ImageView>(R.id.icon_check)
             ?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.green))
 

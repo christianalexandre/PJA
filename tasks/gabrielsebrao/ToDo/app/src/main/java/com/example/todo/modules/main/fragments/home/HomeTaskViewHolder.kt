@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
@@ -38,6 +39,15 @@ class HomeTaskViewHolder(itemView: View, private val listener: CardActionListene
 
         itemView.findViewById<TextView>(R.id.title).text = task?.title
         itemView.findViewById<TextView>(R.id.content).text = task?.content
+
+        if(task?.image?.isEmpty() != true) {
+
+            itemView.findViewById<ImageView>(R.id.image_icon).visibility = View.VISIBLE
+            itemView.findViewById<ImageView>(R.id.image_icon).setOnClickListener {
+                listener.onImageCLicked(task)
+            }
+
+        }
 
     }
     private fun setupListener() {

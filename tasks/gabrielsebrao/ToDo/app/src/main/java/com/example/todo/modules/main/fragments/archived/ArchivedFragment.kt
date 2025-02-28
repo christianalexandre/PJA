@@ -14,6 +14,8 @@ import com.example.todo.R
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.converter.Converters
+import com.example.todo.utils.dialog.ImageDialog
 import com.example.todo.utils.dialog.TaskDialog
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.sharedpref.TaskIdListSharedPref
@@ -130,6 +132,11 @@ class ArchivedFragment : Fragment(), TaskActionListener {
                         return
 
                     val dialog = TaskDialog.newInstance(task, this@ArchivedFragment, false)
+                    dialog.show(parentFragmentManager, TaskDialog.TAG)
+                }
+
+                override fun onImageCLicked(task: Task?) {
+                    val dialog = ImageDialog.newInstance(Converters.byteArrayToBitmap(task?.image))
                     dialog.show(parentFragmentManager, TaskDialog.TAG)
                 }
             })

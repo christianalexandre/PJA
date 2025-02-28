@@ -15,6 +15,8 @@ import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.converter.Converters
+import com.example.todo.utils.dialog.ImageDialog
 import com.example.todo.utils.dialog.TaskDialog
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
@@ -135,6 +137,11 @@ class HomeFragment : Fragment(), TaskActionListener {
                     }
 
                     val dialog = TaskDialog.newInstance(task, this@HomeFragment, true)
+                    dialog.show(parentFragmentManager, TaskDialog.TAG)
+                }
+
+                override fun onImageCLicked(task: Task?) {
+                    val dialog = ImageDialog.newInstance(Converters.byteArrayToBitmap(task?.image))
                     dialog.show(parentFragmentManager, TaskDialog.TAG)
                 }
             })

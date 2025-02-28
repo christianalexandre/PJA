@@ -1,7 +1,13 @@
 package com.example.todo.modules.main.fragments.add
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -10,29 +16,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
-import com.example.todo.utils.bottomsheet.BottomSheetFragment
-import com.example.todo.utils.dialog.TaskDialog
+import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
+import com.example.todo.utils.bottomsheet.PhotoAccessBottomSheetFragment
+import com.example.todo.utils.converter.Converters
+import com.example.todo.utils.listener.PhotoAccessListener
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
 
-class AddFragment : Fragment() {
+class AddFragment : Fragment(), PhotoAccessListener {
 
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
-    private val bottomSheetFragment: BottomSheetFragment = BottomSheetFragment()
+    private var pickImageLauncher: ActivityResultLauncher<String>? = null
+    private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
+    private var cameraLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
+        setupPickImageLauncher()
+        setupCameraLauncher()
 
     }
 
@@ -66,6 +83,47 @@ class AddFragment : Fragment() {
 
     }
 
+    private fun setupPickImageLauncher() {
+
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                binding?.imageTaskText?.visibility = View.GONE
+                binding?.taskImage?.setImageBitmap(resizeBitmap(turnUriIntoBitmap(it)))
+            }
+        }
+
+    }
+
+    private fun setupCameraLauncher() {
+
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+
+            if (result.resultCode != Activity.RESULT_OK)
+                return@registerForActivityResult
+
+            binding?.taskImage?.setImageBitmap(resizeBitmap(result.data?.extras?.get("data") as Bitmap))
+            binding?.imageTaskText?.visibility = View.GONE
+
+        }
+
+    }
+
+    private fun turnUriIntoBitmap(uri: Uri): Bitmap =
+        BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(uri))
+
+    private fun resizeBitmap(bitmap: Bitmap, maxWidth: Int = 500, maxHeight: Int = 700): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+        val scaleFactor = minOf(maxWidth.toFloat() / width, maxHeight.toFloat() / height)
+
+        return Bitmap.createScaledBitmap(
+            bitmap,
+            (width * scaleFactor).toInt(),
+            (height * scaleFactor).toInt(),
+            true
+        )
+    }
+
     private fun setupListener() {
 
         setupSaveButtonListener()
@@ -93,7 +151,8 @@ class AddFragment : Fragment() {
 
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
-                binding?.inputLayoutAddContent?.editText?.text.toString()
+                binding?.inputLayoutAddContent?.editText?.text.toString(),
+                Converters.bitmapToByteArray(binding?.taskImage?.drawable?.toBitmap(1000, 1000))
             )
 
             (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -137,10 +196,10 @@ class AddFragment : Fragment() {
     private fun setupSetImageButtonListener() {
 
         binding?.buttonSetImage?.setOnClickListener {
-            if(parentFragmentManager.fragments.any { it.tag == BottomSheetFragment.TAG })
+            if(parentFragmentManager.fragments.any { it.tag == BaseBottomSheetFragment.TAG })
                 return@setOnClickListener
 
-            bottomSheetFragment.show(parentFragmentManager, BottomSheetFragment.TAG)
+            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG)
         }
 
     }
@@ -176,10 +235,26 @@ class AddFragment : Fragment() {
         }
     }
 
+    override fun onAccessCamera() {
+        cameraLauncher?.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+    }
+
+    override fun onAccessGallery() {
+        pickImageLauncher?.launch("image/*")
+    }
+
     fun onAddTask() {
 
         binding?.inputLayoutAddTitle?.editText?.setText("")
         binding?.inputLayoutAddContent?.editText?.setText("")
+        deleteImage()
+
+    }
+
+    private fun deleteImage() {
+
+        binding?.imageTaskText?.visibility = View.VISIBLE
+        binding?.taskImage?.setImageBitmap(null)
 
     }
 
