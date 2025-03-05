@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentHomeBinding
+import com.example.todolist.ui.dialog.DialogOrigin
 import com.example.todolist.ui.adapter.TaskAdapter
 import com.example.todolist.ui.adapter.TaskListener
 import com.example.todolist.ui.dialog.CustomDialogFragment
@@ -65,12 +66,12 @@ class HomeFragment : Fragment(), TaskListener {
                     homeViewModel.deleteTask(task)
                 }
             }
-            CustomDialogFragment.checkShowDialog(parentFragmentManager, true, listener)
+            CustomDialogFragment.checkShowDialog(parentFragmentManager, DialogOrigin.HOME_CARD_CHECK, listener)
         }
     }
 
-    override fun onCheckPressed(task: Task) {
-        showDialog(task)
+    override fun onCheckPressed(task: Task?) {
+        task?.let { showDialog(it) }
     }
 
     override fun onDestroyView() {

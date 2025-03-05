@@ -23,14 +23,17 @@ import android.Manifest
 import com.example.todolist.R
 import com.example.todolist.databinding.AddBottomSheetBinding
 import com.example.todolist.databinding.FragmentAddBinding
+import com.example.todolist.ui.dialog.DialogOrigin
+import com.example.todolist.ui.adapter.TaskListener
 import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
+import com.example.todolist.ui.dialog.CustomDialogFragment
 import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.io.FileOutputStream
 
-class AddFragment : Fragment() {
+class AddFragment : Fragment(), TaskListener {
 
     private lateinit var addViewModel: AddViewModel
     private lateinit var binding: FragmentAddBinding
@@ -225,8 +228,27 @@ class AddFragment : Fragment() {
             imageIcon.setOnClickListener {
                 checkPermissionsAndOpenBottomSheet()
             }
-            deleteAttachButton.setOnClickListener { removeAttachedImage() }
+            deleteAttachButton.setOnClickListener { onCheckPressed(null) }
         }
+    }
+
+    private fun showDialog() {
+        if (parentFragmentManager.findFragmentByTag("CustomDialogFragment") == null) {
+            val listener = object : CustomDialogFragment.DialogListener {
+                override fun onFirstPressed() {
+                    print("canceled")
+                }
+
+                override fun onSecondPressed() {
+                    removeAttachedImage()
+                }
+            }
+            CustomDialogFragment.checkShowDialog(parentFragmentManager, DialogOrigin.PICTURE_DELETE, listener)
+        }
+    }
+
+    override fun onCheckPressed(task: Task?) {
+        showDialog()
     }
 
     private fun checkPermissionsAndOpenBottomSheet() {
