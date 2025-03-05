@@ -141,7 +141,7 @@ class HomeFragment : Fragment(), TaskActionListener {
                 }
 
                 override fun onImageCLicked(task: Task?) {
-                    val dialog = ImageDialog.newInstance(Converters.byteArrayToBitmap(task?.image))
+                    val dialog = ImageDialog.newInstance(task?.image)
                     dialog.show(parentFragmentManager, TaskDialog.TAG)
                 }
             })

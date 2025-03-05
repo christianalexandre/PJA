@@ -69,12 +69,12 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     }
 
-    fun addTask(title: String, content: String, fileCode: ByteArray): Disposable? {
+    fun addTask(title: String, content: String, filePath: String?): Disposable? {
 
         val task: Task?
 
         try {
-            task = Task(sharedPref?.nextTaskId ?: 0, title, content, false, fileCode)
+            task = Task(sharedPref?.nextTaskId ?: 0, title, content, false, filePath)
         } catch(error: Exception) {
             _addTaskSuccess.value = false
             Log.e("ROOM_DEBUG", "ADD TASK: ${error.message}")

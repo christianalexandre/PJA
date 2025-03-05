@@ -14,12 +14,12 @@
         <activity
             android:name=".modules.main.MainActivity"
             android:windowSoftInputMode="adjustPan"
-            android:configChanges="uiMode|screenSize|smallestScreenSize|orientation"
-            android:screenOrientation="locked"
+            android:configChanges="uiMode|screenSize|smallestScreenSize|orientation|keyboardHidden"
+            android:resizeableActivity="false"
+            android:screenOrientation="portrait"
             android:exported="true"
-            android:label="@string/title_activity_main"
             android:theme="@style/Theme.ToDo"
-            tools:ignore="DiscouragedApi">
+            tools:ignore="DiscouragedApi,LockedOrientationActivity,NonResizeableActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

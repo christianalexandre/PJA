@@ -21,12 +21,10 @@ class PhotoAccessBottomSheetFragment(
 
         binding.buttonAccessCamera.setOnClickListener {
             listener.onAccessCamera()
-            dismiss()
         }
 
         binding.buttonAccessGallery.setOnClickListener {
             listener.onAccessGallery()
-            dismiss()
         }
 
     }

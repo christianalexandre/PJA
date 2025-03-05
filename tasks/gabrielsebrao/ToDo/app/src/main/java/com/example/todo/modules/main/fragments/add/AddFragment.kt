@@ -1,10 +1,13 @@
 package com.example.todo.modules.main.fragments.add
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.graphics.Rect
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -20,7 +23,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
@@ -28,8 +30,10 @@ import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
 import com.example.todo.utils.bottomsheet.PhotoAccessBottomSheetFragment
-import com.example.todo.utils.converter.Converters
 import com.example.todo.utils.listener.PhotoAccessListener
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -41,6 +45,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private var pickImageLauncher: ActivityResultLauncher<String>? = null
     private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
+    private var bitmap: Bitmap? = null
+    private var filePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -87,9 +93,48 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
+
+                bitmap = turnUriIntoBitmap(it)
+                filePath = saveBitmapToInternalStorage(correctImageRotation(requireContext(), bitmap, it))
+
+                binding?.taskImage?.setImageBitmap(resizeBitmap(loadImageFromPath(filePath)))
                 binding?.imageTaskText?.visibility = View.GONE
-                binding?.taskImage?.setImageBitmap(resizeBitmap(turnUriIntoBitmap(it)))
+
+                bottomSheetFragment.dismiss()
+
             }
+        }
+
+    }
+
+    private fun correctImageRotation(context: Context, bitmap: Bitmap?, imageUri: Uri): Bitmap? {
+
+        if(bitmap == null)
+            return null
+
+        val inputStream = context.contentResolver.openInputStream(imageUri) ?: return bitmap
+        val exif = ExifInterface(inputStream)
+
+        val orientation = exif.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )
+
+        val rotationDegrees = when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+
+        inputStream.close()
+
+        return if (rotationDegrees != 0) {
+            val matrix = Matrix()
+            matrix.postRotate(rotationDegrees.toFloat())
+            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        } else {
+            bitmap
         }
 
     }
@@ -101,17 +146,53 @@ class AddFragment : Fragment(), PhotoAccessListener {
             if (result.resultCode != Activity.RESULT_OK)
                 return@registerForActivityResult
 
-            binding?.taskImage?.setImageBitmap(resizeBitmap(result.data?.extras?.get("data") as Bitmap))
+            bitmap = result.data?.extras?.get("data") as Bitmap
+            filePath = saveBitmapToInternalStorage(bitmap)
+
+            binding?.taskImage?.setImageBitmap(resizeBitmap(loadImageFromPath(filePath)))
             binding?.imageTaskText?.visibility = View.GONE
+
+            saveBitmapToInternalStorage(bitmap)
+
+            bottomSheetFragment.dismiss()
 
         }
 
     }
 
+    private fun saveBitmapToInternalStorage(bitmap: Bitmap?): String? {
+        val fileName = "task_image_${System.currentTimeMillis()}.jpg"
+        val file = File(requireContext().filesDir, fileName)
+
+        return try {
+            FileOutputStream(file).use { outputStream ->
+                bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+            }
+            file.absolutePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun loadImageFromPath(imagePath: String?): Bitmap? {
+        return imagePath?.let {
+            BitmapFactory.decodeFile(it)
+        }
+    }
+
     private fun turnUriIntoBitmap(uri: Uri): Bitmap =
         BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(uri))
 
-    private fun resizeBitmap(bitmap: Bitmap, maxWidth: Int = 500, maxHeight: Int = 700): Bitmap {
+    private fun resizeBitmap(
+        bitmap: Bitmap?,
+        maxWidth: Int = binding?.buttonSetImage?.width ?: 500,
+        maxHeight: Int = binding?.buttonSetImage?.height ?: 700)
+    : Bitmap? {
+
+        if(bitmap == null)
+            return null
+
         val width = bitmap.width
         val height = bitmap.height
         val scaleFactor = minOf(maxWidth.toFloat() / width, maxHeight.toFloat() / height)
@@ -152,7 +233,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
                 binding?.inputLayoutAddContent?.editText?.text.toString(),
-                Converters.bitmapToByteArray(binding?.taskImage?.drawable?.toBitmap(1000, 1000))
+                filePath
             )
 
             (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -255,6 +336,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         binding?.imageTaskText?.visibility = View.VISIBLE
         binding?.taskImage?.setImageBitmap(null)
+        bitmap = null
+        filePath = null
 
     }
 

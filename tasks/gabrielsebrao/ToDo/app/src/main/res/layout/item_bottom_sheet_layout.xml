@@ -8,7 +8,7 @@
     android:background="@drawable/background_bottom_sheet"
     style="@style/BottomSheetDialog"
     android:baselineAligned="false"
-    android:padding="12dp">
+    android:paddingVertical="12dp">
 
     <View
         android:layout_width="40dp"
@@ -21,10 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="5dp">
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/button_access_gallery"
+            android:background="?android:attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -55,6 +57,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/button_access_camera"
+            android:background="?android:attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
