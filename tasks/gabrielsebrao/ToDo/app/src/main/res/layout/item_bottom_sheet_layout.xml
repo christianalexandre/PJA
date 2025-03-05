@@ -34,8 +34,8 @@
             <ImageView
                 android:id="@+id/image_icon"
                 android:contentDescription="@string/alt_icon_image"
-                android:minHeight="50dp"
-                android:minWidth="50dp"
+                android:minHeight="40dp"
+                android:minWidth="40dp"
                 android:src="@drawable/icon_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -67,8 +67,8 @@
             <ImageView
                 android:id="@+id/camera_icon"
                 android:contentDescription="@string/alt_icon_camera"
-                android:minHeight="50dp"
-                android:minWidth="50dp"
+                android:minHeight="40dp"
+                android:minWidth="40dp"
                 android:src="@drawable/icon_camera"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -84,6 +84,40 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/camera_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/button_cancel_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            tools:ignore="ExtraText">
+
+            <ImageView
+                android:id="@+id/cancel_icon"
+                android:contentDescription="@string/alt_icon_camera"
+                android:minHeight="40dp"
+                android:minWidth="40dp"
+                android:src="@drawable/icon_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/remove_image"
+                android:textColor="@color/component_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cancel_icon"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,6 +47,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
     private var bitmap: Bitmap? = null
     private var filePath: String? = null
+    private var hasImage: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -99,6 +100,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
                 binding?.taskImage?.setImageBitmap(resizeBitmap(loadImageFromPath(filePath)))
                 binding?.imageTaskText?.visibility = View.GONE
+                hasImage = true
 
                 bottomSheetFragment.dismiss()
 
@@ -151,6 +153,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
             binding?.taskImage?.setImageBitmap(resizeBitmap(loadImageFromPath(filePath)))
             binding?.imageTaskText?.visibility = View.GONE
+            hasImage = true
 
             saveBitmapToInternalStorage(bitmap)
 
@@ -280,7 +283,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             if(parentFragmentManager.fragments.any { it.tag == BaseBottomSheetFragment.TAG })
                 return@setOnClickListener
 
-            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG)
+            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG, hasImage)
         }
 
     }
@@ -324,6 +327,14 @@ class AddFragment : Fragment(), PhotoAccessListener {
         pickImageLauncher?.launch("image/*")
     }
 
+    override fun onDeleteImage() {
+
+        deleteImage()
+
+        bottomSheetFragment.dismiss()
+
+    }
+
     fun onAddTask() {
 
         binding?.inputLayoutAddTitle?.editText?.setText("")
@@ -338,6 +349,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
         binding?.taskImage?.setImageBitmap(null)
         bitmap = null
         filePath = null
+        hasImage = false
 
     }
 

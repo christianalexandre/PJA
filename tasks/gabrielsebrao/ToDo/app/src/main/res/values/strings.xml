@@ -43,4 +43,5 @@
     <string name="alt_icon_camera">Ícone de câmera.</string>
     <string name="alt_icon_image">Ícone da galeria.</string>
     <string name="alt_task_has_image">Ícone que aparece quando a tarefa tem uma imagem.</string>
+    <string name="remove_image">Remover imagem</string>
 </resources>
