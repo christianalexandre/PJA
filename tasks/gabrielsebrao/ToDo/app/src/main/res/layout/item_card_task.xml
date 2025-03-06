@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingHorizontal="15dp"
         android:paddingTop="10dp"
-        android:paddingBottom="20dp">
+        android:paddingBottom="15dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -49,6 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="3dp"
                     android:contentDescription="@string/alt_icon_check"
                     android:src="@drawable/icon_check" />
 
@@ -70,15 +71,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageView
-                android:id="@+id/image_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/icon_image_2"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button_access_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_button_access_image"
+                android:paddingVertical="5dp"
+                android:paddingHorizontal="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/alt_task_has_image"
-                android:visibility="gone"/>
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/image_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="25dp"
+                    android:minHeight="25dp"
+                    android:src="@drawable/icon_image_2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/alt_task_has_image" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/access_image"
+                    android:textStyle="italic"
+                    app:layout_constraintStart_toEndOf="@id/image_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

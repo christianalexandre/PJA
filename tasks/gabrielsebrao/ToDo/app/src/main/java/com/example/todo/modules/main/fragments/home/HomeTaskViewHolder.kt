@@ -39,20 +39,22 @@ class HomeTaskViewHolder(itemView: View, private val listener: CardActionListene
         binding.title.text = task?.title
         binding.content.text = task?.content
 
-        if(task?.image != null) {
-
-            binding.imageIcon.visibility = View.VISIBLE
-
-            binding.imageIcon.setOnClickListener {
-                listener.onImageCLicked(task)
-            }
-
-        }
+        if(task?.image != null)
+            binding.buttonAccessImage.visibility = View.VISIBLE
+        else
+            binding.buttonAccessImage.visibility = View.GONE
 
     }
 
-    private fun setupListener() =
+    private fun setupListener() {
+
         binding.frameLayout.setOnClickListener { listener.onCheckClicked(task) }
+
+        if(task?.image != null)
+            binding.buttonAccessImage.setOnClickListener { listener.onImageCLicked(task) }
+
+
+    }
 
 
 }
