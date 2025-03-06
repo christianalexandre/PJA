@@ -1,4 +1,4 @@
-package com.example.todo.utils.bottomsheet
+package com.example.todo.modules.main.fragments.add
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.example.todo.databinding.ItemBottomSheetLayoutBinding
+import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
 import com.example.todo.utils.listener.PhotoAccessListener
 
 class PhotoAccessBottomSheetFragment(

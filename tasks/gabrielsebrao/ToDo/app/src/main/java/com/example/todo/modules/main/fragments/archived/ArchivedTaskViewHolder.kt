@@ -4,17 +4,15 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
+import com.example.todo.databinding.ItemCardTaskBinding
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 
 class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
 
+    private val binding: ItemCardTaskBinding = ItemCardTaskBinding.bind(itemView)
     private var dialog: AlertDialog? = null
     private var dialogView: View? = null
     private var task: Task? = null
@@ -23,11 +21,11 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionLis
 
         this.task = task
 
-        dialogView = LayoutInflater.from(itemView.context)
-            .inflate(R.layout.item_dialog_task_check, itemView.parent as ViewGroup?, false)
+        dialogView = LayoutInflater.from(binding.root.context)
+            .inflate(R.layout.item_dialog_task_check, binding.root.parent as ViewGroup?, false)
 
-        dialog = AlertDialog.Builder(itemView.context)
-            .setCustomTitle(itemView.findViewById(R.id.titleDialog))
+        dialog = AlertDialog.Builder(binding.root.context)
+            .setCustomTitle(null)
             .setView(dialogView)
             .create()
 
@@ -38,26 +36,20 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionLis
 
     private fun setupView() {
 
-        itemView.findViewById<TextView>(R.id.title).text = task?.title
-        itemView.findViewById<TextView>(R.id.content).text = task?.content
+        binding.title.text = task?.title
+        binding.content.text = task?.content
 
-        if(task?.image?.isEmpty() != true) {
-
-            itemView.findViewById<ImageView>(R.id.image_icon).visibility = View.VISIBLE
-            itemView.findViewById<ImageView>(R.id.image_icon).setOnClickListener {
-                listener.onImageCLicked(task)
-            }
-
-        }
-
-        itemView.findViewById<ImageView>(R.id.icon_check)
-            ?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.green))
+        if(task?.image?.isEmpty() != true)
+            binding.imageIcon.visibility = View.VISIBLE
 
     }
 
     private fun setupListener() {
 
-        itemView.findViewById<FrameLayout>(R.id.frame_layout).setOnClickListener { listener.onCheckClicked(task) }
+        binding.frameLayout.setOnClickListener { listener.onCheckClicked(task) }
+
+        if(task?.image?.isEmpty() != true)
+            binding.imageIcon.setOnClickListener { listener.onImageCLicked(task) }
 
     }
 
