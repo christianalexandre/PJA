@@ -1,7 +1,6 @@
 package com.example.todo.utils.database
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.todo.utils.models.Task

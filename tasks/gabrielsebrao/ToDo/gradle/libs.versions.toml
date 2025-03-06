@@ -18,6 +18,7 @@ rxadapter = "2.9.0"
 rxjavaroom = "2.6.1"
 gson = "2.10.1"
 viewpager = "1.12.0"
+exifinterface = "1.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,7 @@ rxadapter = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", versio
 rxjavaroom = { group = "androidx.room", name = "room-rxjava3", version.ref = "rxjavaroom" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 viewpager = { group = "com.google.android.material", name = "material", version.ref = "viewpager" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
