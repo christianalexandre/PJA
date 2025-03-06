@@ -11,7 +11,7 @@ import com.example.todo.databinding.ItemDialogTaskCheckBinding
 import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.models.Task
 
-class TaskDialog: AppCompatDialogFragment() {
+class TaskDialog: BaseDialog() {
 
     private var binding: ItemDialogTaskCheckBinding? = null
     private var listener: TaskActionListener? = null
@@ -22,7 +22,6 @@ class TaskDialog: AppCompatDialogFragment() {
 
     companion object {
 
-        const val TAG = "TaskDialog"
         private const val KEY = "TASK"
         private const val KEY_IS_FROM_HOME = "IS_FROM_HOME"
 

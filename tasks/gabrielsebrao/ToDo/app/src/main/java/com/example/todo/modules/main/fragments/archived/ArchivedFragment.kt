@@ -14,6 +14,7 @@ import com.example.todo.R
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.dialog.BaseDialog
 import com.example.todo.utils.dialog.ImageDialog
 import com.example.todo.utils.dialog.TaskDialog
 import com.example.todo.utils.listener.CardActionListener
@@ -127,18 +128,24 @@ class ArchivedFragment : Fragment(), TaskActionListener {
             TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(),
             object: CardActionListener {
                 override fun onCheckClicked(task: Task?) {
-                    if(parentFragmentManager.fragments.any { it.tag == TaskDialog.TAG })
+
+                    if(parentFragmentManager.fragments.any { it.tag == BaseDialog.TAG })
                         return
 
-                    val dialog = TaskDialog.newInstance(task, this@ArchivedFragment, false)
-                    dialog.show(parentFragmentManager, TaskDialog.TAG)
+                    TaskDialog.newInstance(task, this@ArchivedFragment, false).show(parentFragmentManager, BaseDialog.TAG)
+
                 }
 
                 override fun onImageCLicked(task: Task?) {
-                    val dialog = ImageDialog.newInstance(task?.image)
-                    dialog.show(parentFragmentManager, TaskDialog.TAG)
+
+                    if(parentFragmentManager.fragments.any { it.tag == BaseDialog.TAG })
+                        return
+
+                    ImageDialog.newInstance(task?.image).show(parentFragmentManager, BaseDialog.TAG)
+
                 }
-            })
+            }
+        )
 
         binding?.recyclerViewTasks?.adapter = archivedTaskAdapter
         binding?.recyclerViewTasks?.layoutManager = LinearLayoutManager(context)
