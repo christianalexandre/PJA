@@ -10,6 +10,7 @@ import android.graphics.Rect
 import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
@@ -23,6 +24,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.todo.R
@@ -33,6 +35,9 @@ import com.example.todo.utils.listener.PhotoAccessListener
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -47,6 +52,9 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private var bitmap: Bitmap? = null
     private var filePath: String? = null
     private var hasImage: Boolean = false
+    private var photoURI: Uri? = null
+    private var setImageButtonMaxWidth: Int? = null
+    private var setImageButtonMaxHeight: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -97,7 +105,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
                 bitmap = turnUriIntoBitmap(it)
                 filePath = saveBitmapToInternalStorage(correctImageRotation(requireContext(), bitmap, it))
 
-                binding?.taskImage?.setImageBitmap(resizeBitmap(loadImageFromPath(filePath)))
+                binding?.taskImage?.setImageBitmap(resizeBitmap(bitmap))
                 binding?.imageTaskText?.visibility = View.GONE
                 hasImage = true
 
@@ -144,20 +152,16 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
 
-            if (result.resultCode != Activity.RESULT_OK)
+            if (result.resultCode != Activity.RESULT_OK || filePath == null)
                 return@registerForActivityResult
 
-            bitmap = result.data?.extras?.get("data") as Bitmap
-            filePath = saveBitmapToInternalStorage(bitmap)
+            bitmap = loadImageFromPath(filePath)
 
-            binding?.taskImage?.setImageBitmap(resizeBitmap(loadImageFromPath(filePath)))
+            binding?.taskImage?.setImageBitmap(resizeBitmap(bitmap))
             binding?.imageTaskText?.visibility = View.GONE
             hasImage = true
 
-            saveBitmapToInternalStorage(bitmap)
-
             bottomSheetFragment.dismiss()
-
         }
 
     }
@@ -168,13 +172,25 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         return try {
             FileOutputStream(file).use { outputStream ->
-                bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
             }
             file.absolutePath
         } catch (e: IOException) {
             e.printStackTrace()
             null
         }
+    }
+
+    private fun createImageFile(): File {
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        val file = File("$storageDir/task_$timestamp.jpg")
+        file.createNewFile()
+
+        filePath = file.absolutePath
+
+        return file
     }
 
     private fun loadImageFromPath(imagePath: String?): Bitmap? {
@@ -186,25 +202,33 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private fun turnUriIntoBitmap(uri: Uri): Bitmap =
         BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(uri))
 
-    private fun resizeBitmap(
-        bitmap: Bitmap?,
-        maxWidth: Int = binding?.buttonSetImage?.width ?: 500,
-        maxHeight: Int = binding?.buttonSetImage?.height ?: 700)
-    : Bitmap? {
+    private fun resizeBitmap(bitmap: Bitmap?): Bitmap? {
 
         if(bitmap == null)
             return null
 
-        val width = bitmap.width
-        val height = bitmap.height
-        val scaleFactor = minOf(maxWidth.toFloat() / width, maxHeight.toFloat() / height)
+        if(setImageButtonMaxWidth == null)
+            setImageButtonMaxWidth = (binding?.buttonSetImage?.width?.minus(
+                binding?.buttonSetImage?.width?.times(0.1)?.toInt() ?: 100
+            ) ?: 500)
+
+        val maxWidth: Int = setImageButtonMaxWidth ?: 700
+
+        if(setImageButtonMaxHeight == null)
+            setImageButtonMaxHeight = binding?.buttonSetImage?.height ?: 700
+
+        val maxHeight: Int = setImageButtonMaxHeight ?: 500
+
+
+        val scaleFactor = minOf(maxWidth.toFloat() / bitmap.width, maxHeight.toFloat() / bitmap.height)
 
         return Bitmap.createScaledBitmap(
             bitmap,
-            (width * scaleFactor).toInt(),
-            (height * scaleFactor).toInt(),
+            (bitmap.width * scaleFactor).toInt(),
+            (bitmap.height * scaleFactor).toInt(),
             true
         )
+
     }
 
     private fun setupListener() {
@@ -319,7 +343,16 @@ class AddFragment : Fragment(), PhotoAccessListener {
     }
 
     override fun onAccessCamera() {
-        cameraLauncher?.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+
+        photoURI = FileProvider.getUriForFile(
+            requireContext(),
+            "com.example.todo.fileprovider",
+            createImageFile()
+        )
+
+        cameraLauncher?.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        })
     }
 
     override fun onAccessGallery() {
