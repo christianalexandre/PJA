@@ -89,8 +89,10 @@
                     android:minWidth="25dp"
                     android:minHeight="25dp"
                     android:src="@drawable/icon_image_2"
+                    android:layout_marginEnd="3dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:contentDescription="@string/alt_task_has_image" />
 
                 <TextView
