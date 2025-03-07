@@ -6,13 +6,14 @@ import java.io.ByteArrayOutputStream
 
 object Converter {
 
-    fun bitmapToByteArray(bitmap: Bitmap?, format: Bitmap.CompressFormat, quality: Int): ByteArray {
+    fun bitmapToByteArray(bitmap: Bitmap?, format: Bitmap.CompressFormat, quality: Int): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmap?.compress(format, quality, stream)
+        bitmap?.compress(format, quality, stream) ?: return null
         return stream.toByteArray()
     }
 
-    fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap =
-        BitmapFactory.decodeByteArray(byteArray, 0, byteArray?.size ?: 0)
+    fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap? {
+        return BitmapFactory.decodeByteArray(byteArray ?: return null, 0, byteArray.size)
+    }
 
 }
