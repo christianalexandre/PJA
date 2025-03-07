@@ -31,10 +31,9 @@ import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
+import com.example.todo.utils.converter.Converter
 import com.example.todo.utils.listener.PhotoAccessListener
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,9 +49,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
     private var bitmap: Bitmap? = null
-    private var filePath: String? = null
+    private var cameraTempFile: File? = null
     private var hasImage: Boolean = false
-    private var photoURI: Uri? = null
     private var setImageButtonMaxWidth: Int? = null
     private var setImageButtonMaxHeight: Int? = null
 
@@ -102,8 +100,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
 
-                bitmap = turnUriIntoBitmap(it)
-                filePath = saveBitmapToInternalStorage(correctImageRotation(requireContext(), bitmap, it))
+                bitmap = correctImageRotation(requireContext(), turnUriIntoBitmap(it), it)
 
                 binding?.taskImage?.setImageBitmap(resizeBitmap(bitmap))
                 binding?.imageTaskText?.visibility = View.GONE
@@ -152,45 +149,28 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
 
-            if (result.resultCode != Activity.RESULT_OK || filePath == null)
+            if (result.resultCode != Activity.RESULT_OK || cameraTempFile?.absolutePath == null)
                 return@registerForActivityResult
 
-            bitmap = loadImageFromPath(filePath)
+            bitmap = loadImageFromPath(cameraTempFile?.absolutePath)
 
             binding?.taskImage?.setImageBitmap(resizeBitmap(bitmap))
             binding?.imageTaskText?.visibility = View.GONE
             hasImage = true
 
             bottomSheetFragment.dismiss()
+
         }
 
-    }
-
-    private fun saveBitmapToInternalStorage(bitmap: Bitmap?): String? {
-        val fileName = "task_image_${System.currentTimeMillis()}.jpg"
-        val file = File(requireContext().filesDir, fileName)
-
-        return try {
-            FileOutputStream(file).use { outputStream ->
-                bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            }
-            file.absolutePath
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
     }
 
     private fun createImageFile(): File {
+
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-        val file = File("$storageDir/task_$timestamp.jpg")
-        file.createNewFile()
+        return File.createTempFile("JPEG_${timestamp}_", ".jpg", storageDir)
 
-        filePath = file.absolutePath
-
-        return file
     }
 
     private fun loadImageFromPath(imagePath: String?): Bitmap? {
@@ -259,7 +239,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
                 binding?.inputLayoutAddContent?.editText?.text.toString(),
-                filePath
+                Converter.bitmapToByteArray(bitmap, Bitmap.CompressFormat.JPEG, 80)
             )
 
             (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -344,15 +324,18 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     override fun onAccessCamera() {
 
-        photoURI = FileProvider.getUriForFile(
+        cameraTempFile = createImageFile()
+
+        val photoURI = FileProvider.getUriForFile(
             requireContext(),
             "com.example.todo.fileprovider",
-            createImageFile()
+            cameraTempFile!!
         )
 
         cameraLauncher?.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
             putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         })
+
     }
 
     override fun onAccessGallery() {
@@ -379,8 +362,11 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         binding?.imageTaskText?.visibility = View.VISIBLE
         binding?.taskImage?.setImageBitmap(null)
+
+        cameraTempFile?.delete()
+        cameraTempFile = null
+
         bitmap = null
-        filePath = null
         hasImage = false
 
     }

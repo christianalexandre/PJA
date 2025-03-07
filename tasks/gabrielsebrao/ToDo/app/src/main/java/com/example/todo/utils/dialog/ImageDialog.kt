@@ -5,18 +5,22 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.todo.databinding.ItemDialogImageBinding
+import com.example.todo.utils.converter.Converter
 
 class ImageDialog: BaseDialog() {
 
     private var binding: ItemDialogImageBinding? = null
-    private var image: Bitmap? = null
+    private var byteArrayBitmap: ByteArray? = null
+    private val maxWidth: Int
+        get() = activity?.windowManager?.currentWindowMetrics?.bounds?.width()?.minus(200) ?: 500
+    private val maxHeight: Int
+        get() = activity?.windowManager?.currentWindowMetrics?.bounds?.height()?.minus(200) ?: 700
 
     companion object {
 
-        fun newInstance(filePath: String?): ImageDialog = ImageDialog().apply {
-            this.image = loadImageFromPath(filePath)
+        fun newInstance(byteArrayBitmap: ByteArray?): ImageDialog = ImageDialog().apply {
+            this.byteArrayBitmap = byteArrayBitmap
         }
 
     }
@@ -25,7 +29,7 @@ class ImageDialog: BaseDialog() {
 
         binding = ItemDialogImageBinding.inflate(layoutInflater)
 
-        binding?.taskImage?.setImageBitmap(resizeBitmap(image))
+        binding?.taskImage?.setImageBitmap(resizeBitmap(Converter.byteArrayToBitmap(byteArrayBitmap)))
 
         return AlertDialog.Builder(requireContext())
             .setView(binding?.root)
@@ -34,16 +38,10 @@ class ImageDialog: BaseDialog() {
 
     }
 
-    private fun loadImageFromPath(imagePath: String?): Bitmap? {
-        return imagePath?.let {
-            BitmapFactory.decodeFile(it)
-        }
-    }
-
     private fun resizeBitmap(
         bitmap: Bitmap?,
-        maxWidth: Int = activity?.windowManager?.currentWindowMetrics?.bounds?.width()?.minus(200) ?: 500,
-        maxHeight: Int = activity?.windowManager?.currentWindowMetrics?.bounds?.height()?.minus(200) ?: 700
+        maxWidth: Int = this.maxWidth,
+        maxHeight: Int = this.maxHeight
     ): Bitmap? {
 
         if (bitmap == null)
