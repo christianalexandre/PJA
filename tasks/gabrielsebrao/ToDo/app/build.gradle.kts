@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.devtools.kps)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -38,10 +40,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -52,6 +53,9 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.exifinterface)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -61,7 +65,12 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
+    implementation(libs.rxadapter)
+    implementation(libs.rxjavaroom)
+    implementation(libs.gson)
+    implementation(libs.viewpager)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

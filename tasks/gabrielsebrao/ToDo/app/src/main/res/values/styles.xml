@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="input_layout_style" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorOutline">@color/green</item>
+        <item name="colorPrimary">@color/green</item>
+    </style>
+
+    <style name="BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Bottom</item>
+        <item name="animationMode">slide</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Bottom" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+</resources>

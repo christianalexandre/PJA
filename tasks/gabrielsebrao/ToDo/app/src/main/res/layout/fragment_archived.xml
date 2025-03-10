@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ArchivedFragment">
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/archived"
-        android:textSize="25sp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_tasks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        tools:listitem="@layout/item_card_task" />
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/default_empty_task_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/alt_icon_archived"
+            android:src="@drawable/icon_archived" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="200dp"
+            android:gravity="center"
+            android:textColor="#D1D2D5"
+            android:text="@string/default_archived_message" />
+
+    </LinearLayout>
+
+</RelativeLayout>
