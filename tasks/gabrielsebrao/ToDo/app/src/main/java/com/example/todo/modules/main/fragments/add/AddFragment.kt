@@ -1,6 +1,8 @@
 package com.example.todo.modules.main.fragments.add
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -15,6 +17,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +27,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -35,8 +39,10 @@ import com.example.todo.utils.converter.Converter
 import com.example.todo.utils.listener.PhotoAccessListener
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
@@ -45,12 +51,20 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
-    private var pickImageLauncher: ActivityResultLauncher<String>? = null
+
     private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
+
+    private var calendar: Calendar = Calendar.getInstance()
+    private var datePickerDialog: DatePickerDialog? = null
+    private var taskSelectedDate: String? = null
+    private var taskSelectedHour: String? = null
+
+    private var pickImageLauncher: ActivityResultLauncher<String>? = null
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
     private var bitmap: Bitmap? = null
     private var cameraTempFile: File? = null
     private var hasImage: Boolean = false
+
     private var setImageButtonMaxWidth: Int? = null
     private var setImageButtonMaxHeight: Int? = null
 
@@ -62,6 +76,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         setupPickImageLauncher()
         setupCameraLauncher()
+        setupDatePicker()
 
     }
 
@@ -80,6 +95,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
                 EDIT_TEXT_CONTENT
             ))
         }
+
+        binding?.iconCancelSetDayHour?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
 
         setupListener()
         return binding?.root
@@ -211,12 +228,25 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     }
 
+    private fun setupDatePicker() {
+
+        datePickerDialog = DatePickerDialog(
+            requireContext(),
+            null,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+    }
+
     private fun setupListener() {
 
         setupSaveButtonListener()
         setupInputLayoutsListener()
         setupRootListener()
         setupSetImageButtonListener()
+        setupDatePickerListener()
 
     }
 
@@ -288,6 +318,52 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
             bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG, hasImage)
         }
+
+    }
+
+    private fun setupDatePickerListener() {
+
+        binding?.setDayHour?.setOnClickListener {
+
+            datePickerDialog?.show()
+
+        }
+
+        datePickerDialog?.setOnDateSetListener { _, year, month, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            TimePickerDialog(
+                requireContext(),
+                { _, hour, minute ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hour)
+                    calendar.set(Calendar.MINUTE, minute)
+                    calendar.set(Calendar.SECOND, 0)
+
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+            ).show()
+
+            updateSetDayHour(calendar.timeInMillis)
+
+        }
+
+    }
+
+    private fun Long.toDate(): String =
+        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(this))
+
+    private fun updateSetDayHour(date: Long) {
+
+        binding?.textSetDayHour?.text = date.toDate()
+        binding?.textSetDayHour
+            ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
+        binding?.iconSetDayHour
+            ?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
+        binding?.cancelSetDayHour?.visibility = View.VISIBLE
 
     }
 
