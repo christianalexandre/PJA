@@ -1,13 +1,17 @@
 package com.example.todolist
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.todolist.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.todolist.databinding.ItemBottomNavBinding
+import com.example.todolist.ui.adapter.PageAdapter
+import com.example.todolist.ui.add.AddFragment
+import com.example.todolist.ui.archived.ArchivedFragment
+import com.example.todolist.ui.home.HomeFragment
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,17 +23,34 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navView: BottomNavigationView = binding.navView
+        supportActionBar?.hide()
+        setupFragments()
+    }
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_archived, R.id.navigation_add
-            )
+    private fun setupFragments() {
+        val fragmentList = listOf(
+            Triple(R.drawable.ic_home_black_24dp, "Home", HomeFragment()),
+            Triple(R.drawable.ic_archived_24dp, "Arquivados", ArchivedFragment()),
+            Triple(R.drawable.ic_add_24dp, "Adicionar", AddFragment())
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+
+        val pageAdapter = PageAdapter(this)
+        pageAdapter.fragments.addAll(fragmentList.map { it.third })
+
+        with(binding.vp) {
+            offscreenPageLimit = 3
+            adapter = pageAdapter
+        }
+
+        TabLayoutMediator(binding.bottomNavigation, binding.vp) { tab, position ->
+            tab.customView = createTabView(fragmentList[position].first, fragmentList[position].second)
+        }.attach()
+    }
+
+    private fun createTabView(@DrawableRes iconRes: Int, text: String): View {
+        val tabBinding = ItemBottomNavBinding.inflate(LayoutInflater.from(this))
+        tabBinding.icon.setImageResource(iconRes)
+        tabBinding.label.text = text
+        return tabBinding.root
     }
 }

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,6 +40,28 @@ android {
 }
 
 dependencies {
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    annotationProcessor(libs.androidx.room.compiler)
+    annotationProcessor(libs.androidx.room.ktx)
+    implementation (libs.androidx.room.rxjava3)
+
+    // RxKotlin
+    implementation (libs.rxjava)
+    implementation (libs.rxandroid)
+    implementation (libs.rxkotlin)
+    implementation (libs.rxrelay)
+
+    //RecyclerView
+    implementation (libs.androidx.recyclerview)
+
+    implementation ("com.google.android.material:material:1.11.0")
+
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

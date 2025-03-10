@@ -1,6 +1,26 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="title_home">Home</string>
+    <string name="title_my_tasks">Minhas tarefas</string>
     <string name="title_archived">Arquivadas</string>
+    <string name="title_my_archived_tasks">Tarefas arquivadas</string>
     <string name="title_add">Adicionar</string>
+    <string name="title_add_card">Adição de card</string>
+    <string name="button_save_text">Salvar</string>
+    <string name="hint_title">Titulo</string>
+    <string name="anotation_title">Anotação</string>
+    <string name="delete_anotation">Apagar anotação</string>
+    <string name="insert_title">Insira um título</string>
+    <string name="insert_anotation">Insira uma anotação</string>
+    <string name="save_success">Salvo com sucesso!</string>
+    <string name="text_title_dialog">Tarefa concluída</string>
+    <string name="button_dialog_delete">APAGAR</string>
+    <string name="button2_dialog_home">ARQUIVAR</string>
+    <string name="text_restauring">RESTAURAR</string>
+    <string name="text_task_concluded">Tarefa arquivada</string>
+    <string name="attachment">Anexar</string>
+    <string name="add_attach">Nenhuma imagem anexada</string>
+    <string name="delete_attach_tex">apagar anexo</string>
+    <string name="not_task_text">Nenhuma tarefa</string>
+    <string name="not_task_archived_text">Nenhuma tarefa arquivada</string>
 </resources>
