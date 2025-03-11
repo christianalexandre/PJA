@@ -12,6 +12,7 @@
     <color name="component_gray">#9E9E9E</color>
     <color name="dark_gray">#2D2D2D</color>
     <color name="green">#00B26B</color>
+    <color name="green_ripple">#1100B26B</color>
     <color name="light_green">#4FCD8E</color>
     <color name="error_red">#D72736</color>
     <color name="error_light_red">#CF667A</color>

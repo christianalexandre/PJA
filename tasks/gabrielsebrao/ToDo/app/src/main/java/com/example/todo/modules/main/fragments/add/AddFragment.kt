@@ -17,7 +17,6 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,8 +41,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
-
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
 
@@ -56,8 +53,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     private var calendar: Calendar = Calendar.getInstance()
     private var datePickerDialog: DatePickerDialog? = null
-    private var taskSelectedDate: String? = null
-    private var taskSelectedHour: String? = null
+    private var timePickerDialog: TimePickerDialog? = null
 
     private var pickImageLauncher: ActivityResultLauncher<String>? = null
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
@@ -76,7 +72,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         setupPickImageLauncher()
         setupCameraLauncher()
-        setupDatePicker()
+        setupDatePickerDialog()
+        setupTimePickerDialog()
 
     }
 
@@ -228,14 +225,40 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     }
 
-    private fun setupDatePicker() {
+    private fun setupDatePickerDialog() {
 
         datePickerDialog = DatePickerDialog(
             requireContext(),
+            R.style.DialogTheme,
             null,
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
+            calendar.get(Calendar.DAY_OF_MONTH),
+        )
+
+        datePickerDialog?.datePicker?.minDate = calendar.timeInMillis
+
+    }
+
+    private fun setupTimePickerDialog() {
+
+        timePickerDialog = TimePickerDialog(
+            requireContext(),
+            R.style.DialogTheme,
+            { _, hour, minute ->
+
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                calendar.set(Calendar.SECOND, 0)
+
+                updateSetDayHour(calendar.timeInMillis)
+
+
+
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
         )
 
     }
@@ -247,6 +270,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
         setupRootListener()
         setupSetImageButtonListener()
         setupDatePickerListener()
+        setupCancelIconListener()
 
     }
 
@@ -323,31 +347,16 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     private fun setupDatePickerListener() {
 
-        binding?.setDayHour?.setOnClickListener {
-
-            datePickerDialog?.show()
-
-        }
+        binding?.setDayHour?.setOnClickListener { datePickerDialog?.show() }
 
         datePickerDialog?.setOnDateSetListener { _, year, month, dayOfMonth ->
+
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            TimePickerDialog(
-                requireContext(),
-                { _, hour, minute ->
-                    calendar.set(Calendar.HOUR_OF_DAY, hour)
-                    calendar.set(Calendar.MINUTE, minute)
-                    calendar.set(Calendar.SECOND, 0)
-
-                },
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                true
-            ).show()
-
-            updateSetDayHour(calendar.timeInMillis)
+            setupTimePickerDialog()
+            timePickerDialog?.show()
 
         }
 
@@ -359,13 +368,23 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private fun updateSetDayHour(date: Long) {
 
         binding?.textSetDayHour?.text = date.toDate()
+
         binding?.textSetDayHour
             ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
         binding?.iconSetDayHour
             ?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
+        binding?.setDayHour?.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_ripple_green)
+
         binding?.cancelSetDayHour?.visibility = View.VISIBLE
 
     }
+
+    private fun setupCancelIconListener() =
+        binding?.iconCancelSetDayHour?.setOnClickListener {
+            it.postDelayed({
+                deleteSelectedDateAndHour()
+            }, 150)
+        }
 
     private fun filterMaxLength(editText: EditText?, maxLength: Int) {
 
@@ -430,7 +449,10 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         binding?.inputLayoutAddTitle?.editText?.setText("")
         binding?.inputLayoutAddContent?.editText?.setText("")
+
         deleteImage()
+        deleteSelectedDateAndHour()
+        resetPickerDialogs()
 
     }
 
@@ -444,6 +466,35 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         bitmap = null
         hasImage = false
+
+    }
+
+    private fun deleteSelectedDateAndHour() {
+
+        binding?.iconSetDayHour?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.component_gray))
+        binding?.textSetDayHour?.setTextColor(ContextCompat.getColor(requireContext(), R.color.component_gray))
+        binding?.textSetDayHour?.text = getString(R.string.default_set_day_hour)
+        binding?.cancelSetDayHour?.visibility = View.GONE
+        binding?.setDayHour?.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_ripple_gray)
+
+    }
+
+    private fun resetPickerDialogs() {
+
+        calendar.get(Calendar.MINUTE)
+
+        calendar = Calendar.getInstance()
+
+        datePickerDialog?.updateDate(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        timePickerDialog?.updateTime(
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE)
+        )
 
     }
 
