@@ -8,6 +8,7 @@
     <string name="title_add_card">Adição de card</string>
     <string name="button_save_text">Salvar</string>
     <string name="hint_title">Titulo</string>
+    <string name="hint_data">Data e Hora</string>
     <string name="anotation_title">Anotação</string>
     <string name="delete_anotation">Apagar anotação</string>
     <string name="insert_title">Insira um título</string>
@@ -26,4 +27,6 @@
     <string name="not_task_archived_text">Nenhuma tarefa arquivada</string>
     <string name="cancel_text">CANCELAR</string>
     <string name="confirm_text">CONFIRMAR</string>
+    <string name="date_and_hour">Data e Hora</string>
+    <string name="dont_date">Sem data</string>
 </resources>

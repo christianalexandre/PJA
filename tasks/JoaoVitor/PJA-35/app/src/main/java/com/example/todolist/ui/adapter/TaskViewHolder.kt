@@ -17,6 +17,7 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val titleTextView: TextView? = itemView.findViewById(R.id.titleTextView)
     private val descriptionTextView: TextView? = itemView.findViewById(R.id.descriptionTextView)
+    private val dateTextView: TextView? = itemView.findViewById(R.id.datePickerTextView)
     private val imageTask: ImageView? = itemView.findViewById(R.id.picture)
     private val buttonPhoto: ImageView? = itemView.findViewById(R.id.buttonImagePhoto)
     private val checkButton: ImageView? = itemView.findViewById(R.id.checkButton)
@@ -24,6 +25,7 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(task: Task, listener: TaskListener, isFromHome: Boolean) {
         titleTextView?.text = task.title
         descriptionTextView?.text = task.description
+        dateTextView?.text = task.date
 
         if (!isFromHome) checkButton?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
         if (isFromHome) checkButton?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))

@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import android.Manifest
+import android.annotation.SuppressLint
 import com.example.todolist.R
 import com.example.todolist.databinding.AddBottomSheetBinding
 import com.example.todolist.databinding.FragmentAddBinding
@@ -29,9 +30,18 @@ import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
 import com.example.todolist.ui.dialog.CustomDialogFragment
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 class AddFragment : Fragment(), TaskListener {
 
@@ -44,6 +54,9 @@ class AddFragment : Fragment(), TaskListener {
 
     private val annotationText: String
         get() = binding.textFieldAnotationText.text?.toString() ?: ""
+
+    private val datePicker: String
+        get() = binding.datePickerText.text?.toString() ?: ""
 
     private val isTitleValid
         get() = titleText.length <= 50 && titleText.isNotBlank()
@@ -84,6 +97,10 @@ class AddFragment : Fragment(), TaskListener {
         updateButton()
         verificationChar()
         clickSaveButton()
+
+        datePicker()
+        deleteDate()
+
         openBottomSheet()
 
         return binding.root
@@ -127,31 +144,28 @@ class AddFragment : Fragment(), TaskListener {
     }
 
     private fun updateTextInputColor(textInput: TextInputLayout, isValid: Boolean) {
-        textInput.setEndIconTintList(
-            ColorStateList.valueOf(
-                ContextCompat.getColor(
-                    requireContext(),
-                    if (isValid) R.color.orange_01 else R.color.red_error
-                )
-            )
-        )
+        textInput.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), if (isValid) R.color.orange_01 else R.color.red_error)))
     }
 
     private fun clickSaveButton() {
         binding.saveButton.setOnClickListener {
             val title = titleText
             val description = annotationText
+            val date = datePicker
             val imageUri = (binding.picture.tag as? String)?.takeIf { it.isNotEmpty() }
 
             val newTask = Task(
                 title = title,
                 description = description,
+                date = date,
                 image = imageUri
             )
 
             addViewModel.insertTask(newTask)
             binding.textFieldTitleText.text?.clear()
             binding.textFieldAnotationText.text?.clear()
+            binding.datePickerText.text?.clear()
+            binding.deleteDateButton.visibility = View.GONE
             removeAttachedImage()
 
             // Esconder teclado
@@ -168,6 +182,115 @@ class AddFragment : Fragment(), TaskListener {
 
             Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT)
                 .show()
+        }
+    }
+
+    private fun datePicker() {
+        val datePickerField = binding.datePickerText
+
+        datePickerField.showSoftInputOnFocus = false
+
+        datePickerField.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) openDatePicker() }
+    }
+
+    private fun openDatePicker() {
+        if (parentFragmentManager.findFragmentByTag("DATE_PICKER") != null) return
+
+        val today = Calendar.getInstance()
+        today.set(Calendar.HOUR_OF_DAY, 0)
+        today.set(Calendar.MINUTE, 0)
+        today.set(Calendar.SECOND, 0)
+        today.set(Calendar.MILLISECOND, 0)
+        val todayMillis = today.timeInMillis
+
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.from(todayMillis))
+            .build()
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Selecionar data")
+            .setCalendarConstraints(constraintsBuilder)
+            .setSelection(todayMillis)
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val localDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")) // Corrigindo fuso horário
+            localDate.timeInMillis = selection
+
+            // Ajustando corretamente a data selecionada no fuso local
+            val outputDate = Calendar.getInstance()
+            outputDate.set(
+                localDate.get(Calendar.YEAR),
+                localDate.get(Calendar.MONTH),
+                localDate.get(Calendar.DAY_OF_MONTH)
+            )
+
+            val selectedDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(outputDate.time)
+            openTimerPicker(selectedDate, outputDate.timeInMillis)
+        }
+
+        datePicker.addOnNegativeButtonClickListener { binding.cardDataPicker.clearFocus() }
+        datePicker.addOnCancelListener { binding.cardDataPicker.clearFocus() }
+        datePicker.addOnDismissListener { binding.cardDataPicker.clearFocus() }
+        datePicker.show(parentFragmentManager, "DATE_PICKER")
+    }
+
+
+    @SuppressLint("DefaultLocale", "SetTextI18n")
+    private fun openTimerPicker(date: String, selectedDateMillis: Long) {
+        val now = Calendar.getInstance()
+        val selectedDate = Calendar.getInstance().apply { timeInMillis = selectedDateMillis }
+
+        val isToday = now.get(Calendar.YEAR) == selectedDate.get(Calendar.YEAR) &&
+                now.get(Calendar.DAY_OF_YEAR) == selectedDate.get(Calendar.DAY_OF_YEAR)
+
+        val timePickerBuilder = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_24H)
+
+        if (isToday) {
+            timePickerBuilder.setHour(now.get(Calendar.HOUR_OF_DAY))
+            timePickerBuilder.setMinute(now.get(Calendar.MINUTE))
+        } else {
+            timePickerBuilder.setHour(12)
+            timePickerBuilder.setMinute(3)
+        }
+
+        val picker = timePickerBuilder.setTitleText("Selecione a hora").build()
+
+        if (parentFragmentManager.findFragmentByTag("TIME_PICKER") == null) {
+            picker.show(parentFragmentManager, "TIME_PICKER")
+        }
+
+        picker.addOnPositiveButtonClickListener {
+            val selectedHour = picker.hour
+            val selectedMinute = picker.minute
+
+            if (isToday && (selectedHour < now.get(Calendar.HOUR_OF_DAY) ||
+                        (selectedHour == now.get(Calendar.HOUR_OF_DAY) && selectedMinute < now.get(Calendar.MINUTE)))
+            ) {
+                // Bloquear seleção de horários passados no dia atual
+                Toast.makeText(binding.root.context, "Escolha um horário futuro!", Toast.LENGTH_SHORT).show()
+                return@addOnPositiveButtonClickListener
+            }
+
+            val selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            binding.datePickerText.setText("$date - $selectedTime")
+            binding.deleteDateButton.visibility = View.VISIBLE
+            binding.cardDataPicker.clearFocus()
+        }
+
+        picker.addOnNegativeButtonClickListener {
+            binding.datePickerText.setText("$date - Horário indefinido.")
+            binding.deleteDateButton.visibility = View.VISIBLE
+            binding.cardDataPicker.clearFocus()
+        }
+    }
+
+
+    private fun deleteDate() {
+        binding.deleteDateButton.setOnClickListener {
+            binding.datePickerText.text?.clear()
+            binding.deleteDateButton.visibility = View.GONE
         }
     }
 
@@ -225,9 +348,7 @@ class AddFragment : Fragment(), TaskListener {
 
     private fun openBottomSheet() {
         with(binding) {
-            imageIcon.setOnClickListener {
-                checkPermissionsAndOpenBottomSheet()
-            }
+            cardImageView.setOnClickListener { checkPermissionsAndOpenBottomSheet() }
             deleteAttachButton.setOnClickListener { onCheckPressed(null) }
         }
     }
@@ -252,6 +373,10 @@ class AddFragment : Fragment(), TaskListener {
     }
 
     private fun checkPermissionsAndOpenBottomSheet() {
+        if (parentFragmentManager.findFragmentByTag("AddBottomSheet") != null) {
+            return
+        }
+
         val cameraPermission = ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.CAMERA
