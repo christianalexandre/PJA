@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.databinding.FragmentArchivedBinding
+import com.example.todolist.ui.dialog.DialogOrigin
 import com.example.todolist.ui.dialog.CustomDialogFragment
 import com.example.todolist.ui.adapter.TaskAdapter
 import com.example.todolist.ui.adapter.TaskListener
@@ -65,12 +66,12 @@ class ArchivedFragment : Fragment(), TaskListener {
                     archivedViewModel.deleteTask(task)
                 }
             }
-            CustomDialogFragment.checkShowDialog(parentFragmentManager, false, listener)
+            CustomDialogFragment.checkShowDialog(parentFragmentManager, DialogOrigin.ARCHIEVE_CARD_CHECK, listener)
         }
     }
 
-    override fun onCheckPressed(task: Task) {
-        showDialog(task)
+    override fun onCheckPressed(task: Task?) {
+        task?.let { showDialog(it) }
     }
 
     override fun onDestroyView() {

@@ -9,5 +9,6 @@ data class Task(
     val title: String,
     val description: String? = null,
     val image: String? = null,
+    val date: String? = null,
     var isArchived: Boolean = false
 )

@@ -7,17 +7,18 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-constraintlayout = "2.2.0"
+constraintlayout = "2.2.1"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
-navigationFragmentKtx = "2.8.5"
-navigationUiKtx = "2.8.5"
+navigationFragmentKtx = "2.8.9"
+navigationUiKtx = "2.8.9"
 recyclerview = "1.4.0"
 roomRuntime = "2.6.1"
 rxandroid = "3.0.2"
 rxjava = "3.1.5"
 rxkotlin = "3.0.0"
 rxrelay = "3.0.1"
+protoliteWellKnownTypes = "18.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,7 @@ rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroi
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" }
 rxrelay = { module = "com.jakewharton.rxrelay3:rxrelay", version.ref = "rxrelay" }
+protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
