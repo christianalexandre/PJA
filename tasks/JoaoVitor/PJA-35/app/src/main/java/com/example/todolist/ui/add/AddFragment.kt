@@ -201,7 +201,17 @@ class AddFragment : Fragment(), TaskListener {
         today.set(Calendar.MINUTE, 0)
         today.set(Calendar.SECOND, 0)
         today.set(Calendar.MILLISECOND, 0)
+
         val todayMillis = today.timeInMillis
+
+        // Verifica se já existe uma data selecionada previamente
+        val selectedDateMillis = if (binding.datePickerText.text.isNullOrBlank()) {
+            todayMillis
+        } else {
+            val savedDate = binding.datePickerText.text.toString().split(" - ")[0]
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            sdf.parse(savedDate)?.time ?: todayMillis
+        }
 
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.from(todayMillis))
@@ -210,14 +220,13 @@ class AddFragment : Fragment(), TaskListener {
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Selecionar data")
             .setCalendarConstraints(constraintsBuilder)
-            .setSelection(todayMillis)
+            .setSelection(selectedDateMillis)
             .build()
 
         datePicker.addOnPositiveButtonClickListener { selection ->
-            val localDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")) // Corrigindo fuso horário
+            val localDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             localDate.timeInMillis = selection
 
-            // Ajustando corretamente a data selecionada no fuso local
             val outputDate = Calendar.getInstance()
             outputDate.set(
                 localDate.get(Calendar.YEAR),
@@ -235,7 +244,6 @@ class AddFragment : Fragment(), TaskListener {
         datePicker.show(parentFragmentManager, "DATE_PICKER")
     }
 
-
     @SuppressLint("DefaultLocale", "SetTextI18n")
     private fun openTimerPicker(date: String, selectedDateMillis: Long) {
         val now = Calendar.getInstance()
@@ -247,12 +255,17 @@ class AddFragment : Fragment(), TaskListener {
         val timePickerBuilder = MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_24H)
 
-        if (isToday) {
+        // Verifica se já existe um horário salvo
+        val savedTime = binding.datePickerText.text?.toString()?.split(" - ")?.getOrNull(1)
+        if (savedTime != null && savedTime.contains(":")) {
+            val (hour, minute) = savedTime.split(":").map { it.toInt() }
+            timePickerBuilder.setHour(hour).setMinute(minute)
+        } else if (isToday) {
             timePickerBuilder.setHour(now.get(Calendar.HOUR_OF_DAY))
             timePickerBuilder.setMinute(now.get(Calendar.MINUTE))
         } else {
-            timePickerBuilder.setHour(12)
-            timePickerBuilder.setMinute(3)
+            timePickerBuilder.setHour(now.get(Calendar.HOUR_OF_DAY))
+            timePickerBuilder.setMinute(now.get(Calendar.MINUTE))
         }
 
         val picker = timePickerBuilder.setTitleText("Selecione a hora").build()
@@ -268,7 +281,6 @@ class AddFragment : Fragment(), TaskListener {
             if (isToday && (selectedHour < now.get(Calendar.HOUR_OF_DAY) ||
                         (selectedHour == now.get(Calendar.HOUR_OF_DAY) && selectedMinute < now.get(Calendar.MINUTE)))
             ) {
-                // Bloquear seleção de horários passados no dia atual
                 Toast.makeText(binding.root.context, "Escolha um horário futuro!", Toast.LENGTH_SHORT).show()
                 return@addOnPositiveButtonClickListener
             }
