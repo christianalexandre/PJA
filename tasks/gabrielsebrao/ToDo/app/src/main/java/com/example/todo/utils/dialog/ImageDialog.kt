@@ -2,7 +2,6 @@ package com.example.todo.utils.dialog
 
 import android.app.Dialog
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.example.todo.databinding.ItemDialogImageBinding
@@ -13,9 +12,11 @@ class ImageDialog: BaseDialog() {
     private var binding: ItemDialogImageBinding? = null
     private var byteArrayBitmap: ByteArray? = null
     private val maxWidth: Int
-        get() = activity?.windowManager?.currentWindowMetrics?.bounds?.width()?.minus(200) ?: 500
+        get() =
+            activity?.windowManager?.currentWindowMetrics?.bounds?.width()?.minus(100) ?: 500
     private val maxHeight: Int
-        get() = activity?.windowManager?.currentWindowMetrics?.bounds?.height()?.minus(200) ?: 700
+        get() =
+            activity?.windowManager?.currentWindowMetrics?.bounds?.height()?.minus(100) ?: 700
 
     companion object {
 
