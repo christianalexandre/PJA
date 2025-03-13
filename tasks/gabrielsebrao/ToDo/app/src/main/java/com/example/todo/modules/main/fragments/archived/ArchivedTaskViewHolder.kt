@@ -39,8 +39,10 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionLis
         binding.title.text = task?.title
         binding.content.text = task?.content
 
-        if(task?.image?.isEmpty() != true)
+        if(task?.image != null)
             binding.buttonAccessImage.visibility = View.VISIBLE
+        else
+            binding.buttonAccessImage.visibility = View.GONE
 
     }
 
