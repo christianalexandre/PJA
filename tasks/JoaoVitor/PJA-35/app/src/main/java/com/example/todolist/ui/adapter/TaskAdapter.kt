@@ -1,7 +1,9 @@
 package com.example.todolist.ui.adapter
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
@@ -28,23 +30,27 @@ class TaskAdapter(
 
     override fun getItemCount(): Int = tasks.size
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun updateTasks(newTasks: List<Task>) {
+        val sortedTasks = newTasks.sortedBy { it.date.toLocalDateTime() } // Ordena por data e hora
+
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = tasks.size
-            override fun getNewListSize(): Int = newTasks.size
+            override fun getNewListSize(): Int = sortedTasks.size
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return tasks[oldItemPosition].id == newTasks[newItemPosition].id
+                return tasks[oldItemPosition].id == sortedTasks[newItemPosition].id
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return tasks[oldItemPosition] == newTasks[newItemPosition]
+                return tasks[oldItemPosition] == sortedTasks[newItemPosition]
             }
         }
 
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         tasks.clear()
-        tasks.addAll(newTasks)
+        tasks.addAll(sortedTasks)
         diffResult.dispatchUpdatesTo(this)
     }
+
 }

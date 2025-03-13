@@ -43,6 +43,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.protolite.well.known.types)
+    implementation(libs.firebase.crashlytics.buildtools)
     ksp(libs.androidx.room.compiler)
     annotationProcessor(libs.androidx.room.compiler)
     annotationProcessor(libs.androidx.room.ktx)

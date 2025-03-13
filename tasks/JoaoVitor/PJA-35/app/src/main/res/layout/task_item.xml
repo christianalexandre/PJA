@@ -42,7 +42,6 @@
                     android:textColor="@color/off_white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:maxLines="1"
                     android:ellipsize="end" />
 
                 <ImageView

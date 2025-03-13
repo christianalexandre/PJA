@@ -291,11 +291,7 @@ class AddFragment : Fragment(), TaskListener {
             binding.cardDataPicker.clearFocus()
         }
 
-        picker.addOnNegativeButtonClickListener {
-            binding.datePickerText.setText("$date - Horário indefinido.")
-            binding.deleteDateButton.visibility = View.VISIBLE
-            binding.cardDataPicker.clearFocus()
-        }
+        picker.addOnNegativeButtonClickListener { binding.cardDataPicker.clearFocus() }
     }
 
 
