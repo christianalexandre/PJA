@@ -300,12 +300,15 @@ class AddFragment : Fragment(), PhotoAccessListener {
                 conclusionDate
             )
 
-            (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                .hideSoftInputFromWindow(view?.windowToken, 0)
+            hideKeyBoard()
 
         }
 
     }
+
+    private fun hideKeyBoard() =
+        (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(view?.windowToken, 0)
 
     private fun setupInputLayoutsListener() {
 
@@ -351,7 +354,10 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     private fun setupDatePickerListener() {
 
-        binding?.setDayHour?.setOnClickListener { datePickerDialog?.show() }
+        binding?.setDayHour?.setOnClickListener {
+            hideKeyBoard()
+            datePickerDialog?.show()
+        }
 
         datePickerDialog?.setOnDateSetListener { _, year, month, dayOfMonth ->
 
