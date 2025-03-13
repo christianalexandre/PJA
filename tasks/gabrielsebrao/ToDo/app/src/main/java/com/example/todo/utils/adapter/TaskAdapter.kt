@@ -1,4 +1,4 @@
-package com.example.todo.modules.main.fragments.home
+package com.example.todo.utils.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
+import com.example.todo.utils.viewholder.TaskViewHolder
 
-class HomeTaskAdapter(
+class TaskAdapter(
     val taskList: MutableList<Task>,
     private val listener: CardActionListener
-): RecyclerView.Adapter<HomeTaskViewHolder>() {
+): RecyclerView.Adapter<TaskViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeTaskViewHolder {
-        return HomeTaskViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        return TaskViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_card_task, parent, false),
             listener
         )
@@ -21,7 +22,7 @@ class HomeTaskAdapter(
 
     override fun getItemCount(): Int = taskList.size
 
-    override fun onBindViewHolder(holder: HomeTaskViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(taskList[position])
     }
 
