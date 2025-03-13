@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+
 private const val EDIT_TEXT_TITLE = "edit_text_title"
 private const val EDIT_TEXT_CONTENT = "edit_text_content"
 
@@ -52,6 +53,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
 
     private var calendar: Calendar = Calendar.getInstance()
+    private var conclusionDate: Long? = null
     private var datePickerDialog: DatePickerDialog? = null
     private var timePickerDialog: TimePickerDialog? = null
 
@@ -253,7 +255,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
                 updateSetDayHour(calendar.timeInMillis)
 
-
+                conclusionDate = calendar.timeInMillis
 
             },
             calendar.get(Calendar.HOUR_OF_DAY),
@@ -293,7 +295,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
                 binding?.inputLayoutAddContent?.editText?.text.toString(),
-                Converter.bitmapToByteArray(bitmap, Bitmap.CompressFormat.JPEG, 80)
+                Converter.bitmapToByteArray(bitmap, Bitmap.CompressFormat.JPEG, 80),
+                conclusionDate
             )
 
             (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -476,6 +479,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
         binding?.textSetDayHour?.text = getString(R.string.default_set_day_hour)
         binding?.cancelSetDayHour?.visibility = View.GONE
         binding?.setDayHour?.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_ripple_gray)
+        conclusionDate = null
 
     }
 

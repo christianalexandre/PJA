@@ -69,12 +69,19 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     }
 
-    fun addTask(title: String, content: String, byteArrayBitmap: ByteArray?): Disposable? {
+    fun addTask(title: String, content: String, byteArrayBitmap: ByteArray?, conclusionDate: Long?): Disposable? {
 
         val task: Task?
 
         try {
-            task = Task(sharedPref?.nextTaskId ?: 0, title, content, false, byteArrayBitmap)
+            task = Task(
+                sharedPref?.nextTaskId ?: 0,
+                title,
+                content,
+                false,
+                byteArrayBitmap,
+                conclusionDate
+            )
         } catch(error: Exception) {
             _addTaskSuccess.value = false
             Log.e("ROOM_DEBUG", "ADD TASK: ${error.message}")
@@ -92,6 +99,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             ?.subscribe({
 
                 Log.d("RX_DEBUG", "ADD TASK: OK")
+                Log.d("RX_DEBUG", task.toString())
 
                 sharedPref?.incrementCurrentTaskId()
                 TaskSingleton.openTaskList?.add(0, task)
