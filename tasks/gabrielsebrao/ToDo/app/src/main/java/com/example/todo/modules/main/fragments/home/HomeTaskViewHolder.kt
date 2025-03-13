@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.databinding.ItemCardTaskBinding
+import com.example.todo.utils.converter.Converter.toDate
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 
@@ -43,6 +44,13 @@ class HomeTaskViewHolder(itemView: View, private val listener: CardActionListene
             binding.buttonAccessImage.visibility = View.VISIBLE
         else
             binding.buttonAccessImage.visibility = View.GONE
+
+        if(task?.conclusionDate != null) {
+            binding.conclusionDate.text = task?.conclusionDate?.toDate()
+            binding.conclusionDate.visibility = View.VISIBLE
+        }
+        else
+            binding.conclusionDate.visibility = View.GONE
 
     }
 

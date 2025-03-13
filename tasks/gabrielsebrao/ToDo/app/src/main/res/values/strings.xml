@@ -47,4 +47,5 @@
     <string name="access_image">Ver imagem</string>
     <string name="alt_icon_set_day_hour">Ícone de um calendário, para definir uma data e horário da tarefa.</string>
     <string name="default_set_day_hour">Adicionar data e hora de conclusão</string>
+    <string name="default_conclusion_date">01/01/1970 00:00</string>
 </resources>
