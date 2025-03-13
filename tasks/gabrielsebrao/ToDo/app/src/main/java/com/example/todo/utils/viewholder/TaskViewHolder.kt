@@ -1,4 +1,4 @@
-package com.example.todo.modules.main.fragments.archived
+package com.example.todo.utils.viewholder
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import com.example.todo.databinding.ItemCardTaskBinding
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 
-class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
+class TaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ItemCardTaskBinding = ItemCardTaskBinding.bind(itemView)
     private var dialog: AlertDialog? = null
@@ -50,7 +50,7 @@ class ArchivedTaskViewHolder(itemView: View, private val listener: CardActionLis
 
         binding.frameLayout.setOnClickListener { listener.onCheckClicked(task) }
 
-        if(task?.image?.isEmpty() != true)
+        if(task?.image != null)
             binding.buttonAccessImage.setOnClickListener { listener.onImageCLicked(task) }
 
     }
