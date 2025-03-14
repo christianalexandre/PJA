@@ -94,6 +94,9 @@ class AddFragment : Fragment(), TaskListener {
         bindingFromAddBottomSheet = AddBottomSheetBinding.inflate(inflater, container, false)
 
         setupAddViewModel()
+        setupKeyboardBehavior(binding.textFieldTitleText)
+        setupKeyboardBehavior(binding.textFieldAnotationText)
+        clickInScreen()
         updateButton()
         verificationChar()
         clickSaveButton()
@@ -111,6 +114,36 @@ class AddFragment : Fragment(), TaskListener {
         val repository = TaskRepository(database.taskDao())
         val factory = AddViewModelFactory(repository)
         addViewModel = ViewModelProvider(this, factory)[AddViewModel::class.java]
+    }
+
+    private fun setupKeyboardBehavior(editText: View) {
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (!hasFocus) {
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                view.clearFocus()
+            }
+        }
+    }
+
+    private fun clickInScreen() {
+        with(binding) {
+            appBarFromAdd.setOnClickListener {
+                clearFocusEditText()
+            }
+
+            scrollView.setOnClickListener {
+                clearFocusEditText()
+            }
+
+            fieldTheEditTexts.setOnClickListener {
+                clearFocusEditText()
+            }
+
+            fragmentXmlAdd.setOnClickListener {
+                clearFocusEditText()
+            }
+        }
     }
 
     private fun updateButton() {
@@ -294,12 +327,17 @@ class AddFragment : Fragment(), TaskListener {
         picker.addOnNegativeButtonClickListener { binding.cardDataPicker.clearFocus() }
     }
 
-
     private fun deleteDate() {
         binding.deleteDateButton.setOnClickListener {
+            clearFocusEditText()
             binding.datePickerText.text?.clear()
             binding.deleteDateButton.visibility = View.GONE
         }
+    }
+
+    private fun clearFocusEditText() {
+        binding.textFieldTitleText.clearFocus()
+        binding.textFieldAnotationText.clearFocus()
     }
 
     private fun removeAttachedImage() {
@@ -356,8 +394,14 @@ class AddFragment : Fragment(), TaskListener {
 
     private fun openBottomSheet() {
         with(binding) {
-            cardImageView.setOnClickListener { checkPermissionsAndOpenBottomSheet() }
-            deleteAttachButton.setOnClickListener { onCheckPressed(null) }
+            cardImageView.setOnClickListener {
+                clearFocusEditText()
+                checkPermissionsAndOpenBottomSheet()
+            }
+            deleteAttachButton.setOnClickListener {
+                clearFocusEditText()
+                onCheckPressed(null)
+            }
         }
     }
 

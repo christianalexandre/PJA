@@ -1,9 +1,13 @@
 package com.example.todolist.ui.archived
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +26,7 @@ class ArchivedFragment : Fragment(), TaskListener {
     private lateinit var archivedViewModel: ArchivedViewModel
     private lateinit var taskAdapter: TaskAdapter
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -47,6 +52,7 @@ class ArchivedFragment : Fragment(), TaskListener {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observeViewModel() {
         archivedViewModel.archivedTasksLiveData.observe(viewLifecycleOwner) { tasks ->
             taskAdapter.updateTasks(tasks.toMutableList())
