@@ -1,15 +1,27 @@
 package com.example.todo.utils.viewholder
 
 import android.app.AlertDialog
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.databinding.ItemCardTaskBinding
+import com.example.todo.utils.converter.Converter
 import com.example.todo.utils.converter.Converter.toDate
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Locale
 
 class TaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
 
@@ -46,11 +58,22 @@ class TaskViewHolder(itemView: View, private val listener: CardActionListener) :
             binding.buttonAccessImage.visibility = View.GONE
 
         if(task?.conclusionDate != null) {
-            binding.conclusionDate.text = task?.conclusionDate?.toDate()
+            binding.textConclusionDate.text =
+                Converter.turnTimeStampToSpelledOut(task?.conclusionDate ?: 0, Calendar.getInstance())
             binding.conclusionDate.visibility = View.VISIBLE
         }
         else
             binding.conclusionDate.visibility = View.GONE
+
+        if((task?.conclusionDate ?: return) <= Calendar.getInstance().timeInMillis) {
+
+            binding.textConclusionDate
+                .setTextColor(ContextCompat.getColor(binding.root.context, R.color.error_red))
+
+            binding.iconConclusionDate
+                .setColorFilter(ContextCompat.getColor(binding.root.context, R.color.error_red))
+
+        }
 
     }
 
