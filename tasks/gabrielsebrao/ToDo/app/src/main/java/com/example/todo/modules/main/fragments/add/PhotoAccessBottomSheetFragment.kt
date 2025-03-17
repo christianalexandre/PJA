@@ -1,10 +1,15 @@
 package com.example.todo.modules.main.fragments.add
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.example.todo.databinding.ItemBottomSheetLayoutBinding
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
 import com.example.todo.utils.listener.PhotoAccessListener
@@ -14,6 +19,12 @@ class PhotoAccessBottomSheetFragment(
 ): BaseBottomSheetFragment<ItemBottomSheetLayoutBinding>() {
     
     private var hasImage = false
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if(granted)
+            listener.onAccessCamera()
+    }
 
     companion object {
 
@@ -45,11 +56,21 @@ class PhotoAccessBottomSheetFragment(
             binding.buttonCancelImage.visibility = View.GONE
 
         binding.buttonAccessCamera.setOnClickListener {
-            listener.onAccessCamera()
+
+            if(isCameraPermissionGranted())
+                listener.onAccessCamera()
+            else if(!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
+                Toast.makeText(requireContext(), "Permita o acesso à camera nas configurações!", Toast.LENGTH_SHORT).show()
+            else
+                requestCameraPermission()
+
+
         }
 
         binding.buttonAccessGallery.setOnClickListener {
+
             listener.onAccessGallery()
+
         }
 
         binding.buttonCancelImage.setOnClickListener {
@@ -62,9 +83,12 @@ class PhotoAccessBottomSheetFragment(
 
     }
 
-    fun show(manager: FragmentManager, tag: String?, hasImage: Boolean) {
-        this.show(manager, tag)
-        this.hasImage = hasImage
-    }
+    private fun isCameraPermissionGranted(): Boolean =
+        ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+    private fun requestCameraPermission() =
+        requestPermissionLauncher?.launch(Manifest.permission.CAMERA)
 
 }
