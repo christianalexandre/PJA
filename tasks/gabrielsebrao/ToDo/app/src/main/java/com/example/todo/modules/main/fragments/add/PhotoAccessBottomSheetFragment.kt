@@ -15,6 +15,20 @@ class PhotoAccessBottomSheetFragment(
     
     private var hasImage = false
 
+    companion object {
+
+        private const val ARG_HAS_IMAGE = "has_image"
+
+        fun newInstance(listener: PhotoAccessListener, hasImage: Boolean): PhotoAccessBottomSheetFragment {
+            return PhotoAccessBottomSheetFragment(listener).apply {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_HAS_IMAGE, hasImage)
+                }
+            }
+        }
+
+    }
+
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): ItemBottomSheetLayoutBinding {
         return ItemBottomSheetLayoutBinding.inflate(inflater, container, false)
     }
@@ -22,6 +36,8 @@ class PhotoAccessBottomSheetFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
+
+        hasImage = arguments?.getBoolean(ARG_HAS_IMAGE) ?: false
         
         if(hasImage)
             binding.buttonCancelImage.visibility = View.VISIBLE

@@ -46,7 +46,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
     private var pickImageLauncher: ActivityResultLauncher<String>? = null
-    private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
+    private var bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
     private var bitmap: Bitmap? = null
     private var cameraTempFile: File? = null
@@ -286,7 +286,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
             if(parentFragmentManager.fragments.any { it.tag == BaseBottomSheetFragment.TAG })
                 return@setOnClickListener
 
-            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG, hasImage)
+            bottomSheetFragment = PhotoAccessBottomSheetFragment.newInstance(this, hasImage)
+            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG)
         }
 
     }
