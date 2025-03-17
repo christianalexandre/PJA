@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.todolist.R
 import com.example.todolist.databinding.FragmentHomeBinding
 import com.example.todolist.ui.dialog.DialogOrigin
 import com.example.todolist.ui.adapter.TaskAdapter
@@ -24,6 +25,8 @@ class HomeFragment : Fragment(), TaskListener {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var taskAdapter: TaskAdapter
 
+    private var select: Boolean = false
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -38,6 +41,7 @@ class HomeFragment : Fragment(), TaskListener {
 
         setupRecyclerView()
         observeViewModel()
+        showSelectionTasks()
 
         return binding.root
     }
@@ -72,6 +76,20 @@ class HomeFragment : Fragment(), TaskListener {
                 }
             }
             CustomDialogFragment.checkShowDialog(parentFragmentManager, DialogOrigin.HOME_CARD_CHECK, listener)
+        }
+    }
+
+    private fun showSelectionTasks() {
+        binding.selectButton.setOnClickListener {
+            if (binding.selectButton.text == getText(R.string.cancel_text)) {
+                binding.toolbarBottom.visibility = View.GONE
+                binding.selectButton.text = getText(R.string.select_button_text)
+                select = false
+            } else {
+                binding.toolbarBottom.visibility = View.VISIBLE
+                binding.selectButton.text = getText(R.string.cancel_text)
+                select = true
+            }
         }
     }
 
