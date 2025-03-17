@@ -31,7 +31,7 @@ import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
-import com.example.todo.utils.converter.Converter
+import com.example.todo.utils.extensions.toByteArray
 import com.example.todo.utils.listener.PhotoAccessListener
 import java.io.File
 import java.text.SimpleDateFormat
@@ -239,7 +239,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
                 binding?.inputLayoutAddContent?.editText?.text.toString(),
-                Converter.bitmapToByteArray(bitmap, Bitmap.CompressFormat.JPEG, 80)
+                bitmap?.toByteArray(Bitmap.CompressFormat.JPEG, 80)
             )
 
             (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
