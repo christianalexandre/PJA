@@ -1,14 +1,11 @@
 package com.example.todolist.ui.home
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,6 +56,7 @@ class HomeFragment : Fragment(), TaskListener {
             taskAdapter.updateTasks(tasks.toMutableList())
 
             binding.notTaskFromHome.visibility = if (tasks.isEmpty()) View.VISIBLE else View.GONE
+            binding.selectButton.visibility = if (tasks.isNotEmpty()) View.VISIBLE else View.GONE
         }
     }
 

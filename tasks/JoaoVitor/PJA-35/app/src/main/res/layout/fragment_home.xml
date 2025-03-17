@@ -18,6 +18,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/selectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_button_text"
+        android:textColor="@color/off_white"
+        android:backgroundTint="@color/black"
+        app:rippleColor="@color/orange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/appBarFromHome"
+        app:layout_constraintBottom_toBottomOf="@id/appBarFromHome"
+        android:layout_marginEnd="15dp"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notTaskFromHome"
         android:layout_width="match_parent"
