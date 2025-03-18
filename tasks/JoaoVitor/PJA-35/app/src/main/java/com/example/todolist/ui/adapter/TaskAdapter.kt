@@ -1,5 +1,6 @@
 package com.example.todolist.ui.adapter
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
+import com.example.todolist.databinding.TaskItemBinding
 import com.example.todolist.ui.database.model.Task
 
 class TaskAdapter(
@@ -15,9 +17,11 @@ class TaskAdapter(
     private val isFromHome: Boolean
 ) : RecyclerView.Adapter<TaskViewHolder>() {
 
+    private val selectedTasks = mutableSetOf<Task>() // Lista de tarefas selecionadas
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.task_item, parent, false)
-        return TaskViewHolder(view)
+        val binding = TaskItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TaskViewHolder(binding)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -25,7 +29,13 @@ class TaskAdapter(
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bind(tasks[position], listener, isFromHome)
+        val task = tasks[position]
+        holder.bind(task, listener, isFromHome)
+
+        // Configura o clique no botão de seleção
+        holder.itemView.setOnClickListener {
+            toggleSelection(task)
+        }
     }
 
     override fun getItemCount(): Int = tasks.size
@@ -50,7 +60,23 @@ class TaskAdapter(
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         tasks.clear()
         tasks.addAll(sortedTasks)
+        selectedTasks.clear() // Limpa seleção ao atualizar
         diffResult.dispatchUpdatesTo(this)
     }
 
+    // Alterna a seleção do item
+    @SuppressLint("NotifyDataSetChanged")
+    fun toggleSelection(task: Task) {
+        val position = tasks.indexOf(task)
+        notifyItemChanged(position)
+    }
+
+    // Limpa a seleção
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearSelection() {
+        tasks.forEach {
+            it.isSelected = false
+        }
+        notifyDataSetChanged()
+    }
 }

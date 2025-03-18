@@ -1,10 +1,13 @@
 package com.example.todolist.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +28,7 @@ class HomeFragment : Fragment(), TaskListener {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var taskAdapter: TaskAdapter
 
+    private val selectedTasks = mutableListOf<Task>()
     private var select: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -42,6 +46,7 @@ class HomeFragment : Fragment(), TaskListener {
         setupRecyclerView()
         observeViewModel()
         showSelectionTasks()
+        setupToolbarActions()
 
         return binding.root
     }
@@ -57,7 +62,7 @@ class HomeFragment : Fragment(), TaskListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun observeViewModel() {
         homeViewModel.tasksLiveData.observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.updateTasks(tasks.toMutableList())
+            taskAdapter.updateTasks(tasks)
 
             binding.notTaskFromHome.visibility = if (tasks.isEmpty()) View.VISIBLE else View.GONE
             binding.selectButton.visibility = if (tasks.isNotEmpty()) View.VISIBLE else View.GONE
@@ -79,12 +84,14 @@ class HomeFragment : Fragment(), TaskListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showSelectionTasks() {
         binding.selectButton.setOnClickListener {
-            if (binding.selectButton.text == getText(R.string.cancel_text)) {
+            if (select) {
                 binding.toolbarBottom.visibility = View.GONE
                 binding.selectButton.text = getText(R.string.select_button_text)
                 select = false
+                taskAdapter.clearSelection()
             } else {
                 binding.toolbarBottom.visibility = View.VISIBLE
                 binding.selectButton.text = getText(R.string.cancel_text)
@@ -93,8 +100,53 @@ class HomeFragment : Fragment(), TaskListener {
         }
     }
 
+    private fun setupToolbarActions() {
+        binding.buttonDelete.setOnClickListener {
+
+            if (selectedTasks.isNotEmpty()) {// Obtém as tarefas selecionadas
+                selectedTasks.forEach {
+                    homeViewModel.deleteTask(it)
+                }
+                selectedTasks.clear()
+
+                binding.toolbarBottom.visibility = View.GONE
+                binding.selectButton.text = getText(R.string.select_button_text)
+                select = false
+            } else {
+                val notification = Toast.makeText(requireContext(), "Nenhuma tarefa selecionada!", Toast.LENGTH_SHORT)
+                notification.setGravity(Gravity.CENTER, 50, 50)
+                notification.show()
+            }
+        }
+
+        binding.buttonArchive.setOnClickListener {
+            if (selectedTasks.isNotEmpty()) {
+                selectedTasks.forEach {
+                    homeViewModel.archiveTask(it)
+                }
+                selectedTasks.clear()
+
+                binding.toolbarBottom.visibility = View.GONE
+                binding.selectButton.text = getText(R.string.select_button_text)
+                select = false
+            } else {
+                val notification = Toast.makeText(requireContext(), "Nenhuma tarefa selecionada!", Toast.LENGTH_SHORT)
+                notification.setGravity(Gravity.CENTER, 50, 50)
+                notification.show()
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCheckPressed(task: Task?) {
-        task?.let { showDialog(it) }
+        task?.let {
+            if (select) {
+                if (it.isSelected) selectedTasks.add(it) else selectedTasks.remove(it)
+                taskAdapter.toggleSelection(task)
+            } else {
+                showDialog(it)
+            }
+        }
     }
 
     override fun onDestroyView() {

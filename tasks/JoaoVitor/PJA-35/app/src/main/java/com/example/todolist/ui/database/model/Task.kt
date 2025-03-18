@@ -10,5 +10,6 @@ data class Task(
     val description: String? = null,
     val image: String? = null,
     val date: String? = null,
-    var isArchived: Boolean = false
+    var isArchived: Boolean = false,
+    var isSelected: Boolean = false
 )
