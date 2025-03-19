@@ -46,7 +46,7 @@ class HomeFragment : Fragment(), TaskListener {
         setupRecyclerView()
         observeViewModel()
         showSelectionTasks()
-        setupToolbarActions()
+        setupSnackActions()
 
         return binding.root
     }
@@ -88,19 +88,23 @@ class HomeFragment : Fragment(), TaskListener {
     private fun showSelectionTasks() {
         binding.selectButton.setOnClickListener {
             if (select) {
-                binding.toolbarBottom.visibility = View.GONE
+                binding.snackBar.visibility = View.GONE
                 binding.selectButton.text = getText(R.string.select_button_text)
                 select = false
                 taskAdapter.clearSelection()
+                selectedTasks.clear()
+                taskAdapter.setupSelectionMode(false)
             } else {
-                binding.toolbarBottom.visibility = View.VISIBLE
+                binding.snackBar.visibility = View.VISIBLE
                 binding.selectButton.text = getText(R.string.cancel_text)
                 select = true
+                selectedTasks.clear()
+                taskAdapter.setupSelectionMode(true)
             }
         }
     }
 
-    private fun setupToolbarActions() {
+    private fun setupSnackActions() {
         binding.buttonDelete.setOnClickListener {
 
             if (selectedTasks.isNotEmpty()) {// Obtém as tarefas selecionadas
@@ -109,9 +113,10 @@ class HomeFragment : Fragment(), TaskListener {
                 }
                 selectedTasks.clear()
 
-                binding.toolbarBottom.visibility = View.GONE
+                binding.snackBar.visibility = View.GONE
                 binding.selectButton.text = getText(R.string.select_button_text)
                 select = false
+                taskAdapter.setupSelectionMode(false)
             } else {
                 val notification = Toast.makeText(requireContext(), "Nenhuma tarefa selecionada!", Toast.LENGTH_SHORT)
                 notification.setGravity(Gravity.CENTER, 50, 50)
@@ -125,10 +130,12 @@ class HomeFragment : Fragment(), TaskListener {
                     homeViewModel.archiveTask(it)
                 }
                 selectedTasks.clear()
+                taskAdapter.clearSelection()
 
-                binding.toolbarBottom.visibility = View.GONE
+                binding.snackBar.visibility = View.GONE
                 binding.selectButton.text = getText(R.string.select_button_text)
                 select = false
+                taskAdapter.setupSelectionMode(false)
             } else {
                 val notification = Toast.makeText(requireContext(), "Nenhuma tarefa selecionada!", Toast.LENGTH_SHORT)
                 notification.setGravity(Gravity.CENTER, 50, 50)
@@ -141,6 +148,7 @@ class HomeFragment : Fragment(), TaskListener {
     override fun onCheckPressed(task: Task?) {
         task?.let {
             if (select) {
+                task.isSelected = !task.isSelected
                 if (it.isSelected) selectedTasks.add(it) else selectedTasks.remove(it)
                 taskAdapter.toggleSelection(task)
             } else {

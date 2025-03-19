@@ -26,7 +26,7 @@ class HomeViewModel(private val taskDao: TaskRepository) : ViewModel() {
     }
 
     fun archiveTask(task: Task) {
-        val archivedTask = task.copy(isArchived = true, image = task.image)
+        val archivedTask = task.copy(isArchived = true, image = task.image, isSelected = false)
         val disposable = taskDao.updateTask(archivedTask)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

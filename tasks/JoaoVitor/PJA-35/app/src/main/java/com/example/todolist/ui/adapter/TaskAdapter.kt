@@ -18,6 +18,7 @@ class TaskAdapter(
 ) : RecyclerView.Adapter<TaskViewHolder>() {
 
     private val selectedTasks = mutableSetOf<Task>() // Lista de tarefas selecionadas
+    private var isSelectionMode = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val binding = TaskItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -30,7 +31,7 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasks[position]
-        holder.bind(task, listener, isFromHome)
+        holder.bind(task, listener, isFromHome, isSelectionMode)
 
         // Configura o clique no botão de seleção
         holder.itemView.setOnClickListener {
@@ -65,7 +66,6 @@ class TaskAdapter(
     }
 
     // Alterna a seleção do item
-    @SuppressLint("NotifyDataSetChanged")
     fun toggleSelection(task: Task) {
         val position = tasks.indexOf(task)
         notifyItemChanged(position)
@@ -78,5 +78,17 @@ class TaskAdapter(
             it.isSelected = false
         }
         notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun selectAll() {
+        tasks.forEach {
+            it.isSelected = true
+        }
+        notifyDataSetChanged()
+    }
+
+    fun setupSelectionMode(isSelectionMode: Boolean) {
+        this.isSelectionMode = isSelectionMode
     }
 }

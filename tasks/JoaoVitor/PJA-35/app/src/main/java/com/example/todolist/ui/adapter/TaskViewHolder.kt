@@ -18,18 +18,45 @@ class TaskViewHolder(private val binding: TaskItemBinding) : RecyclerView.ViewHo
     private val imageTask: ImageView? = itemView.findViewById(R.id.picture)
 
 
-    fun bind(task: Task, listener: TaskListener, isFromHome: Boolean) {
-        binding.titleTextView?.text = task.title
-        binding.descriptionTextView?.text = task.description
-        binding.datePickerTextView?.text = task.date
+    fun bind(task: Task, listener: TaskListener, isFromHome: Boolean, isSelectionMode: Boolean) {
+        binding.titleTextView.text = task.title
+        binding.descriptionTextView.text = task.description
+        binding.datePickerTextView.text = task.date
 
-        if (!isFromHome || task.isSelected) {
-            binding.checkButton?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
-            binding.checkButton?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+        if (isSelectionMode) {
+            if (task.isSelected) {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+            } else {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+            }
         } else {
-            binding.checkButton?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
-            binding.checkButton?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+            if (isFromHome) {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+            } else {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+            }
         }
+
+
+//        if (isFromHome && !task.isSelected) {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+//        }
+//        else if(isFromHome && task.isSelected) {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+//        }
+//        else if(!isFromHome && task.isSelected) {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+//        } else {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+//        }
 
         binding.buttonImagePhoto?.visibility = View.VISIBLE // Garante que o botão de foto comece visível
 
@@ -81,7 +108,6 @@ class TaskViewHolder(private val binding: TaskItemBinding) : RecyclerView.ViewHo
                 }
                 .start()
 
-            task.isSelected = !task.isSelected
             listener.onCheckPressed(task)
         }
 
@@ -96,7 +122,6 @@ class TaskViewHolder(private val binding: TaskItemBinding) : RecyclerView.ViewHo
                 }
                 .start()
 
-            task.isSelected = !task.isSelected
             listener.onCheckPressed(task)
         }
     }
