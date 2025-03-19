@@ -15,29 +15,34 @@ import com.example.todo.databinding.ItemBottomSheetLayoutBinding
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
 import com.example.todo.utils.listener.PhotoAccessListener
 
-class PhotoAccessBottomSheetFragment(
-    private val listener: PhotoAccessListener
-): BaseBottomSheetFragment<ItemBottomSheetLayoutBinding>() {
+class PhotoAccessBottomSheetFragment: BaseBottomSheetFragment<ItemBottomSheetLayoutBinding>() {
     
     private var hasImage = false
-    private var requestPermissionLauncher: ActivityResultLauncher<String>? = registerForActivityResult(
+    private var listener: PhotoAccessListener? = null
+    private var requestCameraPermissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if(granted)
-            listener.onAccessCamera()
+    ) { isGranted ->
+        if(isGranted)
+            listener?.onAccessCamera()
+    }
+    private val requestGalleryPermissionLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if(isGranted)
+            listener?.onAccessGallery()
     }
 
     companion object {
 
         private const val ARG_HAS_IMAGE = "has_image"
 
-        fun newInstance(listener: PhotoAccessListener, hasImage: Boolean): PhotoAccessBottomSheetFragment {
-            return PhotoAccessBottomSheetFragment(listener).apply {
+        fun newInstance(listener: PhotoAccessListener, hasImage: Boolean)
+        = PhotoAccessBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_HAS_IMAGE, hasImage)
                 }
+                this.listener = listener
             }
-        }
 
     }
 
@@ -59,25 +64,29 @@ class PhotoAccessBottomSheetFragment(
         binding.buttonAccessCamera.setOnClickListener {
 
             if(isCameraPermissionGranted())
-                listener.onAccessCamera()
+                listener?.onAccessCamera()
             else if(!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
                 Toast.makeText(requireContext(), getString(R.string.allow_camera), Toast.LENGTH_SHORT).show()
             else
                 requestCameraPermission()
 
-
         }
 
         binding.buttonAccessGallery.setOnClickListener {
 
-            listener.onAccessGallery()
+            if(isGalleryPermissionGranted())
+                listener?.onAccessGallery()
+            else if(!shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES))
+                Toast.makeText(requireContext(), getString(R.string.allow_gallery), Toast.LENGTH_SHORT).show()
+            else
+                requestGalleryPermission()
 
         }
 
         binding.buttonCancelImage.setOnClickListener {
 
             it.postDelayed({
-                listener.onDeleteImage()
+                listener?.onDeleteImage()
             }, 150) // in order to show ripple effect
 
         }
@@ -89,7 +98,15 @@ class PhotoAccessBottomSheetFragment(
             requireContext(), Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
 
+    private fun isGalleryPermissionGranted(): Boolean =
+        ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED
+
     private fun requestCameraPermission() =
-        requestPermissionLauncher?.launch(Manifest.permission.CAMERA)
+        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+
+    private fun requestGalleryPermission() =
+        requestGalleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
 
 }

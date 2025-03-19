@@ -46,4 +46,5 @@
     <string name="remove_image">Remover imagem</string>
     <string name="access_image">Ver imagem</string>
     <string name="allow_camera">Permita o acesso à camera nas configurações!</string>
+    <string name="allow_gallery">Permita o acesso à galeria nas configurações!</string>
 </resources>
