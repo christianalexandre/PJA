@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.example.todo.R
 import com.example.todo.databinding.ItemBottomSheetLayoutBinding
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
 import com.example.todo.utils.listener.PhotoAccessListener
@@ -60,7 +61,7 @@ class PhotoAccessBottomSheetFragment(
             if(isCameraPermissionGranted())
                 listener.onAccessCamera()
             else if(!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
-                Toast.makeText(requireContext(), "Permita o acesso à camera nas configurações!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.allow_camera), Toast.LENGTH_SHORT).show()
             else
                 requestCameraPermission()
 
