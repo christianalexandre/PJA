@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ToDoList</string>
+    <string name="app_name">StackNotes</string>
     <string name="title_home">Home</string>
     <string name="title_my_tasks">Minhas tarefas</string>
     <string name="title_archived">Arquivadas</string>
