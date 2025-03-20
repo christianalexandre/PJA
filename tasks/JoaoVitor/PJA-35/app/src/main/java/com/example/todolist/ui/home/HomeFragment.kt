@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.todolist.R
 import com.example.todolist.databinding.FragmentHomeBinding
 import com.example.todolist.ui.dialog.DialogOrigin
@@ -154,6 +155,20 @@ class HomeFragment : Fragment(), TaskListener {
             } else {
                 showDialog(it)
             }
+        }
+    }
+
+    fun checkScreen () {
+        val viewPager = requireActivity().findViewById<ViewPager2>(R.id.vp)
+
+        if (viewPager.currentItem == 1 && select) {
+            println("OK")
+        } else {
+            binding.snackBar.visibility = View.GONE
+            binding.selectButton.text = getText(R.string.select_button_text)
+            select = false
+            taskAdapter.clearSelection()
+            taskAdapter.setupSelectionMode(false)
         }
     }
 
