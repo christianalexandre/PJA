@@ -1,9 +1,13 @@
 package com.example.todo.utils.viewholder
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.TranslateAnimation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.databinding.ItemCardTaskBinding
@@ -48,7 +52,29 @@ class TaskViewHolder(itemView: View, private val listener: CardActionListener) :
 
     private fun setupListener() {
 
-        binding.frameLayout.setOnClickListener { listener.onCheckClicked(task) }
+        val scaleUp = ObjectAnimator.ofFloat(binding.frameLayout, "scaleX", 1f, 1.2f)
+        val scaleDown = ObjectAnimator.ofFloat(binding.frameLayout, "scaleX", 1.2f, 1f)
+
+        val scaleUpY = ObjectAnimator.ofFloat(binding.frameLayout, "scaleY", 1f, 1.2f)
+        val scaleDownY = ObjectAnimator.ofFloat(binding.frameLayout, "scaleY", 1.2f, 1f)
+
+        scaleUp.duration = 200
+        scaleDown.duration = 200
+        scaleUpY.duration = 200
+        scaleDownY.duration = 200
+
+        val scaleUpDown = AnimatorSet()
+        scaleUpDown.play(scaleDown).after(scaleUp)
+        scaleUpDown.play(scaleDownY).after(scaleUpY)
+
+        binding.frameLayout.setOnClickListener {
+
+            scaleUp.start()
+            scaleUpY.start()
+            scaleUpDown.start()
+
+            listener.onCheckClicked(task)
+        }
 
         if(task?.image != null)
             binding.buttonAccessImage.setOnClickListener { listener.onImageCLicked(task) }
