@@ -14,4 +14,9 @@
         <item name="boxStrokeErrorColor">@color/error_red</item>
         <item name="errorIconTint">@color/error_red</item>
     </style>
+
+    <style name="AvailableCurrenciesDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:background">@color/gray</item>
+        <item name="thumbColor">@color/gray</item>
+    </style>
 </resources>
