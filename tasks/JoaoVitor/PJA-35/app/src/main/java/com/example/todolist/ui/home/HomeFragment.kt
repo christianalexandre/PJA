@@ -102,6 +102,7 @@ class HomeFragment : Fragment(), TaskListener {
                 selectedTasks.clear()
                 taskAdapter.setupSelectionMode(true)
             }
+            binding.recyclerView.adapter?.notifyItemRangeChanged(0, taskAdapter.itemCount)
         }
     }
 
