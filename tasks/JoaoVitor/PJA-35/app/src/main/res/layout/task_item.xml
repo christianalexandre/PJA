@@ -8,7 +8,6 @@
     android:layout_marginVertical="4dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
@@ -21,6 +20,7 @@
         tools:ignore="MissingConstraints">
 
         <LinearLayout
+            android:id="@+id/cardItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -42,7 +42,6 @@
                     android:textColor="@color/off_white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:maxLines="1"
                     android:ellipsize="end" />
 
                 <ImageView
@@ -65,6 +64,15 @@
                 android:textColor="@color/off_white"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/datePickerTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/off_white"
+                android:textStyle="bold"
                 android:layout_marginBottom="16dp"/>
 
             <ImageView

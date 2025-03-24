@@ -12,6 +12,7 @@ import com.example.todolist.ui.add.AddFragment
 import com.example.todolist.ui.archived.ArchivedFragment
 import com.example.todolist.ui.home.HomeFragment
 import com.google.android.material.tabs.TabLayoutMediator
+import androidx.viewpager2.widget.ViewPager2
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
         setupFragments()
+        setupPageChangeListener()
     }
 
     private fun setupFragments() {
@@ -52,5 +54,22 @@ class MainActivity : AppCompatActivity() {
         tabBinding.icon.setImageResource(iconRes)
         tabBinding.label.text = text
         return tabBinding.root
+    }
+
+    private fun setupPageChangeListener() {
+        binding.vp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                val pageAdapter = binding.vp.adapter as? PageAdapter
+                val fragment = pageAdapter?.fragments?.getOrNull(position)
+
+                if (fragment is ArchivedFragment) {
+                    fragment.checkScreen()
+                } else if (fragment is HomeFragment) {
+                    fragment.checkScreen()
+                }
+            }
+        })
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ToDoList</string>
+    <string name="app_name">StackNotes</string>
     <string name="title_home">Home</string>
     <string name="title_my_tasks">Minhas tarefas</string>
     <string name="title_archived">Arquivadas</string>
@@ -7,7 +7,9 @@
     <string name="title_add">Adicionar</string>
     <string name="title_add_card">Adição de card</string>
     <string name="button_save_text">Salvar</string>
+    <string name="select_button_text">Selecionar</string>
     <string name="hint_title">Titulo</string>
+    <string name="hint_data">Data e Hora</string>
     <string name="anotation_title">Anotação</string>
     <string name="delete_anotation">Apagar anotação</string>
     <string name="insert_title">Insira um título</string>
@@ -18,9 +20,14 @@
     <string name="button2_dialog_home">ARQUIVAR</string>
     <string name="text_restauring">RESTAURAR</string>
     <string name="text_task_concluded">Tarefa arquivada</string>
+    <string name="question_dialog_text">Realmente deseja apagar o anexo?</string>
     <string name="attachment">Anexar</string>
     <string name="add_attach">Nenhuma imagem anexada</string>
     <string name="delete_attach_tex">apagar anexo</string>
     <string name="not_task_text">Nenhuma tarefa</string>
     <string name="not_task_archived_text">Nenhuma tarefa arquivada</string>
+    <string name="cancel_text">CANCELAR</string>
+    <string name="confirm_text">CONFIRMAR</string>
+    <string name="date_and_hour">Data e Hora</string>
+    <string name="dont_date">Sem data</string>
 </resources>

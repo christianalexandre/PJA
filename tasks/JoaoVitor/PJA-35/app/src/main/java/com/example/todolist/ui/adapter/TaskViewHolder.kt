@@ -6,29 +6,59 @@ import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.todolist.R
+import com.example.todolist.databinding.TaskItemBinding
 import com.example.todolist.ui.database.model.Task
 
-class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TaskViewHolder(private val binding: TaskItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    private val titleTextView: TextView? = itemView.findViewById(R.id.titleTextView)
-    private val descriptionTextView: TextView? = itemView.findViewById(R.id.descriptionTextView)
     private val imageTask: ImageView? = itemView.findViewById(R.id.picture)
-    private val buttonPhoto: ImageView? = itemView.findViewById(R.id.buttonImagePhoto)
-    private val checkButton: ImageView? = itemView.findViewById(R.id.checkButton)
 
-    fun bind(task: Task, listener: TaskListener, isFromHome: Boolean) {
-        titleTextView?.text = task.title
-        descriptionTextView?.text = task.description
 
-        if (!isFromHome) checkButton?.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
-        if (isFromHome) checkButton?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+    fun bind(task: Task, listener: TaskListener, isFromHome: Boolean, isSelectionMode: Boolean) {
+        binding.titleTextView.text = task.title
+        binding.descriptionTextView.text = task.description
+        binding.datePickerTextView.text = task.date
 
-        buttonPhoto?.visibility = View.VISIBLE // Garante que o botão de foto comece visível
+        if (isSelectionMode) {
+            if (task.isSelected) {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+            } else {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+            }
+        } else {
+            if (isFromHome) {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+            } else {
+                binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+                binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+            }
+        }
+
+
+//        if (isFromHome && !task.isSelected) {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+//        }
+//        else if(isFromHome && task.isSelected) {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+//        }
+//        else if(!isFromHome && task.isSelected) {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
+//        } else {
+//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
+//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
+//        }
+
+        binding.buttonImagePhoto?.visibility = View.VISIBLE // Garante que o botão de foto comece visível
 
         if (!task.image.isNullOrEmpty()) {
             Log.d("TaskViewHolder", "Task ID: ${task.id}, Image Path: ${task.image}")
@@ -40,7 +70,7 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                     .into(it)
             }
 
-            buttonPhoto?.setOnClickListener { view ->
+            binding.buttonImagePhoto?.setOnClickListener { view ->
                 view.animate()
                     .scaleX(0.8f)
                     .scaleY(0.8f)
@@ -57,18 +87,32 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 try {
                     itemView.context.startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
-                    buttonPhoto?.visibility = View.GONE
+                    binding.buttonImagePhoto.visibility = View.GONE
                 }
             }
         } else {
             Log.d("TaskViewHolder", "Task ID: ${task.id} has no image.")
             imageTask?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.no_photography_24dp))
-            buttonPhoto?.visibility = View.GONE
-            buttonPhoto?.setOnClickListener(null)
+            binding.buttonImagePhoto?.visibility = View.GONE
+            binding.buttonImagePhoto?.setOnClickListener(null)
+        }
+
+        binding.cardItem.setOnClickListener {
+                view ->
+            view.animate()
+                .scaleX(0.8f)
+                .scaleY(0.8f)
+                .setDuration(100)
+                .withEndAction {
+                    view.animate().scaleX(1f).scaleY(1f).setDuration(100)
+                }
+                .start()
+
+            listener.onCheckPressed(task)
         }
 
         // Animação do botão de check
-        checkButton?.setOnClickListener { view ->
+        binding.checkButton.setOnClickListener { view ->
             view.animate()
                 .scaleX(0.8f)
                 .scaleY(0.8f)

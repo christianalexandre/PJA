@@ -20,17 +20,30 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import android.Manifest
+import android.annotation.SuppressLint
 import com.example.todolist.R
 import com.example.todolist.databinding.AddBottomSheetBinding
 import com.example.todolist.databinding.FragmentAddBinding
+import com.example.todolist.ui.dialog.DialogOrigin
+import com.example.todolist.ui.adapter.TaskListener
 import com.example.todolist.ui.database.instance.DatabaseInstance
 import com.example.todolist.ui.database.model.Task
 import com.example.todolist.ui.database.repository.TaskRepository
+import com.example.todolist.ui.dialog.CustomDialogFragment
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
-class AddFragment : Fragment() {
+class AddFragment : Fragment(), TaskListener {
 
     private lateinit var addViewModel: AddViewModel
     private lateinit var binding: FragmentAddBinding
@@ -41,6 +54,9 @@ class AddFragment : Fragment() {
 
     private val annotationText: String
         get() = binding.textFieldAnotationText.text?.toString() ?: ""
+
+    private val datePicker: String
+        get() = binding.datePickerText.text?.toString() ?: ""
 
     private val isTitleValid
         get() = titleText.length <= 50 && titleText.isNotBlank()
@@ -78,9 +94,16 @@ class AddFragment : Fragment() {
         bindingFromAddBottomSheet = AddBottomSheetBinding.inflate(inflater, container, false)
 
         setupAddViewModel()
+        setupKeyboardBehavior(binding.textFieldTitleText)
+        setupKeyboardBehavior(binding.textFieldAnotationText)
+        clickInScreen()
         updateButton()
         verificationChar()
         clickSaveButton()
+
+        datePicker()
+        deleteDate()
+
         openBottomSheet()
 
         return binding.root
@@ -91,6 +114,36 @@ class AddFragment : Fragment() {
         val repository = TaskRepository(database.taskDao())
         val factory = AddViewModelFactory(repository)
         addViewModel = ViewModelProvider(this, factory)[AddViewModel::class.java]
+    }
+
+    private fun setupKeyboardBehavior(editText: View) {
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (!hasFocus) {
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                view.clearFocus()
+            }
+        }
+    }
+
+    private fun clickInScreen() {
+        with(binding) {
+            appBarFromAdd.setOnClickListener {
+                clearFocusEditText()
+            }
+
+            scrollView.setOnClickListener {
+                clearFocusEditText()
+            }
+
+            fieldTheEditTexts.setOnClickListener {
+                clearFocusEditText()
+            }
+
+            fragmentXmlAdd.setOnClickListener {
+                clearFocusEditText()
+            }
+        }
     }
 
     private fun updateButton() {
@@ -124,31 +177,28 @@ class AddFragment : Fragment() {
     }
 
     private fun updateTextInputColor(textInput: TextInputLayout, isValid: Boolean) {
-        textInput.setEndIconTintList(
-            ColorStateList.valueOf(
-                ContextCompat.getColor(
-                    requireContext(),
-                    if (isValid) R.color.orange_01 else R.color.red_error
-                )
-            )
-        )
+        textInput.setEndIconTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), if (isValid) R.color.orange_01 else R.color.red_error)))
     }
 
     private fun clickSaveButton() {
         binding.saveButton.setOnClickListener {
             val title = titleText
             val description = annotationText
+            val date = datePicker
             val imageUri = (binding.picture.tag as? String)?.takeIf { it.isNotEmpty() }
 
             val newTask = Task(
                 title = title,
                 description = description,
+                date = date,
                 image = imageUri
             )
 
             addViewModel.insertTask(newTask)
             binding.textFieldTitleText.text?.clear()
             binding.textFieldAnotationText.text?.clear()
+            binding.datePickerText.text?.clear()
+            binding.deleteDateButton.visibility = View.GONE
             removeAttachedImage()
 
             // Esconder teclado
@@ -166,6 +216,128 @@ class AddFragment : Fragment() {
             Toast.makeText(requireContext(), getText(R.string.save_success), Toast.LENGTH_SHORT)
                 .show()
         }
+    }
+
+    private fun datePicker() {
+        val datePickerField = binding.datePickerText
+
+        datePickerField.showSoftInputOnFocus = false
+
+        datePickerField.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) openDatePicker() }
+    }
+
+    private fun openDatePicker() {
+        if (parentFragmentManager.findFragmentByTag("DATE_PICKER") != null) return
+
+        val today = Calendar.getInstance()
+        today.set(Calendar.HOUR_OF_DAY, 0)
+        today.set(Calendar.MINUTE, 0)
+        today.set(Calendar.SECOND, 0)
+        today.set(Calendar.MILLISECOND, 0)
+
+        val todayMillis = today.timeInMillis
+
+        // Verifica se já existe uma data selecionada previamente
+        val selectedDateMillis = if (binding.datePickerText.text.isNullOrBlank()) {
+            todayMillis
+        } else {
+            val savedDate = binding.datePickerText.text.toString().split(" - ")[0]
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            sdf.parse(savedDate)?.time ?: todayMillis
+        }
+
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.from(todayMillis))
+            .build()
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Selecionar data")
+            .setCalendarConstraints(constraintsBuilder)
+            .setSelection(selectedDateMillis)
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val localDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            localDate.timeInMillis = selection
+
+            val outputDate = Calendar.getInstance()
+            outputDate.set(
+                localDate.get(Calendar.YEAR),
+                localDate.get(Calendar.MONTH),
+                localDate.get(Calendar.DAY_OF_MONTH)
+            )
+
+            val selectedDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(outputDate.time)
+            openTimerPicker(selectedDate, outputDate.timeInMillis)
+        }
+
+        datePicker.addOnNegativeButtonClickListener { binding.cardDataPicker.clearFocus() }
+        datePicker.addOnCancelListener { binding.cardDataPicker.clearFocus() }
+        datePicker.addOnDismissListener { binding.cardDataPicker.clearFocus() }
+        datePicker.show(parentFragmentManager, "DATE_PICKER")
+    }
+
+    @SuppressLint("DefaultLocale", "SetTextI18n")
+    private fun openTimerPicker(date: String, selectedDateMillis: Long) {
+        val now = Calendar.getInstance()
+        val selectedDate = Calendar.getInstance().apply { timeInMillis = selectedDateMillis }
+
+        val isToday = now.get(Calendar.YEAR) == selectedDate.get(Calendar.YEAR) &&
+                now.get(Calendar.DAY_OF_YEAR) == selectedDate.get(Calendar.DAY_OF_YEAR)
+
+        val timePickerBuilder = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_24H)
+
+        // Verifica se já existe um horário salvo
+        val savedTime = binding.datePickerText.text?.toString()?.split(" - ")?.getOrNull(1)
+        if (savedTime != null && savedTime.contains(":")) {
+            val (hour, minute) = savedTime.split(":").map { it.toInt() }
+            timePickerBuilder.setHour(hour).setMinute(minute)
+        } else if (isToday) {
+            timePickerBuilder.setHour(now.get(Calendar.HOUR_OF_DAY))
+            timePickerBuilder.setMinute(now.get(Calendar.MINUTE))
+        } else {
+            timePickerBuilder.setHour(now.get(Calendar.HOUR_OF_DAY))
+            timePickerBuilder.setMinute(now.get(Calendar.MINUTE))
+        }
+
+        val picker = timePickerBuilder.setTitleText("Selecione a hora").build()
+
+        if (parentFragmentManager.findFragmentByTag("TIME_PICKER") == null) {
+            picker.show(parentFragmentManager, "TIME_PICKER")
+        }
+
+        picker.addOnPositiveButtonClickListener {
+            val selectedHour = picker.hour
+            val selectedMinute = picker.minute
+
+            if (isToday && (selectedHour < now.get(Calendar.HOUR_OF_DAY) ||
+                        (selectedHour == now.get(Calendar.HOUR_OF_DAY) && selectedMinute < now.get(Calendar.MINUTE)))
+            ) {
+                Toast.makeText(binding.root.context, "Escolha um horário futuro!", Toast.LENGTH_SHORT).show()
+                return@addOnPositiveButtonClickListener
+            }
+
+            val selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+            binding.datePickerText.setText("$date - $selectedTime")
+            binding.deleteDateButton.visibility = View.VISIBLE
+            binding.cardDataPicker.clearFocus()
+        }
+
+        picker.addOnNegativeButtonClickListener { binding.cardDataPicker.clearFocus() }
+    }
+
+    private fun deleteDate() {
+        binding.deleteDateButton.setOnClickListener {
+            clearFocusEditText()
+            binding.datePickerText.text?.clear()
+            binding.deleteDateButton.visibility = View.GONE
+        }
+    }
+
+    private fun clearFocusEditText() {
+        binding.textFieldTitleText.clearFocus()
+        binding.textFieldAnotationText.clearFocus()
     }
 
     private fun removeAttachedImage() {
@@ -222,14 +394,41 @@ class AddFragment : Fragment() {
 
     private fun openBottomSheet() {
         with(binding) {
-            imageIcon.setOnClickListener {
+            cardImageView.setOnClickListener {
+                clearFocusEditText()
                 checkPermissionsAndOpenBottomSheet()
             }
-            deleteAttachButton.setOnClickListener { removeAttachedImage() }
+            deleteAttachButton.setOnClickListener {
+                clearFocusEditText()
+                onCheckPressed(null)
+            }
         }
     }
 
+    private fun showDialog() {
+        if (parentFragmentManager.findFragmentByTag("CustomDialogFragment") == null) {
+            val listener = object : CustomDialogFragment.DialogListener {
+                override fun onFirstPressed() {
+                    print("canceled")
+                }
+
+                override fun onSecondPressed() {
+                    removeAttachedImage()
+                }
+            }
+            CustomDialogFragment.checkShowDialog(parentFragmentManager, DialogOrigin.PICTURE_DELETE, listener)
+        }
+    }
+
+    override fun onCheckPressed(task: Task?) {
+        showDialog()
+    }
+
     private fun checkPermissionsAndOpenBottomSheet() {
+        if (parentFragmentManager.findFragmentByTag("AddBottomSheet") != null) {
+            return
+        }
+
         val cameraPermission = ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.CAMERA
