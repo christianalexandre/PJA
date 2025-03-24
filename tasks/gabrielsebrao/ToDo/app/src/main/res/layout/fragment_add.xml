@@ -5,90 +5,97 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingHorizontal="30dp"
-        android:paddingTop="20dp">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_add_title"
-            style="@style/input_layout_style"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title"
-            app:counterEnabled="true"
-            app:counterMaxLength="50">
+            android:orientation="vertical"
+            android:paddingHorizontal="30dp"
+            android:paddingTop="20dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_add_content"
-            style="@style/input_layout_style"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="@string/content"
-            app:counterEnabled="true"
-            app:counterMaxLength="300">
-
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_add_title"
+                style="@style/input_layout_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top"
-                android:minHeight="160dp" />
+                android:hint="@string/title"
+                app:counterEnabled="true"
+                app:counterMaxLength="50">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:background="@drawable/background_button_set_image"
-            android:id="@+id/button_set_image"
-            android:minHeight="200dp"
-            android:layout_marginTop="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/image_task_text"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_add_content"
+                style="@style/input_layout_style"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/add_image"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                android:layout_marginTop="10dp"
+                android:hint="@string/content"
+                app:counterEnabled="true"
+                app:counterMaxLength="300">
 
-            <ImageView
-                android:id="@+id/task_image"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:minHeight="160dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="@drawable/background_button_set_image"
+                android:id="@+id/button_set_image"
                 android:minHeight="200dp"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/image_task_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_image"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <ImageView
+                    android:id="@+id/task_image"
+                    android:minHeight="200dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:paddingVertical="10dp"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/button_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:importantForAccessibility="no"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:paddingVertical="10dp"/>
+                android:minWidth="100dp"
+                android:textSize="15sp"
+                android:text="@string/save"
+                android:textColor="@color/off_white"
+                android:textAllCaps="false"
+                android:layout_gravity="end"
+                android:background="@drawable/background_button_save"
+                android:layout_marginTop="20dp"/>
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <Button
-            android:id="@+id/button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="100dp"
-            android:textSize="15sp"
-            android:text="@string/save"
-            android:textColor="@color/off_white"
-            android:textAllCaps="false"
-            android:layout_gravity="end"
-            android:background="@drawable/background_button_save"
-            android:layout_marginTop="20dp"/>
-    </LinearLayout>
 </LinearLayout>
