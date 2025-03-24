@@ -58,6 +58,8 @@ class HomeFragment : Fragment(), TaskActionListener {
 
         helper.attachToRecyclerView(binding?.recyclerHomeViewTasks)
 
+        onGetTasks()
+
         return binding?.root
 
     }

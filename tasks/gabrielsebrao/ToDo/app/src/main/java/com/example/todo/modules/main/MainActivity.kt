@@ -1,5 +1,6 @@
 package com.example.todo.modules.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -12,6 +13,7 @@ import com.example.todo.modules.main.fragments.add.AddFragment
 import com.example.todo.modules.main.fragments.archived.ArchivedFragment
 import com.example.todo.databinding.ActivityMainBinding
 import com.example.todo.modules.main.fragments.home.HomeFragment
+import com.example.todo.modules.splash.SplashActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +26,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        if(savedInstanceState != null) {
+            startActivity(Intent(this, SplashActivity::class.java))
+            finish()
+            return
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
@@ -32,8 +41,6 @@ class MainActivity : AppCompatActivity() {
         setupFragments()
         setupListeners()
         setupObservers()
-
-        mainViewModel?.getAllTasks()
 
     }
 
@@ -111,25 +118,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-
-        mainViewModel?.getTasksSuccess?.observe(this) { isSuccess ->
-            when(isSuccess) {
-
-                true -> {
-
-                    (homeFragment as? HomeFragment)?.onGetTasks()
-                    (archivedFragment as? ArchivedFragment)?.onGetTasks()
-
-                }
-
-                false -> {
-                    Toast.makeText(this, getString(R.string.error_task_get), Toast.LENGTH_SHORT).show()
-                }
-
-                else -> {}
-
-            }
-        }
 
         mainViewModel?.addTaskSuccess?.observe(this) { isSuccess ->
             when(isSuccess) {
