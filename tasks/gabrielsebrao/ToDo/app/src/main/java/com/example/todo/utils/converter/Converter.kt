@@ -1,9 +1,5 @@
 package com.example.todo.utils.converter
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.compose.ui.text.toLowerCase
-import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
@@ -17,19 +13,6 @@ object Converter {
 
     private const val ONE_WEEK_DIFFERENCE = 1000 * 60 * 60 * 24 * 7
     private val BRAZILIAN_PORTUGUESE = Locale("pt", "BR")
-
-    fun bitmapToByteArray(bitmap: Bitmap?, format: Bitmap.CompressFormat, quality: Int): ByteArray? {
-        val stream = ByteArrayOutputStream()
-        bitmap?.compress(format, quality, stream) ?: return null
-        return stream.toByteArray()
-    }
-
-    fun byteArrayToBitmap(byteArray: ByteArray?): Bitmap? {
-        return BitmapFactory.decodeByteArray(byteArray ?: return null, 0, byteArray.size)
-    }
-
-    fun Long.toDate(): String =
-        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(this))
 
     fun turnTimeStampToSpelledOut(conclusionTimestamp: Long, calendar: Calendar): String {
 

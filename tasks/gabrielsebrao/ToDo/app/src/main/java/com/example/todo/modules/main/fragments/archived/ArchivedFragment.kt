@@ -58,6 +58,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
         helper.attachToRecyclerView(binding?.recyclerViewTasks)
 
+        onGetTasks()
         return binding?.root
 
     }

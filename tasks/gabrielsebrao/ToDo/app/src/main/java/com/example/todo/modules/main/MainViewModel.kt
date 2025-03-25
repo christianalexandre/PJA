@@ -24,11 +24,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private val taskDao: TaskDao? = DataBase.getInstance(contextRef.get())?.taskDao()
 
     private val _addTaskSuccess: MutableLiveData<Boolean?> = MutableLiveData()
-    private val _getTasksSuccess: MutableLiveData<Boolean?> = MutableLiveData()
     private val _archiveTaskSuccess: MutableLiveData<Boolean?> = MutableLiveData()
     private val _unarchiveTaskSuccess: MutableLiveData<Boolean?> = MutableLiveData()
 
-    val getTasksSuccess: LiveData<Boolean?> = _getTasksSuccess
     val addTaskSuccess: LiveData<Boolean?> = _addTaskSuccess
     val archiveTaskSuccess: LiveData<Boolean?> = _archiveTaskSuccess
     val unarchiveTaskSuccess: LiveData<Boolean?> = _unarchiveTaskSuccess
@@ -38,36 +36,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     var archivedItemIndex: Int = 0
     var unarchivedItemIndex: Int = 0
-
-    fun getAllTasks(): Disposable {
-
-        return Single.create { emitter ->
-            emitter.onSuccess(taskDao?.getAll() ?: emptyList())
-        }
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ taskList ->
-
-                TaskSingleton.openTaskList = taskList.filter { !it.isArchived }.toMutableList()
-                TaskSingleton.archivedTaskList = taskList.filter { it.isArchived }.toMutableList()
-
-                TaskSingleton.openTaskList = TaskSingleton.openTaskList?.sortedBy { task ->
-                    TaskSingleton.openTaskIdList?.indexOf(task.id)
-                }?.toMutableList()
-
-                TaskSingleton.archivedTaskList = TaskSingleton.archivedTaskList?.sortedBy { task ->
-                    TaskSingleton.archivedTaskIdList?.indexOf(task.id)
-                }?.toMutableList()
-
-                Log.d("RX_DEBUG", "GET ALL TASK: OK")
-                _getTasksSuccess.postValue(true)
-
-            }, { error ->
-                _getTasksSuccess.postValue(false)
-                Log.e("RX_DEBUG", "GET ALL TASKS: ${error.message}")
-            })
-
-    }
 
     fun addTask(title: String, content: String, byteArrayBitmap: ByteArray?, conclusionDate: Long?): Disposable? {
 

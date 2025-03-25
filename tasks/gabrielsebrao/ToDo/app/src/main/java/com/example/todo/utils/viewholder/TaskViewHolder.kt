@@ -1,10 +1,8 @@
 package com.example.todo.utils.viewholder
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
-import android.graphics.Typeface
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.databinding.ItemCardTaskBinding
 import com.example.todo.utils.converter.Converter
-import com.example.todo.utils.converter.Converter.toDate
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.TextStyle
 import java.util.Calendar
-import java.util.Locale
 
 class TaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
 
@@ -79,7 +71,29 @@ class TaskViewHolder(itemView: View, private val listener: CardActionListener) :
 
     private fun setupListener() {
 
-        binding.frameLayout.setOnClickListener { listener.onCheckClicked(task) }
+        val scaleUp = ObjectAnimator.ofFloat(binding.frameLayout, "scaleX", 1f, 1.2f)
+        val scaleDown = ObjectAnimator.ofFloat(binding.frameLayout, "scaleX", 1.2f, 1f)
+
+        val scaleUpY = ObjectAnimator.ofFloat(binding.frameLayout, "scaleY", 1f, 1.2f)
+        val scaleDownY = ObjectAnimator.ofFloat(binding.frameLayout, "scaleY", 1.2f, 1f)
+
+        scaleUp.duration = 200
+        scaleDown.duration = 200
+        scaleUpY.duration = 200
+        scaleDownY.duration = 200
+
+        val scaleUpDown = AnimatorSet()
+        scaleUpDown.play(scaleDown).after(scaleUp)
+        scaleUpDown.play(scaleDownY).after(scaleUpY)
+
+        binding.frameLayout.setOnClickListener {
+
+            scaleUp.start()
+            scaleUpY.start()
+            scaleUpDown.start()
+
+            listener.onCheckClicked(task)
+        }
 
         if(task?.image != null)
             binding.buttonAccessImage.setOnClickListener { listener.onImageCLicked(task) }

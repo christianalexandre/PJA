@@ -35,7 +35,8 @@ import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
 import com.example.todo.utils.converter.Converter
-import com.example.todo.utils.converter.Converter.toDate
+import com.example.todo.utils.extensions.toByteArray
+import com.example.todo.utils.extensions.toDate
 import com.example.todo.utils.listener.PhotoAccessListener
 import java.io.File
 import java.text.SimpleDateFormat
@@ -51,14 +52,14 @@ class AddFragment : Fragment(), PhotoAccessListener {
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
 
-    private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
-
     private var calendar: Calendar = Calendar.getInstance()
     private var conclusionDate: Long? = null
     private var datePickerDialog: DatePickerDialog? = null
     private var timePickerDialog: TimePickerDialog? = null
 
     private var pickImageLauncher: ActivityResultLauncher<String>? = null
+    private var bottomSheetFragment: PhotoAccessBottomSheetFragment? = null
+
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
     private var bitmap: Bitmap? = null
     private var cameraTempFile: File? = null
@@ -72,6 +73,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
         super.onCreate(savedInstanceState)
 
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        bottomSheetFragment = PhotoAccessBottomSheetFragment()
 
         setupPickImageLauncher()
         setupCameraLauncher()
@@ -123,7 +125,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
                 binding?.imageTaskText?.visibility = View.GONE
                 hasImage = true
 
-                bottomSheetFragment.dismiss()
+                bottomSheetFragment?.dismiss()
 
             }
         }
@@ -175,7 +177,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             binding?.imageTaskText?.visibility = View.GONE
             hasImage = true
 
-            bottomSheetFragment.dismiss()
+            bottomSheetFragment?.dismiss()
 
         }
 
@@ -296,7 +298,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
                 binding?.inputLayoutAddContent?.editText?.text.toString(),
-                Converter.bitmapToByteArray(bitmap, Bitmap.CompressFormat.JPEG, 80),
+                bitmap?.toByteArray(Bitmap.CompressFormat.JPEG, 80),
                 conclusionDate
             )
 
@@ -347,7 +349,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
             if(parentFragmentManager.fragments.any { it.tag == BaseBottomSheetFragment.TAG })
                 return@setOnClickListener
 
-            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG, hasImage)
+            bottomSheetFragment = PhotoAccessBottomSheetFragment.newInstance(this, hasImage)
+            bottomSheetFragment?.show(parentFragmentManager, BaseBottomSheetFragment.TAG)
         }
 
     }
@@ -448,7 +451,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         deleteImage()
 
-        bottomSheetFragment.dismiss()
+        bottomSheetFragment?.dismiss()
 
     }
 
