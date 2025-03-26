@@ -8,9 +8,9 @@ Aplicativo para criar tarefas.
 - 🔧 **Outras Ferramentas:** Retrofit, RX
 
 ## 📷 Capturas de Tela
-![Tela de Home](./assets/Home_Screen.jfif)
-![Tela de Tarefas Arquivadas](./assets/Archived_Screen.jfif)
-![Tela de Adicionar Tarefa](./assets/Add_Screen.jfif)
+<img src="./assets/Home_Screen.jfif" alt="Tela de Home" width="200">
+<img src="./assets/Archived_Screen.jfif" alt="Tela de Tarefas Arquivadas" width="200">
+<img src="./assets/Add_Screen.jfif" alt="Tela de Adicionar Tarefa" width="200">
 
 ## 🎯 Funcionalidades
 ✔️ Adicionar tarefas  
