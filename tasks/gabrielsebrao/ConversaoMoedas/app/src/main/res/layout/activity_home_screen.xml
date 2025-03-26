@@ -32,26 +32,37 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/initialValue">
 
-            <Spinner
-                android:id="@+id/initial_currency_spinner"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/initial_currency_button"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/currency_default"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:paddingHorizontal="20dp"
                 android:background="@drawable/background_rounded_borders"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ButtonStyle" />
 
-            <Spinner
-                android:id="@+id/final_currency_spinner"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/final_currency_button"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:text="@string/currency_default"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:layout_marginStart="10dp"
+                android:paddingHorizontal="20dp"
                 android:background="@drawable/background_rounded_borders"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ButtonStyle" />
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
