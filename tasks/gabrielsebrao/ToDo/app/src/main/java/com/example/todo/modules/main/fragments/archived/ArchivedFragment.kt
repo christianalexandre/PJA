@@ -14,6 +14,7 @@ import com.example.todo.R
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentArchivedBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.adapter.TaskAdapter
 import com.example.todo.utils.dialog.BaseDialog
 import com.example.todo.utils.dialog.ImageDialog
 import com.example.todo.utils.dialog.TaskDialog
@@ -28,7 +29,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
     private var binding: FragmentArchivedBinding? = null
     private var mainViewModel: MainViewModel? = null
     private var archivedViewModel: ArchivedViewModel? = null
-    private var archivedTaskAdapter: ArchivedTaskAdapter? = null
+    private var archivedTaskAdapter: TaskAdapter? = null
     private var taskIdListSharedPref: TaskIdListSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +58,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
         helper.attachToRecyclerView(binding?.recyclerViewTasks)
 
+        onGetTasks()
         return binding?.root
 
     }
@@ -124,7 +126,7 @@ class ArchivedFragment : Fragment(), TaskActionListener {
 
     private fun setupAdapter() {
 
-        archivedTaskAdapter = ArchivedTaskAdapter(
+        archivedTaskAdapter = TaskAdapter(
             TaskSingleton.archivedTaskList ?: emptyList<Task>().toMutableList(),
             object: CardActionListener {
                 override fun onCheckClicked(task: Task?) {

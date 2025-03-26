@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.todo"
-        minSdk = 30
+        minSdk = 31
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -55,6 +55,7 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.exifinterface)
+    implementation(libs.androidx.material3.android)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -71,6 +72,7 @@ dependencies {
     implementation(libs.rxjavaroom)
     implementation(libs.gson)
     implementation(libs.viewpager)
+    implementation(libs.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

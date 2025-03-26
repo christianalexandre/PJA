@@ -2,25 +2,26 @@ package com.example.todo.utils.dialog
 
 import android.app.Dialog
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import com.example.todo.databinding.ItemDialogImageBinding
-import com.example.todo.utils.converter.Converter
+import com.example.todo.utils.extensions.toBitmap
 
 class ImageDialog: BaseDialog() {
 
     private var binding: ItemDialogImageBinding? = null
-    private var byteArrayBitmap: ByteArray? = null
+    private var byteArrayImage: ByteArray? = null
     private val maxWidth: Int
-        get() = activity?.windowManager?.currentWindowMetrics?.bounds?.width()?.minus(200) ?: 500
+        get() =
+            activity?.windowManager?.currentWindowMetrics?.bounds?.width()?.minus(100) ?: 500
     private val maxHeight: Int
-        get() = activity?.windowManager?.currentWindowMetrics?.bounds?.height()?.minus(200) ?: 700
+        get() =
+            activity?.windowManager?.currentWindowMetrics?.bounds?.height()?.minus(100) ?: 700
 
     companion object {
 
         fun newInstance(byteArrayBitmap: ByteArray?): ImageDialog = ImageDialog().apply {
-            this.byteArrayBitmap = byteArrayBitmap
+            this.byteArrayImage = byteArrayBitmap
         }
 
     }
@@ -29,7 +30,7 @@ class ImageDialog: BaseDialog() {
 
         binding = ItemDialogImageBinding.inflate(layoutInflater)
 
-        binding?.taskImage?.setImageBitmap(resizeBitmap(Converter.byteArrayToBitmap(byteArrayBitmap)))
+        binding?.taskImage?.setImageBitmap(resizeBitmap(byteArrayImage?.toBitmap()))
 
         return AlertDialog.Builder(requireContext())
             .setView(binding?.root)

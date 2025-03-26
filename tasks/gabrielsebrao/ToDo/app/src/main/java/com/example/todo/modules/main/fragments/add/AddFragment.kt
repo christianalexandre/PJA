@@ -1,6 +1,8 @@
 package com.example.todo.modules.main.fragments.add
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -24,6 +26,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,10 +34,12 @@ import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
-import com.example.todo.utils.converter.Converter
+import com.example.todo.utils.extensions.toByteArray
+import com.example.todo.utils.extensions.toDate
 import com.example.todo.utils.listener.PhotoAccessListener
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -45,12 +50,20 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     private var binding: FragmentAddBinding? = null
     private var mainViewModel: MainViewModel? = null
+
+    private var calendar: Calendar = Calendar.getInstance()
+    private var conclusionDate: Long? = null
+    private var datePickerDialog: DatePickerDialog? = null
+    private var timePickerDialog: TimePickerDialog? = null
+
     private var pickImageLauncher: ActivityResultLauncher<String>? = null
-    private val bottomSheetFragment: PhotoAccessBottomSheetFragment = PhotoAccessBottomSheetFragment(this)
+    private var bottomSheetFragment: PhotoAccessBottomSheetFragment? = null
+
     private var cameraLauncher: ActivityResultLauncher<Intent>? = null
     private var bitmap: Bitmap? = null
     private var cameraTempFile: File? = null
     private var hasImage: Boolean = false
+
     private var setImageButtonMaxWidth: Int? = null
     private var setImageButtonMaxHeight: Int? = null
 
@@ -59,9 +72,12 @@ class AddFragment : Fragment(), PhotoAccessListener {
         super.onCreate(savedInstanceState)
 
         mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        bottomSheetFragment = PhotoAccessBottomSheetFragment()
 
         setupPickImageLauncher()
         setupCameraLauncher()
+        setupDatePickerDialog()
+        setupTimePickerDialog()
 
     }
 
@@ -80,6 +96,8 @@ class AddFragment : Fragment(), PhotoAccessListener {
                 EDIT_TEXT_CONTENT
             ))
         }
+
+        binding?.iconCancelSetDayHour?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
 
         setupListener()
         return binding?.root
@@ -106,7 +124,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
                 binding?.imageTaskText?.visibility = View.GONE
                 hasImage = true
 
-                bottomSheetFragment.dismiss()
+                bottomSheetFragment?.dismiss()
 
             }
         }
@@ -158,7 +176,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
             binding?.imageTaskText?.visibility = View.GONE
             hasImage = true
 
-            bottomSheetFragment.dismiss()
+            bottomSheetFragment?.dismiss()
 
         }
 
@@ -211,12 +229,52 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
     }
 
+    private fun setupDatePickerDialog() {
+
+        datePickerDialog = DatePickerDialog(
+            requireContext(),
+            R.style.DialogTheme,
+            null,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH),
+        )
+
+        datePickerDialog?.datePicker?.minDate = calendar.timeInMillis
+
+    }
+
+    private fun setupTimePickerDialog() {
+
+        timePickerDialog = TimePickerDialog(
+            requireContext(),
+            R.style.DialogTheme,
+            { _, hour, minute ->
+
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                calendar.set(Calendar.SECOND, 0)
+
+                updateSetDayHour(calendar.timeInMillis)
+
+                conclusionDate = calendar.timeInMillis
+
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        )
+
+    }
+
     private fun setupListener() {
 
         setupSaveButtonListener()
         setupInputLayoutsListener()
         setupRootListener()
         setupSetImageButtonListener()
+        setupDatePickerListener()
+        setupCancelIconListener()
 
     }
 
@@ -239,15 +297,19 @@ class AddFragment : Fragment(), PhotoAccessListener {
             mainViewModel?.addTask(
                 binding?.inputLayoutAddTitle?.editText?.text.toString(),
                 binding?.inputLayoutAddContent?.editText?.text.toString(),
-                Converter.bitmapToByteArray(bitmap, Bitmap.CompressFormat.JPEG, 80)
+                bitmap?.toByteArray(Bitmap.CompressFormat.JPEG, 80),
+                conclusionDate
             )
 
-            (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                .hideSoftInputFromWindow(view?.windowToken, 0)
+            hideKeyBoard()
 
         }
 
     }
+
+    private fun hideKeyBoard() =
+        (activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(view?.windowToken, 0)
 
     private fun setupInputLayoutsListener() {
 
@@ -286,10 +348,52 @@ class AddFragment : Fragment(), PhotoAccessListener {
             if(parentFragmentManager.fragments.any { it.tag == BaseBottomSheetFragment.TAG })
                 return@setOnClickListener
 
-            bottomSheetFragment.show(parentFragmentManager, BaseBottomSheetFragment.TAG, hasImage)
+            bottomSheetFragment = PhotoAccessBottomSheetFragment.newInstance(this, hasImage)
+            bottomSheetFragment?.show(parentFragmentManager, BaseBottomSheetFragment.TAG)
         }
 
     }
+
+    private fun setupDatePickerListener() {
+
+        binding?.setDayHour?.setOnClickListener {
+            hideKeyBoard()
+            datePickerDialog?.show()
+        }
+
+        datePickerDialog?.setOnDateSetListener { _, year, month, dayOfMonth ->
+
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            setupTimePickerDialog()
+            timePickerDialog?.show()
+
+        }
+
+    }
+
+    private fun updateSetDayHour(date: Long) {
+
+        binding?.textSetDayHour?.text = date.toDate()
+
+        binding?.textSetDayHour
+            ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
+        binding?.iconSetDayHour
+            ?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
+        binding?.setDayHour?.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_ripple_green)
+
+        binding?.cancelSetDayHour?.visibility = View.VISIBLE
+
+    }
+
+    private fun setupCancelIconListener() =
+        binding?.iconCancelSetDayHour?.setOnClickListener {
+            it.postDelayed({
+                deleteSelectedDateAndHour()
+            }, 150)
+        }
 
     private fun filterMaxLength(editText: EditText?, maxLength: Int) {
 
@@ -346,7 +450,7 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         deleteImage()
 
-        bottomSheetFragment.dismiss()
+        bottomSheetFragment?.dismiss()
 
     }
 
@@ -354,7 +458,10 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         binding?.inputLayoutAddTitle?.editText?.setText("")
         binding?.inputLayoutAddContent?.editText?.setText("")
+
         deleteImage()
+        deleteSelectedDateAndHour()
+        resetPickerDialogs()
 
     }
 
@@ -368,6 +475,36 @@ class AddFragment : Fragment(), PhotoAccessListener {
 
         bitmap = null
         hasImage = false
+
+    }
+
+    private fun deleteSelectedDateAndHour() {
+
+        binding?.iconSetDayHour?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.component_gray))
+        binding?.textSetDayHour?.setTextColor(ContextCompat.getColor(requireContext(), R.color.component_gray))
+        binding?.textSetDayHour?.text = getString(R.string.default_set_day_hour)
+        binding?.cancelSetDayHour?.visibility = View.GONE
+        binding?.setDayHour?.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_ripple_gray)
+        conclusionDate = null
+
+    }
+
+    private fun resetPickerDialogs() {
+
+        calendar.get(Calendar.MINUTE)
+
+        calendar = Calendar.getInstance()
+
+        datePickerDialog?.updateDate(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        timePickerDialog?.updateTime(
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE)
+        )
 
     }
 

@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.ToDo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/green</item>
         <item name="colorPrimaryVariant">@color/light_green</item>
@@ -13,17 +15,8 @@
 
         <item name="colorError">@color/error_red</item>
         <item name="colorOnError">@color/error_red</item>
-    </style>
 
-    <style name="Theme.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
-        <item name="android:statusBarColor">@color/green</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:navigationBarColor">@color/green</item>
-
-        <item name="android:windowSplashScreenAnimatedIcon">@color/green</item>
         <item name="android:windowSplashScreenBackground">@color/green</item>
-
+        <item name="android:windowSplashScreenBehavior">icon_preferred</item>
     </style>
 </resources>

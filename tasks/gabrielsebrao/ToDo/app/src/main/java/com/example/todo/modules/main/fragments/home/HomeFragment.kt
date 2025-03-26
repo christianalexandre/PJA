@@ -15,6 +15,7 @@ import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.singleton.TaskSingleton
 import com.example.todo.databinding.FragmentHomeBinding
 import com.example.todo.modules.main.MainViewModel
+import com.example.todo.utils.adapter.TaskAdapter
 import com.example.todo.utils.dialog.BaseDialog
 import com.example.todo.utils.dialog.ImageDialog
 import com.example.todo.utils.dialog.TaskDialog
@@ -28,7 +29,7 @@ class HomeFragment : Fragment(), TaskActionListener {
     private var binding: FragmentHomeBinding? = null
     private var mainViewModel: MainViewModel? = null
     private var homeViewModel: HomeViewModel? = null
-    private var homeTaskAdapter: HomeTaskAdapter? = null
+    private var homeTaskAdapter: TaskAdapter? = null
     private var taskIdListSharedPref: TaskIdListSharedPref? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +57,8 @@ class HomeFragment : Fragment(), TaskActionListener {
         ))
 
         helper.attachToRecyclerView(binding?.recyclerHomeViewTasks)
+
+        onGetTasks()
 
         return binding?.root
 
@@ -125,7 +128,7 @@ class HomeFragment : Fragment(), TaskActionListener {
 
     private fun setupAdapter() {
 
-        homeTaskAdapter = HomeTaskAdapter(
+        homeTaskAdapter = TaskAdapter(
             TaskSingleton.openTaskList ?: emptyList<Task>().toMutableList(),
             object : CardActionListener {
                 override fun onCheckClicked(task: Task?) {

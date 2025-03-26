@@ -13,7 +13,8 @@ data class Task(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "content") val content: String,
     @ColumnInfo(name = "isArchived") var isArchived: Boolean,
-    @ColumnInfo(name = "image") var image: ByteArray?
+    @ColumnInfo(name = "image") var image: ByteArray?,
+    @ColumnInfo(name = "conclusionDate") var conclusionDate: Long?
 ) : Parcelable {
     init {
         if(title.length > 50) throw(IllegalArgumentException("TITLE length cannot exceed 50 characters"))
