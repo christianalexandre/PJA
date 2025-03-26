@@ -1,6 +1,7 @@
 package com.example.todo.utils.dialog
 
 import android.app.Dialog
+import android.graphics.Paint
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.view.View
@@ -81,6 +82,13 @@ class TaskDialog: BaseDialog() {
 
         binding?.taskTitle?.text = task?.title
         binding?.taskContent?.text = task?.content
+
+        if(task?.isArchived == true) {
+
+            binding?.taskTitle?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            binding?.taskContent?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+
+        }
 
         if(task?.conclusionDate != null) {
             binding?.conclusionDate?.visibility = View.VISIBLE
