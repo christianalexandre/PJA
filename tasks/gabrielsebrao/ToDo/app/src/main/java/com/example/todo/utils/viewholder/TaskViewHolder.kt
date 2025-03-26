@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
 import com.example.todo.databinding.ItemCardTaskBinding
-import com.example.todo.utils.converter.Converter
+import com.example.todo.utils.extensions.toSpelledOut
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 import java.util.Calendar
@@ -51,7 +51,7 @@ class TaskViewHolder(itemView: View, private val listener: CardActionListener) :
 
         if(task?.conclusionDate != null) {
             binding.textConclusionDate.text =
-                Converter.turnTimeStampToSpelledOut(task?.conclusionDate ?: 0, Calendar.getInstance())
+                task?.conclusionDate?.toSpelledOut(Calendar.getInstance())
             binding.conclusionDate.visibility = View.VISIBLE
         }
         else

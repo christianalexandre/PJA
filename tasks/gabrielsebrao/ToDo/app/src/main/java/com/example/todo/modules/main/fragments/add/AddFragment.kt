@@ -34,7 +34,6 @@ import com.example.todo.R
 import com.example.todo.databinding.FragmentAddBinding
 import com.example.todo.modules.main.MainViewModel
 import com.example.todo.utils.bottomsheet.BaseBottomSheetFragment
-import com.example.todo.utils.converter.Converter
 import com.example.todo.utils.extensions.toByteArray
 import com.example.todo.utils.extensions.toDate
 import com.example.todo.utils.listener.PhotoAccessListener

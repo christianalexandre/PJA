@@ -3,13 +3,17 @@ package com.example.todo.utils.dialog
 import android.app.Dialog
 import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.ContextCompat
 import com.example.todo.R
 import com.example.todo.databinding.ItemDialogTaskCheckBinding
+import com.example.todo.utils.extensions.toDate
+import com.example.todo.utils.extensions.toSpelledOut
 import com.example.todo.utils.listener.TaskActionListener
 import com.example.todo.utils.models.Task
+import java.util.Calendar
 
 class TaskDialog: BaseDialog() {
 
@@ -19,6 +23,8 @@ class TaskDialog: BaseDialog() {
     private var secondButtonTextRes: Int = 0
     private var secondIconRes: Int = 0
     private var secondIconAltTextRes: Int = 0
+
+    private var task: Task? = null
 
     companion object {
 
@@ -42,6 +48,7 @@ class TaskDialog: BaseDialog() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         binding = ItemDialogTaskCheckBinding.inflate(layoutInflater)
+        task = arguments?.getParcelable(KEY)
 
         if(arguments?.getBoolean(KEY_IS_FROM_HOME) == true) {
             secondButtonTextRes = R.string.archive_button_text
@@ -72,17 +79,37 @@ class TaskDialog: BaseDialog() {
         binding?.iconSecond?.setImageIcon(Icon.createWithResource(context, secondIconRes))
         binding?.iconSecond?.contentDescription = ContextCompat.getString(requireContext(), secondIconAltTextRes)
 
+        binding?.taskTitle?.text = task?.title
+        binding?.taskContent?.text = task?.content
+
+        if(task?.conclusionDate != null) {
+            binding?.conclusionDate?.visibility = View.VISIBLE
+            binding?.textConclusionDate?.text = task?.conclusionDate?.toSpelledOut(Calendar.getInstance())
+
+            if((task?.conclusionDate ?: return) <= Calendar.getInstance().timeInMillis) {
+
+                binding?.textConclusionDate
+                    ?.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_red))
+
+                binding?.iconConclusionDate
+                    ?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.error_red))
+
+            }
+        }
+        else
+            binding?.conclusionDate?.visibility = View.GONE
+
     }
 
     private fun setupListeners() {
 
         binding?.buttonDeleteTask?.setOnClickListener {
-            listener?.onDeleteTask(arguments?.getParcelable(KEY))
+            listener?.onDeleteTask(task)
             dialog?.dismiss()
         }
 
         binding?.buttonSecond?.setOnClickListener {
-            listener?.onSecondAction(arguments?.getParcelable(KEY))
+            listener?.onSecondAction(task)
             dialog?.dismiss()
         }
 
