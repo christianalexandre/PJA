@@ -3,6 +3,8 @@ package com.example.todo.utils.viewholder
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.AlertDialog
+import android.graphics.Paint
+import android.graphics.PaintFlagsDrawFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import com.example.todo.utils.extensions.toSpelledOut
 import com.example.todo.utils.listener.CardActionListener
 import com.example.todo.utils.models.Task
 import java.util.Calendar
+import kotlin.coroutines.coroutineContext
 
 class TaskViewHolder(itemView: View, private val listener: CardActionListener) : RecyclerView.ViewHolder(itemView) {
 
@@ -44,6 +47,20 @@ class TaskViewHolder(itemView: View, private val listener: CardActionListener) :
         binding.title.text = task?.title
         binding.content.text = task?.content
 
+        if(task?.isArchived == true) {
+
+            binding.iconCheck.setColorFilter(
+                ContextCompat.getColor(
+                    binding.root.context,
+                    R.color.green
+                )
+            )
+
+            binding.title.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            binding.content.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+
+        }
+
         if(task?.image != null)
             binding.buttonAccessImage.visibility = View.VISIBLE
         else
@@ -57,7 +74,7 @@ class TaskViewHolder(itemView: View, private val listener: CardActionListener) :
         else
             binding.conclusionDate.visibility = View.GONE
 
-        if((task?.conclusionDate ?: return) <= Calendar.getInstance().timeInMillis) {
+        if((task?.conclusionDate ?: 0) <= Calendar.getInstance().timeInMillis) {
 
             binding.textConclusionDate
                 .setTextColor(ContextCompat.getColor(binding.root.context, R.color.error_red))
