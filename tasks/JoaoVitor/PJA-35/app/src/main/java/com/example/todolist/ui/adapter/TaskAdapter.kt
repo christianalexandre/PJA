@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todolist.R
 import com.example.todolist.databinding.TaskItemBinding
 import com.example.todolist.ui.database.model.Task
 
@@ -76,14 +75,6 @@ class TaskAdapter(
     fun clearSelection() {
         tasks.forEach {
             it.isSelected = false
-        }
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun selectAll() {
-        tasks.forEach {
-            it.isSelected = true
         }
         notifyDataSetChanged()
     }

@@ -41,23 +41,6 @@ class TaskViewHolder(private val binding: TaskItemBinding) : RecyclerView.ViewHo
             }
         }
 
-
-//        if (isFromHome && !task.isSelected) {
-//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
-//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
-//        }
-//        else if(isFromHome && task.isSelected) {
-//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
-//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
-//        }
-//        else if(!isFromHome && task.isSelected) {
-//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.orange_01))
-//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_check_circle))
-//        } else {
-//            binding.checkButton.setColorFilter(ContextCompat.getColor(itemView.context, R.color.white))
-//            binding.checkButton.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_uncheck_24dp))
-//        }
-
         binding.buttonImagePhoto?.visibility = View.VISIBLE // Garante que o botão de foto comece visível
 
         if (!task.image.isNullOrEmpty()) {
