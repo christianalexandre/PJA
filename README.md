@@ -2,9 +2,13 @@
 # Programa Jovem Aprendiz
 Repositório desenvolvido para fins didáticos que servirá para centralizar a entrega de tarefas.
 
+## Projeto final
+[Gabriel Sebrão](./tasks/gabrielsebrao/ToDo)<br>
+[João Vitor](./tasks/JoaoVitor/PJA-35)
 
 ## Objetivos
 Aprender sobre Git e programação de aplicativos móveis com utilização de linguagem nativa.
+
 ## Ferramentas
 | ![Git](https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white) | ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white) | [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/) | ![Kotlin](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white) |
 |--------|--------|--------|--------|
